@@ -128,7 +128,7 @@ if tool == "docker":
 
     def test_selected_profile_and_stable_names(self):
         _, args = self.launch()
-        expected = {"--name": "dsv4-nvfp4", "--max-model-len": "1000000",
+        expected = {"--name": "dsv4-nvfp4", "--tensor-parallel-size": "2", "--max-model-len": "1000000",
                     "--gpu-memory-utilization": "0.96", "--max-num-seqs": "2",
                     "--max-num-batched-tokens": "2048",
                     "--long-prefill-token-threshold": "1792"}
@@ -137,6 +137,20 @@ if tool == "docker":
         self.assertIn("dsv4-nvfp4:recipe", args)
         self.assertIn("dsv4-nvfp4-kernels:/root/.cache/flashinfer", args)
         self.assertEqual(json.loads(self.value(args, "--speculative-config"))["num_speculative_tokens"], 5)
+
+    def test_tensor_parallelism_uses_the_selected_config_value(self):
+        # Argument wiring only; TP4 has not been qualified on GPUs by this recipe.
+        _, args = self.launch(TENSOR_PARALLEL_SIZE=4)
+        self.assertEqual(self.value(args, "--tensor-parallel-size"), "4")
+
+    def test_invalid_tensor_parallelism_fails_before_docker(self):
+        for value in ("", "0", "-1", "1.5", "two"):
+            with self.subTest(value=value):
+                self.configure(TENSOR_PARALLEL_SIZE=value)
+                result = self.run_script("serve.sh")
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("TENSOR_PARALLEL_SIZE", result.stderr)
+                self.assertEqual(self.calls(), [])
 
     def test_native_request_completion_health_and_retention_options(self):
         _, args = self.launch()

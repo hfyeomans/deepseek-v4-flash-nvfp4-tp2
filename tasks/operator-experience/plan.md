@@ -40,3 +40,12 @@ and aggregate engine logs, with bounded Docker log retention.
 
 Rollback: return to `1ed5bfa` for code; the existing GPU container and image
 remain available. Do not claim new performance numbers from CPU checks.
+
+## Make tensor parallelism visible
+
+The launcher already passes `--tensor-parallel-size 2`, but hiding it in code
+made the `.env` appear incomplete. Expose `TENSOR_PARALLEL_SIZE=2` in the example
+and pass that value through the existing launch path. Require a positive integer.
+Update the default/override and invalid-config tests, then run local checks.
+Keep TP2 as the tested configuration; this change doesn't qualify other GPU
+counts or parallelism settings. Existing `.env` files need the new setting.

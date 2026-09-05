@@ -8,6 +8,9 @@ Build and serve require `.env` (or `RECIPE_ENV_FILE`) and share `IMAGE`. Missing
 files explain how to copy the example and set parameters. Missing settings
 can't inherit old shell exports. The example uses adjustable 1M/96% defaults,
 stable image/container/cache names and a configurable served model alias.
+`TENSOR_PARALLEL_SIZE=2` is now explicit in the example and launch output. It
+replaces the hardcoded `--tensor-parallel-size 2`, preserving the tested default.
+Existing `.env` files need the new line; other TP values haven't been qualified.
 The bind default remains `127.0.0.1`. The example and guides now explain that
 using a LAN IP or `0.0.0.0` exposes the unauthenticated API to reachable clients;
 change it only with an understood and restricted network exposure.
@@ -18,7 +21,7 @@ Docker owns health probes and log rotation; launch output includes client,
 status, log, stop and recovery commands. Restarting doesn't apply edited `.env`
 settings; create a new container for those changes.
 
-All 42 local tests passed, including 14 new operator tests. Both adversarial
+All 44 local tests passed, including 16 operator tests. Both adversarial
 findings were reproduced and fixed. See [verification](verification.md),
 [design](plan.md) and [source findings](research.md).
 

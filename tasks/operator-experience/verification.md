@@ -1,7 +1,7 @@
 # Verification, 2026-09-05
 
-`bash scripts/check-local.sh` passed: Bash syntax, ShellCheck and **42 CPU test
-methods**, including 14 operator tests. The health test needed permission to
+`bash scripts/check-local.sh` passed: Bash syntax, ShellCheck and **44 CPU test
+methods**, including 16 operator tests. The health test needed permission to
 bind a temporary localhost socket in this sandbox. It made no GPU requests.
 
 The entrypoint tests execute real Bash scripts with fake Docker/Git boundaries.
@@ -20,8 +20,14 @@ Adversarial review found two more defects, each reproduced before its fix:
 | Missing IMAGE inherited an old shell export | Clear recipe-owned names before sourcing config | Build and serve now reject the incomplete file before effects |
 | Extra CLI flags overrode the port/alias used by health and client output | Require all launcher settings through `.env`; reject CLI arguments | Separate and equals-form overrides fail before Docker |
 
-The independent reviewer reran all 14 operator tests and confirmed both fixes.
+The initial independent review reran all 14 operator tests then present and confirmed both fixes.
 No further actionable defects were found in the bounded review.
+
+Two later tests cover the exposed `TENSOR_PARALLEL_SIZE` setting. They failed
+against the hardcoded launcher and passed after configuration wiring and
+positive-integer validation were added. The default-profile assertion confirms
+TP2. The override test checks command arguments only; it doesn't qualify TP4
+or any other hardware configuration. Existing GPU measurements remain TP2.
 
 Local Markdown paths/anchors passed the documentation scan; `git diff --check`
 passed. Historical `results/`, runtime patches and benchmark fixtures are

@@ -10,14 +10,15 @@ if (( $# != 0 )); then
   exit 1
 fi
 require_settings IMAGE MODEL REVISION HF_CACHE KERNEL_CACHE CONTAINER_NAME \
-  BIND_ADDRESS PORT SERVER_PORT SERVED_MODEL_NAME MAX_MODEL_LEN MAX_NUM_SEQS \
+  BIND_ADDRESS PORT SERVER_PORT SERVED_MODEL_NAME TENSOR_PARALLEL_SIZE MAX_MODEL_LEN MAX_NUM_SEQS \
   MAX_BATCHED_TOKENS LONG_PREFILL_TOKEN_THRESHOLD GPU_MEMORY_UTILIZATION \
   MAX_CUDAGRAPH_CAPTURE_SIZE MAX_JOBS LOGGING_CONFIG DOCKER_LOG_MAX_SIZE \
   DOCKER_LOG_MAX_FILES HEALTH_INTERVAL HEALTH_TIMEOUT_SECONDS HEALTH_START_PERIOD HEALTH_RETRIES
-require_uints PORT SERVER_PORT MAX_MODEL_LEN MAX_NUM_SEQS MAX_BATCHED_TOKENS \
+require_uints PORT SERVER_PORT TENSOR_PARALLEL_SIZE MAX_MODEL_LEN MAX_NUM_SEQS MAX_BATCHED_TOKENS \
   LONG_PREFILL_TOKEN_THRESHOLD MAX_CUDAGRAPH_CAPTURE_SIZE MAX_JOBS MAX_LOG_LEN \
   DOCKER_LOG_MAX_FILES HEALTH_TIMEOUT_SECONDS HEALTH_RETRIES
 require_switches OFFLINE DSPARK EAGER LOG_REQUESTS LOG_OUTPUTS
+[[ "$TENSOR_PARALLEL_SIZE" != 0 ]] || { echo 'TENSOR_PARALLEL_SIZE must be a positive integer.' >&2; exit 1; }
 [[ -f "$LOGGING_CONFIG" ]] || { echo 'LOGGING_CONFIG must name an existing file.' >&2; exit 1; }
 
 [[ "$REVISION" =~ ^[0-9a-f]{40}$ ]] || {
@@ -63,7 +64,7 @@ container_id=$(docker run -d --name "$CONTAINER_NAME" --gpus all --ipc=host \
   --revision "$REVISION" --tokenizer-revision "$REVISION" \
   --trust-remote-code --tokenizer-mode deepseek_v4 \
   --tool-call-parser deepseek_v4 --enable-auto-tool-choice \
-  --reasoning-parser deepseek_v4 --tensor-parallel-size 2 \
+  --reasoning-parser deepseek_v4 --tensor-parallel-size "$TENSOR_PARALLEL_SIZE" \
   --kv-cache-dtype fp8 --block-size 256 --moe-backend flashinfer_cutlass \
   --max-model-len "$MAX_MODEL_LEN" --max-num-seqs "$MAX_NUM_SEQS" \
   --max-num-batched-tokens "$MAX_BATCHED_TOKENS" \
@@ -73,8 +74,8 @@ container_id=$(docker run -d --name "$CONTAINER_NAME" --gpus all --ipc=host \
   "${extra_args[@]}")
 
 printf 'Created %s (%s). Starting; wait for healthy before sending requests.\n' "$CONTAINER_NAME" "$container_id"
-printf 'Config: %s\nImage: %s\nClient base URL: %s/v1\nModel: %s\n' \
-  "$RECIPE_ENV_FILE" "$IMAGE" "$BASE_URL" "$SERVED_MODEL_NAME"
+printf 'Config: %s\nImage: %s\nTensor parallelism: %s\nClient base URL: %s/v1\nModel: %s\n' \
+  "$RECIPE_ENV_FILE" "$IMAGE" "$TENSOR_PARALLEL_SIZE" "$BASE_URL" "$SERVED_MODEL_NAME"
 [[ "$BIND_ADDRESS" != 0.0.0.0 ]] || echo 'For LAN clients, replace 127.0.0.1 with the GPU host address.'
 printf 'Logs:   docker logs --timestamps -f %q\n' "$CONTAINER_NAME"
 printf "Status: docker inspect --format '{{.State.Status}} / {{.State.Health.Status}}' %q\n" "$CONTAINER_NAME"

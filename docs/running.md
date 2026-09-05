@@ -108,7 +108,7 @@ The example binds to loopback and starts with:
 
 | Setting | Default |
 |---|---|
-| Tensor parallelism | 2 |
+| Tensor parallelism | `TENSOR_PARALLEL_SIZE=2` |
 | Model alias | `dsv4-nvfp4` |
 | Maximum model length | 1,000,000 total tokens |
 | GPU memory utilization | 0.96 |
@@ -122,8 +122,11 @@ The example binds to loopback and starts with:
 Change `MAX_MODEL_LEN`, `GPU_MEMORY_UTILIZATION`, `MAX_NUM_SEQS`,
 `MAX_BATCHED_TOKENS` and `LONG_PREFILL_TOKEN_THRESHOLD` in `.env` to compare
 profiles. `DSPARK=0` disables speculation; `EAGER=1` disables CUDA graphs.
-TP2, FP8 KV, parser/backend choices, source and CUDA pins remain fixed in code
-because this recipe validates that combination. K5 is a checkpoint constraint.
+`TENSOR_PARALLEL_SIZE=2` splits model computation across the two GPUs; all
+reported GPU results used TP2. Other values need separate hardware and runtime
+validation. If you copied `.env` before this parameter was added, add that line
+to your existing file. FP8 KV, parser/backend choices, source and CUDA pins
+remain fixed in code. K5 is a checkpoint constraint.
 
 Keep `BIND_ADDRESS=127.0.0.1` for access from the GPU host only. Change it only
 if you understand the exposure and have restricted network access. The host's
