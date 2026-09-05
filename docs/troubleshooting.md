@@ -48,9 +48,10 @@ unchanged.
 The rebuilt `fused_moe_120.so` linked and loaded with `LD_BIND_NOW=1` to check
 symbol resolution. Serving still required a separate test.
 
-Keep the kernel-cache volume so restarts reuse compiled kernels. First startup
-can take minutes. Check worker errors and compiler activity before assuming
-shared-memory timeout messages mean a deadlock.
+Keep the kernel-cache volume so restarts can reuse compiled kernels. For the
+first-start delay and shared-memory wait messages, use the
+[startup checks](running.md#first-launch-and-kernel-cache) to distinguish active
+compilation from a stalled worker.
 
 ## NVFP4 target with MXFP4 DSpark draft
 

@@ -140,14 +140,24 @@ docker stop <old-container-name>
 Replace the placeholder with the name from the list. Keep that container for
 recovery. With the default name in `.env`, launch and follow logs:
 
+**Allow several minutes for the first launch with a new kernel cache.** Kernels
+compile after the weights load. The earlier rehearsal reached readiness in
+about nine minutes, including service shutdown, loading and compilation;
+that isn't a fixed startup time. Keep the `KERNEL_CACHE` volume
+(`dsv4-nvfp4-kernels` by default) so later starts can reuse compiled kernels.
+
 ```bash
 bash serve.sh
 docker logs --timestamps -f dsv4-nvfp4
 ```
 
 The launcher prints your configured client URL, model name, health and stop
-commands. Ctrl-C exits the log viewer and leaves the server running. Wait for
-**Application startup complete** and a healthy status:
+commands. Ctrl-C exits the log viewer and leaves the server running. During
+compilation, GPU activity can be low and VRAM can sit below its final footprint.
+Repeated `No available shared memory broadcast block found in 60 seconds`
+messages can mean workers are still compiling; they don't prove a hang.
+Check [compiler activity](running.md#first-launch-and-kernel-cache) before
+restarting. Wait for **Application startup complete** and a healthy status:
 
 ```bash
 source scripts/config.sh
@@ -162,10 +172,8 @@ Health returns HTTP 200 with an empty body. `/v1/models` lists your served alias
 All 19 short feature checks should pass. These cover tools, reasoning, streaming
 and other APIs; coding accuracy, 1M retrieval and speed need separate tests.
 
-A fresh kernel cache took about nine minutes to readiness in the rehearsal.
-Keep `dsv4-nvfp4-kernels` for later restarts. Some new request shapes can still
-compile kernels. See [startup timings](../tasks/release-readiness/verification.md)
-and [what the logs mean](running.md#logs-and-health).
+The [startup record](../tasks/release-readiness/verification.md) separates the
+first launch from the warmed restart. New request shapes can still need compilation.
 
 ## 5. Connect your coding agent
 

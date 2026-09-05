@@ -1,7 +1,7 @@
 # State
 
 Implemented and locally verified on `recipe/operator-config`. Recovery point:
-`1ed5bfa`. The GPU deployment is untouched; the owner will retest this launcher.
+`1ed5bfa`. The owner's GPU walkthrough is in progress; host checks have been read-only.
 Independent fresh-machine qualification remains open.
 
 Build and serve require `.env` (or `RECIPE_ENV_FILE`) and share `IMAGE`. Missing
@@ -26,6 +26,14 @@ findings were reproduced and fixed. See [verification](verification.md),
 [design](plan.md) and [source findings](research.md).
 
 ## Owner's next test
+
+During the owner's first launch, the new `dsv4-nvfp4-kernels` volume was created
+with the container. Inspection showed active CUDA compiler processes while
+GPU use was low, VRAM was around 85 GiB per card and health was `starting`.
+TP2, 1M context and 96% memory were confirmed in the container arguments.
+The walkthrough now sets this expectation before launch and links to compiler
+checks and cache-reuse guidance. This observation isn't a completed startup
+timing or a new performance result.
 
 The owner reported `No such image` from a manual command after copying `.env`.
 Read-only inspection on the GPU host confirmed `dsv4-nvfp4:recipe` exists

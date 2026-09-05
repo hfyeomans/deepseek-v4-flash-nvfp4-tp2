@@ -93,9 +93,9 @@ docker run --rm --entrypoint bash \
     done'
 ```
 
-These are CPU tests. For the first GPU launch, use a new `KERNEL_CACHE` volume
-to test compilation without existing FlashInfer cache files. Keep it for warmed
-restarts.
+These are CPU tests. Use a new `KERNEL_CACHE` volume to test startup without
+existing FlashInfer cache files. This adds a [compilation delay](#first-launch-and-kernel-cache);
+keep the volume for warmed restarts.
 
 ## Start the server
 
@@ -189,6 +189,36 @@ Stop it after requests finish, set a new `CONTAINER_NAME` in `.env`, then run
 name, save its logs and remove the stopped container with
 `docker rm <container-name>` first; that removes the container and its logs,
 not the named kernel cache or image.
+
+### First launch and kernel cache
+
+A fresh cache adds CPU compilation work after model loading. The GPUs can be
+mostly idle while `nvcc`, `cicc` or `cc1plus` use CPU cores. VRAM may plateau
+before KV-cache and graph allocation; it isn't the final serving footprint yet.
+The engine can print `No available shared memory broadcast block found in 60 seconds`
+while waiting for its workers. That message alone doesn't distinguish compilation
+from a stalled worker.
+
+Check activity without interrupting startup:
+
+```bash
+source scripts/config.sh
+docker top "$CONTAINER_NAME" -eo pid,ppid,comm,pcpu,etime
+docker logs --timestamps --tail 60 "$CONTAINER_NAME"
+docker inspect --format '{{.State.Status}} / {{.State.Health.Status}}' "$CONTAINER_NAME"
+```
+
+Busy compiler processes, changing compiler PIDs or new kernel messages are
+evidence of work. If those stop and startup stays unchanged, inspect errors and
+resource pressure; don't assume every wait message is harmless. Docker can remain
+`starting` during its configured grace period. Wait for application startup and
+`healthy` before using the endpoint.
+
+Keep the named `KERNEL_CACHE` volume to reuse compatible FlashInfer kernels.
+Changing to a new volume name or deleting it loses that reuse. Model loading
+and other initialization still run; new images or request shapes can require
+more compilation. See the [first-launch and restart record](../tasks/release-readiness/verification.md)
+for measured timings and their limits.
 
 ## Recommended coding profile
 
