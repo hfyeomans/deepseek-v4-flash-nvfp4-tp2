@@ -125,10 +125,19 @@ profiles. `DSPARK=0` disables speculation; `EAGER=1` disables CUDA graphs.
 TP2, FP8 KV, parser/backend choices, source and CUDA pins remain fixed in code
 because this recipe validates that combination. K5 is a checkpoint constraint.
 
-For LAN clients, set `BIND_ADDRESS` to the GPU host's LAN IPv4 address. Use
-`http://<gpu-host>:8000/v1` as the client base URL and `SERVED_MODEL_NAME` as the
-model name (default `dsv4-nvfp4`). With loopback binding, use
-`http://127.0.0.1:8000/v1` on the host. `/v1/models` confirms the alias.
+Keep `BIND_ADDRESS=127.0.0.1` for access from the GPU host only. Change it only
+if you understand the exposure and have restricted network access. The host's
+LAN IPv4 address binds the published port to that address; `0.0.0.0` binds it
+to every IPv4 interface. This recipe doesn't configure API authentication:
+any client that can reach the published port can submit requests. Reachability
+depends on routing and firewall rules. Use Docker Engine 28 or newer: older
+versions can expose localhost-published ports to the same network segment.
+See [Docker's port-publishing guidance](https://docs.docker.com/engine/network/port-publishing/).
+
+For LAN clients, use `http://<gpu-host>:8000/v1`, replacing the host and port
+with your settings. `0.0.0.0` is a bind address, not a client destination.
+With loopback binding, use `http://127.0.0.1:8000/v1` on the GPU host. The model
+name is `SERVED_MODEL_NAME` (default `dsv4-nvfp4`); `/v1/models` confirms it.
 
 ## Logs and health
 

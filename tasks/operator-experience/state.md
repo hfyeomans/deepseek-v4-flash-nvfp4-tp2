@@ -8,6 +8,9 @@ Build and serve require `.env` (or `RECIPE_ENV_FILE`) and share `IMAGE`. Missing
 files explain how to copy the example and set parameters. Missing settings
 can't inherit old shell exports. The example uses adjustable 1M/96% defaults,
 stable image/container/cache names and a configurable served model alias.
+The bind default remains `127.0.0.1`. The example and guides now explain that
+using a LAN IP or `0.0.0.0` exposes the unauthenticated API to reachable clients;
+change it only with an understood and restricted network exposure.
 
 Normal logs stay at INFO. Request IDs/parameters, completed output summaries,
 HTTP status and engine stats are visible. Prompt DEBUG is an explicit option.

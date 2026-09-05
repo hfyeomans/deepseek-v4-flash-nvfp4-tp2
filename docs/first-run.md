@@ -49,8 +49,9 @@ cp example.env .env
 Edit `.env` before continuing. It contains the tested everyday profile:
 **1,000,000 tokens, 96% memory, two slots, batch 2,048, prefill cap 1,792 and
 fixed-K5 DSpark**. These are defaults you can change; other values need testing.
-Set `HF_CACHE` to your weight-cache location. For a coding agent on another
-machine, set `BIND_ADDRESS` to the GPU host's LAN IPv4 address.
+Set `HF_CACHE` to your weight-cache location. Keep `BIND_ADDRESS=127.0.0.1`
+for access from this host only. Before enabling access from other machines,
+read [the network exposure guidance](running.md#start-the-server).
 
 Build and serve load `.env` themselves and fail if it's missing. These are
 trusted Bash assignments; file values win over old shell exports. The shared
