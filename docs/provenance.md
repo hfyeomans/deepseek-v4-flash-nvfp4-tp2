@@ -1,10 +1,16 @@
 # Recipe snapshot provenance and rollback
 
-The recipe starts from a clean Git snapshot of the tested serving files and
-recorded acceleration findings. All runtime/build files, patches, benchmark
-clients, fixtures, tests and measured result files retain their original bytes.
-Documentation and repository administration were separated from private research.
-This is a history/publication change, not a new model, runtime or benchmark run.
+The `recipe-1m-k5` tag starts from a clean Git snapshot of the tested serving
+files and recorded acceleration findings. At that tag, runtime/build files,
+patches, benchmark clients, fixtures, tests and results retain their original
+bytes. Documentation and repository administration were separated from research.
+
+The subsequent [release-readiness review](../tasks/release-readiness/review.md)
+hardens benchmark termination, stream diagnostics, report destinations and patch
+direction, and adds onboarding and CPU CI. Historical result JSON, fixture bytes
+and runtime patch contents remain unchanged. Input hashes in old manifests
+refer to the tagged clients, not these later client fixes. New GPU validation is
+recorded [separately](../tasks/release-readiness/verification.md).
 
 ## Reproduce the runtime
 

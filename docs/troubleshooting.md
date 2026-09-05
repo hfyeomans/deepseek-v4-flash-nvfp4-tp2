@@ -94,6 +94,6 @@ HTTPS/IPv4 probe over host networking completed in 0.14 seconds.
 The optional build profile `APT_HTTPS_IPV4=1 BUILD_NETWORK=host` prepares the same
 pinned CUDA parent images with HTTPS URLs for the same Ubuntu repositories and
 forces IPv4 for APT. It does not disable package-signature verification. This
-profile passed the stalled index-fetch stage and proceeded to dependency
-installation; complete public-image acceptance remains pending. The normal
-build profile retains the upstream network configuration.
+profile passed the stalled index-fetch stage, completed the build and passed
+[source-image acceptance](source-image-validation.md). The normal build profile
+retains the upstream network configuration.

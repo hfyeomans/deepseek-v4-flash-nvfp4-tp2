@@ -8,6 +8,7 @@ import os
 import time
 import urllib.error
 import urllib.request
+from contextlib import contextmanager
 from datetime import datetime, timezone
 
 
@@ -44,6 +45,48 @@ class API:
                                   'request': payload, 'response': result})
         require(result['choices'][0]['finish_reason'] != 'length', 'Output truncated')
         return result['choices'][0]['message']
+
+    @contextmanager
+    def stream(self, payload):
+        """Record received evidence and close the response, including early exit."""
+        payload = copy.deepcopy(payload)
+        received = {'events': [], 'lines': [], 'done': False}
+        observation = {'request': payload, 'response': received, 'closed': False}
+        started = time.monotonic()
+        response = None
+        try:
+            with self.request('/v1/chat/completions', payload) as response:
+                def events():
+                    for raw in response:
+                        received['lines'].append(raw.decode(errors='replace'))
+                        line = raw.decode().strip()
+                        if line == 'data: [DONE]':
+                            received['done'] = True
+                            return
+                        if line.startswith('data: '):
+                            event = json.loads(line[6:])
+                            received['events'].append(copy.deepcopy(event))
+                            if 'error' in event:
+                                raise RuntimeError(f"Stream error: {event['error']}")
+                            yield event
+                    require(False, 'Stream ended without [DONE]')
+
+                yield events()
+            observation['status'] = 'complete' if received['done'] else 'cancelled'
+        except Exception as error:
+            observation.update(status='error', error=f'{type(error).__name__}: {error}')
+            if isinstance(error, urllib.error.HTTPError):
+                try:
+                    received['body'] = error.read().decode(errors='replace')
+                finally:
+                    error.close()
+                    observation['closed'] = True
+            raise
+        finally:
+            if response is not None:
+                observation['closed'] = response.closed
+            observation['elapsed_seconds'] = time.monotonic() - started
+            self.observations.append(observation)
 
 
 def user(text):
@@ -167,16 +210,9 @@ def checks(api):
                        temperature=0, max_tokens=64, stream=True,
                        stream_options={'include_usage': True},
                        chat_template_kwargs={'thinking': False})
-        chunks, finish, usage, done = [], None, None, False
-        with api.request('/v1/chat/completions', payload) as response:
-            for raw in response:
-                line = raw.decode().strip()
-                if not line.startswith('data: '):
-                    continue
-                if line == 'data: [DONE]':
-                    done = True
-                    break
-                event = json.loads(line[6:])
+        chunks, finish, usage = [], None, None
+        with api.stream(payload) as events:
+            for event in events:
                 if event.get('usage'):
                     usage = event['usage']
                 for choice in event.get('choices', []):
@@ -186,7 +222,7 @@ def checks(api):
                     chunks.append(delta.get('content') or '')
                     finish = choice.get('finish_reason') or finish
         require(''.join(chunks).strip() == 'STREAM-416', repr(chunks))
-        require(done and finish == 'stop', f'done={done}, finish={finish}')
+        require(finish == 'stop', f'finish={finish}')
         require(usage and usage['completion_tokens'] > 0, 'Missing real token usage')
         return {'content': ''.join(chunks), 'usage': usage}
 
@@ -202,21 +238,15 @@ def checks(api):
                        messages=user('Calculate 17 * 19. Final answer must be only the integer.'),
                        temperature=0, max_tokens=1024, stream=True,
                        chat_template_kwargs={'thinking': True}, reasoning_effort='low')
-        content, reasoning_parts, finish, done = [], [], None, False
-        with api.request('/v1/chat/completions', payload) as response:
-            for raw in response:
-                line = raw.decode().strip()
-                if line == 'data: [DONE]':
-                    done = True
-                    break
-                if not line.startswith('data: '):
-                    continue
-                for choice in json.loads(line[6:]).get('choices', []):
+        content, reasoning_parts, finish = [], [], None
+        with api.stream(payload) as events:
+            for event in events:
+                for choice in event.get('choices', []):
                     finish = choice.get('finish_reason') or finish
                     delta = choice.get('delta', {})
                     content.append(delta.get('content') or '')
                     reasoning_parts.append(delta.get('reasoning') or delta.get('reasoning_content') or '')
-        require(done and finish == 'stop', f'done={done}, finish={finish}')
+        require(finish == 'stop', f'finish={finish}')
         require(''.join(content).strip() == '323', repr(content))
         require(bool(''.join(reasoning_parts).strip()), 'Missing streamed reasoning')
         return {'content': ''.join(content), 'reasoning_characters': len(''.join(reasoning_parts))}
@@ -248,16 +278,10 @@ def checks(api):
                        messages=user('Use lookup_code for record gamma.'), tools=[TOOL],
                        tool_choice='auto', stream=True, temperature=0, max_tokens=256,
                        chat_template_kwargs={'thinking': False})
-        calls, finish, done = {}, None, False
-        with api.request('/v1/chat/completions', payload) as response:
-            for raw in response:
-                line = raw.decode().strip()
-                if line == 'data: [DONE]':
-                    done = True
-                    break
-                if not line.startswith('data: '):
-                    continue
-                for choice in json.loads(line[6:]).get('choices', []):
+        calls, finish = {}, None
+        with api.stream(payload) as events:
+            for event in events:
+                for choice in event.get('choices', []):
                     finish = choice.get('finish_reason') or finish
                     for delta in choice.get('delta', {}).get('tool_calls') or []:
                         call = calls.setdefault(delta['index'], {
@@ -265,7 +289,7 @@ def checks(api):
                         call['id'] += delta.get('id') or ''
                         for key in ('name', 'arguments'):
                             call['function'][key] += delta.get('function', {}).get(key) or ''
-        require(done and finish == 'tool_calls', f'done={done}, finish={finish}')
+        require(finish == 'tool_calls', f'finish={finish}')
         tool_call({'tool_calls': list(calls.values())}, 'gamma')
         return list(calls.values())
 
@@ -274,13 +298,11 @@ def checks(api):
                        temperature=0, max_tokens=1024, stream=True,
                        chat_template_kwargs={'thinking': False})
         received = False
-        with api.request('/v1/chat/completions', payload) as response:
-            for raw in response:
-                if raw.startswith(b'data: {'):
-                    event = json.loads(raw[6:])
-                    if any(choice.get('delta', {}).get('content') for choice in event.get('choices', [])):
-                        received = True
-                        break
+        with api.stream(payload) as events:
+            for event in events:
+                if any(choice.get('delta', {}).get('content') for choice in event.get('choices', [])):
+                    received = True
+                    break
         require(received, 'No generated content before cancellation')
         exact(api.chat(user('Reply with exactly: RECOVERED-832')), 'RECOVERED-832')
 
@@ -329,7 +351,7 @@ def main():
             result = {'check': name, 'status': 'pass', 'detail': detail}
         except Exception as error:
             result = {'check': name, 'status': 'fail', 'error': str(error)}
-            if isinstance(error, urllib.error.HTTPError):
+            if isinstance(error, urllib.error.HTTPError) and not error.closed:
                 result['response'] = error.read().decode(errors='replace')
         result['elapsed_seconds'] = time.monotonic() - started
         results.append(result)

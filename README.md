@@ -13,16 +13,11 @@ broad coding-quality evaluation or proof of two simultaneous 1M requests.
 
 ## Build and use it
 
-Start with [download, build, serve and API instructions](docs/running.md).
-They pin the checkpoint and source, explain prerequisites and include the
-recommended profile commands. After completing those setup steps:
-
-```bash
-CONTAINER_NAME=dsv4-nvfp4-coding \
-MAX_MODEL_LEN=1000000 GPU_MEMORY_UTILIZATION=0.96 \
-MAX_BATCHED_TOKENS=2048 MAX_NUM_SEQS=2 \
-  bash serve.sh --long-prefill-token-threshold 1792
-```
+Start with [your first deployment](docs/first-run.md), an ordered walkthrough
+from machine prerequisites to a working coding/tools endpoint. The
+[full running guide](docs/running.md) adds profile choices and experiments.
+Completing the walkthrough leaves the selected coding/tools profile running;
+you can connect your client immediately.
 
 The generic launcher defaults remain 64K / 95%; use the explicit overrides for
 the selected profile. For tools sharing very long inputs, the secondary profile
@@ -93,6 +88,8 @@ Checkpoint: `f1caa71142bd0be02f728c79f75042ac1e461579`; public-source fork:
 NVFP4; embedded DSpark experts retain MXFP4 and use Marlin. The source-built
 image passed its 13 runtime CPU tests. Local client/profile checks and recorded
 GPU results are separate from those image tests.
+
+For changes, use the [local checks and development workflow](docs/development.md).
 
 This recipe and its findings remain in
 [deepseek-v4-flash-nvfp4-tp2](https://github.com/hfyeomans/deepseek-v4-flash-nvfp4-tp2).

@@ -69,6 +69,8 @@ def main():
                 if not line.startswith('data: '):
                     continue
                 event = json.loads(line[6:])
+                if 'error' in event:
+                    raise RuntimeError(f"Benchmark stream error: {event['error']}")
                 usage = event.get('usage') or usage
                 for choice in event.get('choices', []):
                     delta = choice.get('delta', {})
@@ -76,8 +78,11 @@ def main():
                         first_output = time.monotonic() - start
                     finish = choice.get('finish_reason') or finish
         elapsed = time.monotonic() - start
-        if not done or not usage or usage['completion_tokens'] != args.tokens or first_output is None:
-            raise RuntimeError(f'Incomplete benchmark: done={done}, usage={usage}, first={first_output}')
+        if (not done or not usage or usage['completion_tokens'] != args.tokens
+                or first_output is None or finish != 'length'):
+            raise RuntimeError(
+                f'Incomplete benchmark: done={done}, usage={usage}, '
+                f'first={first_output}, finish={finish}')
         return dict(workload=name, elapsed_seconds=elapsed,
                     cache_salt=cache_salt,
                     first_output_seconds=first_output, usage=usage, finish_reason=finish,

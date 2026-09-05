@@ -16,7 +16,8 @@
 - [x] Complete a fresh public-source build and inspect its runtime dependencies.
 - [x] Run matched baseline/DSpark benchmarks without competing build activity.
 - [x] Restart the source-built candidate and repeat feature acceptance.
-- [ ] Select an interactive default after testing the observed long-prefill tool-latency/headroom tradeoff.
+- [x] Select an interactive default after testing the observed long-prefill tool-latency/headroom tradeoff.
+  See [completed selection](../interactive-latency/state.md).
 - [ ] Review shareable configuration, evidence, attribution, and documentation.
 - [x] Produce the requested [before/after numerical scorecard](../performance-scorecard/plan.md),
   including the progression to 292.9 tok/s aggregate and its comparison limits.
@@ -125,7 +126,7 @@ recorded, and verify zero cache-hit deltas for uncached comparisons.
   the actual outgoing payloads and default behavior. The existing concurrent
   pair remains prose + code, so a long-code override makes it a mixed-length
   pair. Global speculative counters still cover the entire run, not code alone.
-- [ ] Compare tool round trips during long prefill across feasible scheduling
+- [x] Compare tool round trips during long prefill across feasible scheduling
   profiles. Preserve DSpark and API behavior; measure the latency, prefill-speed
   and memory costs before selecting a default.
 - [x] Separate adaptive research and candidate qualification into the

@@ -1,6 +1,8 @@
 # Build, serve, and reproduce the checks
 
 Run these commands from the recipe repository on the Linux GPU host.
+If this is your first deployment, follow the [ordered walkthrough](first-run.md)
+for clone, prerequisite checks, CLI installation and expected results.
 The measured hardware is two RTX PRO 6000 Blackwell Max-Q GPUs at TP=2.
 The tested driver is 610.57.04. The recipe targets SM120 and the pinned preview
 source; it has not been validated on other architectures or a stock vLLM image.
@@ -51,7 +53,9 @@ The resulting image name is `dsv4-nvfp4:recipe`. Defaults use 16 build jobs and
 [the diagnosed compatibility failures](troubleshooting.md).
 
 The completed build's [image digests, dependency versions and CPU results](../results/source-build-provenance.json)
-are recorded separately from the original image. This was a source rebuild on
+are recorded separately from the original image. That JSON preserves the
+build-stage snapshot, whose GPU acceptance was still pending at collection;
+[subsequent GPU acceptance](source-image-validation.md) completed. This was a source rebuild on
 the same host with reusable base/download layers, not a clean-machine test or
 a claim of bit-for-bit reproducibility.
 
@@ -311,8 +315,25 @@ The selected host's exact tested image is also tagged
 that host and is not a registry upload.
 
 After an experiment, let active requests finish and stop its container before
-restoring the saved baseline container. Alternatively, launch from the baseline
-checkout with `IMAGE=dsv4-nvfp4:baseline-1m-k5` and the documented primary-profile
-overrides. Use a fresh container name and retain the previous logs. On another
-machine, build from the Git tag first. Recheck API health after restoration;
-recovering code alone does not prove the running service was rolled back.
+restoring the saved baseline container with `docker start <saved-container>`.
+On the original host, the local image tag above is also available for a new
+container. Keep a distinct name and retain previous logs.
+
+On another host, build an explicitly named recovery image from a separate
+checkout; the default build does not create the original host's baseline tag:
+
+```bash
+git worktree add --detach ../dsv4-recipe-rollback recipe-1m-k5
+cd ../dsv4-recipe-rollback
+FINAL_IMAGE=dsv4-nvfp4:rollback bash build.sh
+# Stop the experimental container after its requests finish, then launch:
+IMAGE=dsv4-nvfp4:rollback CONTAINER_NAME=dsv4-recovery \
+MAX_MODEL_LEN=1000000 GPU_MEMORY_UTILIZATION=0.96 \
+MAX_BATCHED_TOKENS=2048 MAX_NUM_SEQS=2 \
+  bash serve.sh --long-prefill-token-threshold 1792
+```
+
+The pinned checkpoint must still be present in the configured `HF_CACHE`.
+Wait for application startup, check `/health` and `/v1/models`, then rerun
+`verify.py` under a new output filename. Recovering code alone does not prove
+the running service was rolled back.

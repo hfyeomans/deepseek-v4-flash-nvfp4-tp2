@@ -1,4 +1,4 @@
-"""Verify benchmark prompt identity and cache isolation at the HTTP boundary."""
+"""Verify benchmark inputs and stream completion at the HTTP boundary."""
 import hashlib
 import io
 import json
@@ -11,7 +11,7 @@ import benchmark
 
 
 class BenchmarkInputsTest(unittest.TestCase):
-    def run_benchmark(self, directory, extra_args):
+    def run_benchmark(self, directory, extra_args, finish_reason='length', stream_error=None):
         outgoing = []
         output = directory / 'result.json'
 
@@ -22,9 +22,11 @@ class BenchmarkInputsTest(unittest.TestCase):
             outgoing.append(payload)
             events = [
                 {'choices': [{'delta': {'content': 'Synthetic output'}, 'finish_reason': None}]},
-                {'choices': [{'delta': {}, 'finish_reason': 'length'}],
+                {'choices': [{'delta': {}, 'finish_reason': finish_reason}],
                  'usage': {'prompt_tokens': 17, 'completion_tokens': 32}},
             ]
+            if stream_error is not None:
+                events.append({'error': stream_error})
             body = ''.join('data: ' + json.dumps(event) + '\n\n' for event in events)
             return io.BytesIO((body + 'data: [DONE]\n\n').encode())
 
@@ -64,6 +66,29 @@ class BenchmarkInputsTest(unittest.TestCase):
             self.assertTrue(all('cache_salt' not in payload for payload in outgoing))
             self.assertEqual(result['prompts'], benchmark.PROMPTS)
             self.assertEqual(result['settings']['cache_mode'], 'warm-prefix')
+
+    def test_missing_terminal_reason_is_rejected_despite_exact_usage_and_done(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            with self.assertRaisesRegex(RuntimeError, 'Incomplete benchmark'):
+                self.run_benchmark(directory, [], finish_reason=None)
+            self.assertFalse((directory / 'result.json').exists())
+
+    def test_non_length_terminal_reasons_are_rejected(self):
+        for finish_reason in ('stop', 'tool_calls', 'content_filter', 'error'):
+            with self.subTest(finish_reason=finish_reason), tempfile.TemporaryDirectory() as temporary:
+                directory = Path(temporary)
+                with self.assertRaisesRegex(RuntimeError, 'Incomplete benchmark'):
+                    self.run_benchmark(directory, [], finish_reason=finish_reason)
+                self.assertFalse((directory / 'result.json').exists())
+
+    def test_server_error_after_valid_terminal_usage_is_rejected(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            with self.assertRaisesRegex(RuntimeError, 'synthetic backend failure'):
+                self.run_benchmark(directory, [], stream_error={
+                    'message': 'synthetic backend failure', 'type': 'server_error'})
+            self.assertFalse((directory / 'result.json').exists())
 
 
 if __name__ == '__main__':

@@ -254,14 +254,21 @@ def main() -> None:
     files = sorted(cfg.traces.rglob('*.pt.trace.json.gz'))
     if not files:
         parser.error('No copied trace files found')
-    cfg.output_dir.mkdir(parents=True, exist_ok=True)
-    index = []
+    pending = []
+    destinations = set()
     for path in files:
         with gzip.open(path, 'rt') as handle:
             result = analyze_trace(json.load(handle))
         result.update(case=path.parent.name, source=path.name,
                       source_sha256=hashlib.sha256(path.read_bytes()).hexdigest())
         prefix = f"{result['case']}-rank{result['rank']}"
+        if prefix in destinations:
+            parser.error(f'Duplicate trace report destination: {prefix}')
+        destinations.add(prefix)
+        pending.append((prefix, result))
+    cfg.output_dir.mkdir(parents=True, exist_ok=True)
+    index = []
+    for prefix, result in pending:
         (cfg.output_dir / f'{prefix}.json').write_text(json.dumps(result, indent=2) + '\n')
         (cfg.output_dir / f'{prefix}.md').write_text(markdown(result))
         index.append(dict(case=result['case'], rank=result['rank'],

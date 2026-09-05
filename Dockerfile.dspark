@@ -2,14 +2,14 @@
 ARG BASE_IMAGE=dsv4-sm120:kernel-fix
 FROM ${BASE_IMAGE}
 COPY patches/0001-scope-dspark-expert-format.patch /tmp/dspark-format.patch
-RUN patch --batch --fuzz=0 -p1 -d /usr/local/lib/python3.12/dist-packages < /tmp/dspark-format.patch \
+RUN patch --forward --batch --fuzz=0 -p1 -d /usr/local/lib/python3.12/dist-packages < /tmp/dspark-format.patch \
     && rm /tmp/dspark-format.patch
 COPY tests/test_quant_dispatch.py /opt/recipe-tests/test_quant_dispatch.py
 COPY patches/0002-match-0731-reasoning-effort.patch /tmp/reasoning-effort.patch
-RUN patch --batch --fuzz=0 -p1 -d /usr/local/lib/python3.12/dist-packages < /tmp/reasoning-effort.patch \
+RUN patch --forward --batch --fuzz=0 -p1 -d /usr/local/lib/python3.12/dist-packages < /tmp/reasoning-effort.patch \
     && rm /tmp/reasoning-effort.patch
 COPY tests/test_reasoning_encoding.py /opt/recipe-tests/test_reasoning_encoding.py
 COPY patches/0003-verify-draft-weight-coverage.patch /tmp/draft-coverage.patch
-RUN patch --batch --fuzz=0 -p1 -d /usr/local/lib/python3.12/dist-packages < /tmp/draft-coverage.patch \
+RUN patch --forward --batch --fuzz=0 -p1 -d /usr/local/lib/python3.12/dist-packages < /tmp/draft-coverage.patch \
     && rm /tmp/draft-coverage.patch
 COPY tests/test_weight_coverage.py /opt/recipe-tests/test_weight_coverage.py

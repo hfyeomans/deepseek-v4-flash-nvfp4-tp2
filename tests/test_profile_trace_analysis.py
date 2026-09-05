@@ -1,7 +1,14 @@
 """Bounded regressions for trace attribution and overlap accounting."""
+import contextlib
+import gzip
+import io
+import json
+from pathlib import Path
+import tempfile
 import unittest
+from unittest.mock import patch
 
-from experiments.profile_trace_analysis import analyze_trace
+from experiments.profile_trace_analysis import analyze_trace, main
 
 
 def event(category, name, start, duration, pid=7, tid=7, **args):
@@ -109,6 +116,58 @@ class TraceAnalysisTests(unittest.TestCase):
         self.assertEqual(phases['mixed_context_generation']['step_indices'], [0])
         self.assertEqual(phases['generation_only']['step_indices'], [1])
         self.assertEqual(phases['generation_only']['components']['target_forward']['kernels']['sum_ms'], .004)
+
+
+class TraceOutputTests(unittest.TestCase):
+    def write_trace(self, path, rank=0):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with gzip.open(path, 'wt') as output:
+            json.dump(dict(schemaVersion=1, distributedInfo={'rank': rank},
+                           traceEvents=[event('kernel', 'synthetic', 0, 1)]), output)
+
+    def run_analyzer(self, traces, output):
+        argv = ['profile_trace_analysis.py', str(traces), '--output-dir', str(output)]
+        with patch('sys.argv', argv), contextlib.redirect_stdout(io.StringIO()), \
+                contextlib.redirect_stderr(io.StringIO()):
+            main()
+
+    def test_duplicate_case_rank_cannot_replace_existing_outputs(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            traces, output = root / 'traces', root / 'output'
+            self.write_trace(traces / 'case' / 'first.pt.trace.json.gz')
+            self.write_trace(traces / 'case' / 'second.pt.trace.json.gz')
+            output.mkdir()
+            (output / 'case-rank0.json').write_text('retained result')
+            (output / 'index.json').write_text('retained index')
+            before = {path.name: path.read_bytes() for path in output.iterdir()}
+            with self.assertRaises(SystemExit) as error:
+                self.run_analyzer(traces, output)
+            self.assertNotEqual(error.exception.code, 0)
+            self.assertEqual({path.name: path.read_bytes() for path in output.iterdir()}, before)
+
+    def test_equal_case_names_in_different_directories_fail_before_output_creation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            traces, output = root / 'traces', root / 'output'
+            self.write_trace(traces / 'run1' / 'case' / 'one.pt.trace.json.gz')
+            self.write_trace(traces / 'run2' / 'case' / 'two.pt.trace.json.gz')
+            with self.assertRaises(SystemExit) as error:
+                self.run_analyzer(traces, output)
+            self.assertNotEqual(error.exception.code, 0)
+            self.assertFalse(output.exists())
+
+    def test_distinct_ranks_keep_separate_reports(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            traces, output = root / 'traces', root / 'output'
+            self.write_trace(traces / 'case' / 'rank0.pt.trace.json.gz', rank=0)
+            self.write_trace(traces / 'case' / 'rank1.pt.trace.json.gz', rank=1)
+            self.run_analyzer(traces, output)
+            index = json.loads((output / 'index.json').read_text())
+            self.assertEqual({item['rank'] for item in index}, {0, 1})
+            self.assertEqual(len(list(output.glob('case-rank*.json'))), 2)
+            self.assertEqual(len(list(output.glob('case-rank*.md'))), 2)
 
 
 if __name__ == '__main__':
