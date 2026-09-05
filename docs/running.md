@@ -18,6 +18,7 @@ Run commands in Bash. Copy [example.env](../example.env) to `.env`, then edit
 it for your host. Build and serve require that file and use the same `IMAGE`.
 The example contains the selected 1M/96% profile. File assignments win over
 ambient shell exports; change `.env` instead of adding inline launch overrides.
+Copying the file or running `build.sh` doesn't set variables in your terminal.
 Source the loader for manual download, Docker and benchmark commands:
 
 ```bash

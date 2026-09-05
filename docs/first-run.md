@@ -76,8 +76,19 @@ manual commands. [Alternate config files](running.md#configuration) work too.
 ## 3. Build and check the image
 
 ```bash
-bash build.sh > results/raw/build.log 2>&1
-docker image inspect "$IMAGE" --format '{{.Id}}'
+source scripts/config.sh
+mkdir -p results/raw
+bash build.sh > results/raw/build.log 2>&1 &&
+  docker image inspect "${IMAGE:?Load scripts/config.sh first}" --format '{{.Id}}'
+```
+
+Copying `.env` doesn't load it into your terminal. `build.sh` loads it in its
+own process, so source the loader above before using variables in manual
+commands. To inspect an image you've already built, skip the build and run:
+
+```bash
+source scripts/config.sh
+docker image inspect "${IMAGE:?Load scripts/config.sh first}" --format '{{.Id}}'
 ```
 
 Wait for a successful build exit. In another terminal, `tail -f
@@ -100,6 +111,7 @@ alone isn't a failed build; retain the log and check the final exit status.
 Check the patches and checkpoint metadata inside the image before loading GPUs:
 
 ```bash
+source scripts/config.sh
 CHECK_MODEL_DIR="/root/.cache/huggingface/hub/models--nvidia--DeepSeek-V4-Flash-0731-NVFP4/snapshots/$REVISION"
 docker run --rm --entrypoint bash \
   -e HF_HUB_OFFLINE=1 -e CUDA_VISIBLE_DEVICES=-1 \

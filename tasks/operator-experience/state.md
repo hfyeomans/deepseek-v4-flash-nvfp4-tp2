@@ -27,6 +27,13 @@ findings were reproduced and fixed. See [verification](verification.md),
 
 ## Owner's next test
 
+The owner reported `No such image` from a manual command after copying `.env`.
+Read-only inspection on the GPU host confirmed `dsv4-nvfp4:recipe` exists
+(`07e2c6886e38`) and direct inspection succeeds. An unset or stale interactive
+`IMAGE` value is consistent with the error; that terminal's value wasn't observed.
+The walkthrough now sources config in each image-check block and guards against
+an empty image name. No rebuild, retag or container change was needed.
+
 Follow [the updated walkthrough](../../docs/first-run.md). Reuse/retag the
 existing pinned patched image if its build succeeded; no Dockerfile or runtime
 patch changed here. Check startup to healthy, normal INFO request/completion
