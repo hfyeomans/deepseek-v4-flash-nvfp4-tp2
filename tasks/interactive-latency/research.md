@@ -9,6 +9,6 @@ was observed; serving free memory reached 507/472 MiB. See
 fresh prefixes, and checks retrieval. `verify.py` has an automatic tool check.
 Reuse them through a probe option and keep the default reply.
 
-Smaller chunks may improve tools while slowing prefill. Lower batch/utilization
-may improve serving headroom; preparation pressure needs separate checks. Keep
-K5, Markov, precision and target graphs unchanged.
+Smaller chunks may help tools respond while slowing the long input. Lower
+batch/utilization may add serving headroom. Test preparation pressure separately
+and keep K5, Markov, precision and target graphs unchanged.

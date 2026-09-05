@@ -1,10 +1,10 @@
 # Fixed-K5 acceleration measurement protocol
 
-The primary DSpark controls and diagnostic profiles are complete. This is the
-protocol behind their acceleration measurements. Commit `e25dba7` and tag
-`baseline-1m-k5` refer to the private development archive; see
-[provenance](provenance.md). The clean checkpoint is `recipe-1m-k5`. The selected
-profile stayed unchanged after testing.
+We needed a DSpark comparison at the settings we'd actually use. These primary
+controls and diagnostic profiles are complete. Commit `e25dba7` and tag
+`baseline-1m-k5` belong to the private development archive; see
+[provenance](provenance.md). Use `recipe-1m-k5` for the clean recipe. Testing
+finished with the selected service restored.
 
 See [control results](primary-control-screen.md) and
 [component profiles](component-profiling.md). The restored primary service
@@ -24,12 +24,12 @@ measured 48K code request, plus the long-code client's other workloads and
 mixed C2 pair. It also retained one warmup and one measured 262K/tool probe.
 Each mode therefore has three measured C1 observations per workload, three
 short C2 pairs and three mixed probes. This is smaller than the five-block
-finalist protocol and cannot estimate p95.
+finalist protocol and can't estimate p95.
 
-C1 warmups did not separately warm C2. Keep all three C2 trials and their
-onset variation. Finalist tests need C2 warmups, separate cold/warm records,
-clock/throttling telemetry and more consistent thermal/cache history. The first
-on container started cooler with resident KV.
+The screen missed a separate C2 warmup. Keep its three trials and onset
+variation. Before choosing a finalist, warm C2 explicitly, separate cold/warm
+results and record clocks/throttling. Keep thermal/cache history more consistent
+too: the first on container started cooler with resident KV.
 
 Use matched versions of `benchmark.py`, `mixed_probe.py`, `verify.py` and frozen
 `benchmarks/prompts/code-48k.txt`. Benchmarks use fresh salts, temperature 0,
@@ -46,8 +46,8 @@ restore the original primary container.
 ## Diagnostic component profiles
 
 Profiling is separate diagnostic traffic. Kernel sums, CPU time and overlapping
-request durations cannot be added into an uninstrumented critical path or
-adaptive speedup estimate. Fixed-mode API timings cannot calibrate the unused
+request durations can't be added into an uninstrumented critical path or
+adaptive speedup estimate. Fixed-mode API timings can't calibrate the unused
 confidence head.
 
 The [manifest](../benchmarks/optimization-manifest.json) pins historical client

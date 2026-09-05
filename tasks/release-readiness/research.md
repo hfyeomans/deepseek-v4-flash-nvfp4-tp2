@@ -24,5 +24,5 @@ This fixes four missing record paths without another request owner or forwarding
 layer. Regressions cover duplicate dispatch, cancellation and partial evidence;
 revert the boundary if those break.
 
-Profiler destinations are checked before writes; valid output formats stay
-unchanged. Frozen baselines and historical results are deliberate evidence.
+Check profiler destinations before writing. Valid reports keep their formats.
+Frozen baselines and old results stay because they explain what we measured.

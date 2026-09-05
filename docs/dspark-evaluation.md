@@ -1,8 +1,8 @@
 # Is DSpark helping this deployment?
 
-Check that DSpark drafts and accepts tokens, then measure whether it speeds up
-your workload. Acceptance counters confirm activity; speed and correctness
-need their own tests.
+We wanted to know whether DSpark was doing useful work. First check loading
+and accepted tokens. Then compare speed and outputs with DSpark disabled.
+An acceptance counter going up only answers the first part.
 
 ## Evidence already obtained
 
@@ -10,7 +10,7 @@ The matched short-input test measured **95.5 output tok/s with graphs alone**
 and **174–209 with DSpark**, a **1.8–2.2x** gain. Two-request aggregate rate rose
 from 168.6 to 292.9 tok/s. Inputs were 30–41 tokens with 256-token outputs, and
 the source build was stopped. See [settings and results](performance.md); these
-measurements do not describe long-input speed.
+measurements don't describe long-input speed.
 
 Both ranks verified 4,608 expert sources, 99 non-expert sources and 99 parameter
 bindings. Accepted-token counters increased during generation. Synthetic
@@ -35,14 +35,14 @@ parallelism, seven draft positions and a different checkpoint. It shows workload
 dependence, not a target for this TP2 recipe.
 [NVIDIA preview results](https://huggingface.co/nvidia/DeepSeek-V4-Flash-nvfp4-DSpark#speculative-decoding-evaluation).
 
-The 0731 NVFP4 checkpoint retains DSpark heads, but NVIDIA did not test
+The 0731 NVFP4 checkpoint retains DSpark heads, but NVIDIA didn't test
 speculative decoding for that release. We therefore needed checkpoint-specific
 checks. See the [model card](https://huggingface.co/nvidia/DeepSeek-V4-Flash-0731-NVFP4#usage).
 
 ## Paper, current documentation, and our pinned engine
 
 The August 4 V1 proposer uses fixed-block verification. It loads the confidence
-head but does not call it to select variable prefixes. Our profile uses
+head but doesn't call it to select variable prefixes. Our profile uses
 **five draft tokens** with probabilistic sampling. See the
 [pinned proposer](https://github.com/jasl/vllm/blob/0f59188db1504b042ce621842bdde6c0fe862df6/vllm/v1/spec_decode/dspark.py#L213).
 
@@ -58,13 +58,13 @@ head but does not call it to select variable prefixes. Our profile uses
 | Experimental DSpark draft-forward graph | Available in the pinned fork, disabled and not GPU-validated here |
 | Fused Markov sampling optimization | Enabled by default, with request-dependent fallbacks; temperature-zero requests use the greedy path |
 
-Confidence scheduling was already absent before memory tuning. Marlin keeps
-Markov correction and target verification. Draft experts retain native MXFP4;
-target routed experts remain NVFP4.
+We didn't lose confidence scheduling through memory tuning; this source never
+used it. Switching the draft to Marlin keeps Markov correction and target
+verification. Draft experts stay MXFP4 and target routed experts stay NVFP4.
 
 Fixed verification may spend work on weak suffixes; that cost is unmeasured
-here. The generic batch-size table cannot replace confidence scheduling: it
-does not read confidence, changes full graphs to PIECEWISE and allows values
+here. The generic batch-size table can't replace confidence scheduling: it
+doesn't read confidence, changes full graphs to PIECEWISE and allows values
 below the checkpoint's validated five-token layout. See
 [Markov sampling](https://github.com/jasl/vllm/blob/0f59188db1504b042ce621842bdde6c0fe862df6/vllm/v1/spec_decode/dspark_sampling.py#L182)
 and [dynamic graph behavior](https://github.com/jasl/vllm/blob/0f59188db1504b042ce621842bdde6c0fe862df6/vllm/config/vllm.py#L902).
@@ -78,7 +78,7 @@ outside that graph. TP2/Marlin correctness, memory, recovery and speed remain
 untested. See the [draft graph wrapper](https://github.com/jasl/vllm/blob/0f59188db1504b042ce621842bdde6c0fe862df6/vllm/v1/spec_decode/dspark.py#L28).
 
 Later vLLM documentation describes adaptive verification with confidence and
-profiled graph costs, subject to attention-backend requirements. It does not
+profiled graph costs, subject to attention-backend requirements. It doesn't
 establish compatibility with this pinned SM120 build, mixed quantization or
 Marlin. Qualify a separate candidate before adding the feature.
 [Adaptive documentation](https://docs.vllm.ai/en/latest/features/speculative_decoding/adaptive_verification/).
@@ -98,20 +98,20 @@ changed to make a mode fit.
 | One versus two active requests | Per-request latency, aggregate throughput, acceptance, queueing and preemptions |
 | Short request during long prefill | Independent-client latency and correctness, server activity before/after, long-request cost |
 
-Keep accepted/proposed fraction separate from tokens advanced per round. Save
-raw and per-position counters. A weak suffix suggests something to investigate;
-it does not prove DSpark-off would be faster.
+Save raw and per-position counts so you can tell accepted/proposed fraction
+from advancement per round. A weak suffix is worth investigating. It doesn't
+tell you that turning DSpark off will be faster.
 
-Random tokens test memory and scheduling. Their acceptance does not predict
+Random tokens test memory and scheduling. Their acceptance doesn't predict
 natural coding workloads or code quality.
 
 Count actual output tokens; one streamed event may contain several. Use the
 independent mixed-load client because the pinned benchmark shares connections
 with its probes. The [measurement audit](benchmark-measurement.md) explains why.
 
-Choose the default for working APIs, interactive latency and memory headroom.
-Measure both short decode and prefill-heavy inputs: an acceptance rate or large
-window alone cannot choose the fastest useful profile.
+I'd choose on working APIs, interactive response and enough memory headroom.
+Keep both short-decode and prefill-heavy results visible. That tells readers
+where DSpark pays off and where input processing still dominates.
 
 The [primary control report](primary-control-screen.md) applies this method.
 [K5 metrics](dspark-k-and-verification.md) explain configuration and acceptance

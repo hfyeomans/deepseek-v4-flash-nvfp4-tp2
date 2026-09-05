@@ -1,13 +1,14 @@
 # Choosing context and batch size from measurements
 
-Reducing context may free enough memory for faster prefill or more concurrent
-work. This plan tests that tradeoff alongside the original 801,000- and
-1,000,000-token goals. Keep failed configurations in the results too.
+We wanted to find out whether giving up context would buy enough speed or
+concurrency to be worthwhile. This plan compares smaller windows alongside
+the original 801,000- and 1,000,000-token goals. Failed attempts stay in the
+results because they help explain the limits.
 
-For **interactive coding and tools, with occasional long inputs**, prioritize
-first output, completion and tool latency during prefill. A 1M window with
-smaller chunks may serve this workload better than a smaller window with
-higher aggregate throughput.
+For everyday coding and tools, I care about the wait before output and whether
+a tool can respond while a large input is processing. Aggregate throughput
+alone won't choose that profile. A 1M window with smaller prefill chunks may
+be the better tradeoff.
 
 ## Three different settings
 
@@ -29,7 +30,7 @@ request for each setting.
 
 These are **conservative KV admission requirements per GPU** for the pinned
 model/source, K5 DSpark, asynchronous scheduling, FP8 KV, block 256 and two slots.
-Weights and other allocations are additional. The table does not predict free
+Weights and other allocations are additional. The table doesn't predict free
 memory or speed.
 
 | Total context limit | Batch 2,048 | Batch 2,560 | Batch 4,096 | Batch 6,144 | Batch 8,192 |
@@ -49,18 +50,18 @@ required_bytes = (ceil(context_limit / 256) + 13 * batch_tokens / 16 + 26)
 Context charges for history; batch charges cover compression and sliding-window
 workspaces for two in-flight asynchronous batches. The stride is padded for
 admission; actual packed allocation uses another stride. This model-specific
-formula cannot be used as generic KV bytes/token, and TP=2 pools are not
+formula can't be used as generic KV bytes/token, and TP=2 pools aren't
 additive. See [memory details](context-memory.md) and
 [admission code](https://github.com/jasl/vllm/blob/0f59188db1504b042ce621842bdde6c0fe862df6/vllm/v1/core/kv_cache_utils.py).
 
-Dropping 1M to 801K saves **0.797 GiB** in admission, while doubling batch 2,048
-to 4,096 costs **1.704 GiB**. That context reduction alone cannot cover the batch
-increase. At 524,288, batch 4,096 is more plausible; speed still needs measuring.
+Dropping from 1M to 801K saves **0.797 GiB** in admission. Doubling batch 2,048
+to 4,096 costs **1.704 GiB**. The savings don't cover the increase. At 524,288,
+batch 4,096 is more plausible, but we still have to measure its speed.
 
 ## Bounded test matrix
 
 This initial candidate matrix requires startup profiling. The later pilot
-results appear below; inclusion here is not a recommendation.
+results appear below; inclusion here isn't a recommendation.
 
 | Context | Batch | Long-prefill cap | Purpose |
 |---|---:|---:|---|
@@ -74,10 +75,10 @@ results appear below; inclusion here is not a recommendation.
 K5 with two slots reserves eight tokens from the nominal batch. These caps
 leave 248 scheduled tokens for other work, even when the long request is
 alone. Record the cap with timings. Two long requests can still fill both
-slots, so this does not guarantee priority for short work.
+slots, so this doesn't guarantee priority for short work.
 
 Match memory utilization where possible. Label any changed budget or startup
-failure so a comparison does not imply that only batch size changed.
+failure so a comparison doesn't imply that only batch size changed.
 
 ## Workloads and metrics
 
@@ -97,14 +98,14 @@ repeats alongside medians.
 | Proposed/accepted draft tokens | Is DSpark still active, and how does acceptance change? |
 | Retrieval, reasoning, tools and structured output checks | Do the tested features still work? |
 
-Save individual probe latencies; two samples cannot establish p50/p95 stability.
-Isolate prefill requests or attribute work per request, since mixed global
-counters include every call.
+Keep individual probe times. Two samples can't tell you reliable p50/p95
+latency. For prefill timing, isolate the request or measure its work separately;
+global counters in a mixed test include everything.
 
-TTFT measures the initial wait, including queueing and input processing. Decode
-time/token measures generation afterward. Aggregate output throughput divides
-all output tokens by the full run time. A long input can therefore have low
-end-to-end throughput despite fast generation once output starts.
+TTFT is how long you wait for output, including queueing and input processing.
+Decode time/token describes generation afterward. Aggregate output rate uses
+the whole run, so a long prompt can pull that rate down even when generation
+is fast. Report both to show where the time went.
 
 DSpark can stream several tokens per event. Event gaps describe display cadence;
 use actual completion-token counts and the relevant elapsed time for throughput.
@@ -119,8 +120,8 @@ A shorter window rejects longer conversations and leaves less output room.
 Fitting requests keep the same model precision, DSpark, graphs, reasoning, tools
 and structured output. Recheck those features on the chosen profile.
 
-A larger batch may speed prefill while using more temporary memory and making
-steps longer. Measure that tradeoff before choosing everyday and bulk-input
+A larger batch may speed prefill but use more memory and delay other work
+with longer steps. Measure both effects before picking everyday and bulk-input
 profiles.
 
 Current observations and their limitations are in [performance.md](performance.md).
@@ -164,15 +165,15 @@ docker cp "$CONTAINER_NAME:/tmp/$LABEL.json" "results/raw/$LABEL.json"
 Warm C1 and C2 separately with another seed and distinct labels. For measured
 repeats, use the same seed list, such as 101 and 102, across configurations.
 Assign a fresh `CACHE_SALT` each invocation: it separates keys without changing
-prompt tokens, but does not purge old entries or stop reuse within a run.
-Record it explicitly because `--extra-body` is not saved. Check actual usage
+prompt tokens, but doesn't purge old entries or stop reuse within a run.
+Record it explicitly because `--extra-body` isn't saved. Check actual usage
 against server counters and verify hit deltas. Set `CONCURRENCY` to 2 for the
 paired case, with a new label/salt and matched seed.
 
 Use [the independent mixed probe](../mixed_probe.py) with server activity
 observations. The built-in probes share a pool capped at `max_concurrency`;
 with one connection, they wait behind the long response in the client. Their
-serial loop also pauses after each response. Those timings cannot establish
+serial loop also pauses after each response. Those timings can't establish
 server responsiveness. See [the audit](benchmark-measurement.md).
 
 Save `/metrics` before/after each run, sample GPU memory and retain exact

@@ -1,7 +1,8 @@
 # Performance scorecard state
 
-Historical progression, source-image controls, selected coding profile and
-matched primary DSpark results are documented. Adaptive ROI is unmeasured.
+The scorecard covers historical progression, source-image controls, the
+selected coding profile and matched primary DSpark results. We haven't
+measured adaptive ROI.
 
 The primary comparison records 93.66→200.64 tok/s short code, 164.59→226.03
 aggregate, and 11.983→8.790 seconds for 48K code. Tools took 18.881→5.212 seconds
@@ -10,7 +11,7 @@ the missing C2 warmup and onset variation documented. See the
 [control report](../../docs/primary-control-screen.md).
 
 [Profiling](../../docs/component-profiling.md) is complete; the restored service
-passed 19 APIs. The [private project](../../docs/repository-boundaries.md) owns
+passed 19 API checks. The [private project](../../docs/repository-boundaries.md) owns
 adaptive implementation and ROI. Shared metrics explain acceleration here.
 
 The [scorecard](../../docs/performance-scorecard.md) reconciles eager, graphs

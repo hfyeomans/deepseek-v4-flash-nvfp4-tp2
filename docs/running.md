@@ -1,10 +1,11 @@
 # Build, serve, and reproduce the checks
 
-Run these commands from the recipe directory on the Linux GPU host. First-time
-users should start with the [deployment walkthrough](first-run.md). We tested
-two RTX PRO 6000 Blackwell Max-Q GPUs at TP=2 with driver 610.57.04. This recipe
-targets SM120 and pinned preview source; other architectures and stock vLLM
-images are untested.
+Use this guide to run the tested profiles and repeat the measurements. If
+you're deploying for the first time, start with the
+[walkthrough](first-run.md). Run commands from the recipe directory on the
+Linux GPU host. The tested pair is RTX PRO 6000 Blackwell Max-Q at TP=2 with
+driver 610.57.04. Other architectures and stock vLLM images haven't been
+qualified for this SM120 recipe.
 
 The patched preview and public-source rebuild passed their recorded checks.
 The rebuild passed 13 CPU methods, 19 LAN API checks and near-1M retrieval.
@@ -51,7 +52,7 @@ and 8 NVCC threads with `BUILD_JOBS` and `NVCC_THREADS`. See
 The [build record](../results/source-build-provenance.json) contains image
 digests, dependencies and CPU results. GPU acceptance was pending when that
 record was saved; [later tests passed](source-image-validation.md). This build
-reused base/download layers on the existing host. It does not establish a
+reused base/download layers on the existing host. It doesn't establish a
 fresh-machine build or bit-for-bit reproducibility.
 
 Run the 13 CPU regression methods against the pinned checkpoint metadata:
@@ -109,9 +110,10 @@ Use `http://<gpu-host>:8000/v1` as the OpenAI-compatible base URL and
 
 ## Recommended coding profile
 
-For everyday coding with occasional long inputs on the tested two-GPU host,
-use these overrides. Stop the earlier recipe container and use a new name to
-keep its logs. The launcher defaults remain 64K at 95%.
+I'd start everyday coding with these settings. They keep the long-input option
+without taking the larger batch's memory cost. Stop the earlier recipe
+container and use a new name to keep its logs. The launcher itself still
+defaults to 64K at 95%.
 
 ```bash
 CONTAINER_NAME=dsv4-nvfp4-coding \
@@ -120,13 +122,14 @@ MAX_BATCHED_TOKENS=2048 MAX_NUM_SEQS=2 \
   bash serve.sh --long-prefill-token-threshold 1792
 ```
 
-This profile passed near-1M retrieval, concurrent tools, a warmed restart and
-19 subsequent LAN API checks. The cap limits prefill work per scheduling step
-while keeping the 1M window. The 48K coding fixture took a median 8.906 seconds;
-one tool roundtrip during near-1M prefill took 32.035 seconds.
+The prefill cap limits how much of a long input gets processed per scheduling
+step; it doesn't shorten the 1M window. This profile passed near-1M retrieval,
+concurrent tools, a warmed restart and 19 LAN checks. The 48K coding fixture
+took a median 8.906 seconds. One tool roundtrip during near-1M prefill took
+32.035 seconds, so leave time for very large inputs.
 
-If tool responsiveness during background prefill matters more, choose cap 512
-instead, after stopping the active recipe container:
+If you care more about tools responding during background prefill, try cap 512.
+Stop the active recipe container first:
 
 ```bash
 CONTAINER_NAME=dsv4-nvfp4-concurrent-tools \
@@ -219,7 +222,7 @@ The 1M experiment uses `MAX_MODEL_LEN=1000000`,
 preview passed 998,847-token retrieval and 19 follow-up API checks; 95% failed
 startup admission. The source rebuild passed at 96.5% with the larger batch
 below and at 96% with both recommended caps. Probes reserve output space within
-the window and report actual token counts. These single requests do not test
+the window and report actual token counts. These single requests don't test
 two full windows or broad retrieval accuracy.
 
 The initial source-built 1M candidate used the following overrides, after stopping the
@@ -234,13 +237,13 @@ MAX_BATCHED_TOKENS=2560 \
 
 This earlier candidate passed retrieval and short API checks. A concurrent
 tool roundtrip took 37.9 seconds, and sampled serving free memory fell to
-507/472 MiB. It is not the selected default. See the
+507/472 MiB. It's not the selected default. See the
 [source-image report](source-image-validation.md).
 
-Save each attempt's launch settings, startup logs, actual token counts, outputs
-and timings. Separate first-use compilation and competing builds from warmed
-measurements. Startup's cache-token count is arithmetic; the
-[memory guide](context-memory.md) explains it.
+Save settings, logs, actual tokens, outputs and timings for every attempt,
+including failures. Separate first-use compilation and competing builds from
+warmed measurements. Read the [memory guide](context-memory.md) before treating
+startup's calculated cache-token count as a limit.
 
 ## Check responsiveness during a long input
 
@@ -275,7 +278,7 @@ must be correct, and the short response must finish at least one second before
 the long call returns. If the long request finishes before the probe, the result
 is inconclusive. Output retains failures, call boundaries, prefixes and raw
 requests. Use server metrics to confirm admission and prefill activity; client
-overlap alone cannot show them.
+overlap alone can't show them.
 
 An uncapped 97% profile timed out a short request after 180 seconds.
 `MAX_BATCHED_TOKENS=2560` with `--long-prefill-token-threshold 2304` then passed
@@ -292,7 +295,7 @@ Tag `recipe-1m-k5` preserves the tested source/build/launch files. Use a separat
 checkout for recovery. The original `baseline-1m-k5` Git tag remains in the
 private adaptive archive; see [historical provenance](provenance.md). On the
 original host, image tag `dsv4-nvfp4:baseline-1m-k5` also preserves the tested
-image. Its [identity is recorded](provenance.md); it has not been uploaded to
+image. Its [identity is recorded](provenance.md); it hasn't been uploaded to
 a registry.
 
 Let experiment requests finish, stop its container, then restore the saved
@@ -300,7 +303,7 @@ container with `docker start <saved-container>`. On the original host, you can
 also launch the local baseline image under a new name. Retain previous logs.
 
 On another host, build an explicitly named recovery image from a separate
-checkout; the default build does not create the original host's baseline tag:
+checkout; the default build doesn't create the original host's baseline tag:
 
 ```bash
 git worktree add --detach ../dsv4-recipe-rollback recipe-1m-k5
@@ -313,6 +316,6 @@ MAX_BATCHED_TOKENS=2048 MAX_NUM_SEQS=2 \
   bash serve.sh --long-prefill-token-threshold 1792
 ```
 
-Keep the pinned checkpoint in `HF_CACHE`. After startup, check `/health` and
-`/v1/models`, then rerun `verify.py` with a new output filename to confirm the
-restored service works.
+Keep the checkpoint in `HF_CACHE`. After startup, check `/health` and
+`/v1/models`, then run `verify.py` with a new output filename. That's how you
+confirm the restored service works.

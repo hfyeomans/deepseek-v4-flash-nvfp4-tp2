@@ -1,17 +1,16 @@
 # Critical evaluation of 97% GPU memory utilization
 
-97% passed startup, 19 API checks and near-1M retrieval with DSpark and CUDA
-graphs. It did not solve tool responsiveness: a short request timed out behind
-uncapped prefill. At 96% and 97%, retrieval recovered all three facts from
-998,847 prompt tokens, with probe times of 509.7 and 508.1 seconds respectively.
-The 96% run also passed 19 follow-up checks. These unmatched timings do not
-establish a speed benefit from the extra memory budget.
+I wanted to challenge whether 97% would buy us anything useful. It passed
+startup, 19 API checks and near-1M retrieval with DSpark and graphs, but a short
+request still timed out behind uncapped prefill. Both 96% and 97% recovered
+three facts from 998,847 tokens in 509.7 and 508.1 seconds respectively; 96%
+also passed 19 follow-up checks. Those unmatched timings don't establish a gain.
 
 ## What the percentage controls
 
 `request_memory` multiplies CUDA-visible memory by `gpu_memory_utilization`.
 The worker subtracts profiled non-KV allocations and estimated graph memory
-to size the KV pool. This startup budget is not a driver-enforced allocation
+to size the KV pool. This startup budget isn't a driver-enforced allocation
 ceiling.
 
 Sources: [requested-memory calculation](https://github.com/jasl/vllm/blob/0f59188db1504b042ce621842bdde6c0fe862df6/vllm/v1/worker/utils.py#L433),
@@ -19,7 +18,7 @@ Sources: [requested-memory calculation](https://github.com/jasl/vllm/blob/0f5918
 
 Each GPU reports about 95.01 GiB CUDA-visible memory. Moving from 96% to 97%
 adds **0.95 GiB / 973 MiB per GPU** if the profile stays unchanged. TP requires
-both ranks' pools; their budgets are not independently additive.
+both ranks' pools; their budgets aren't independently additive.
 
 ## Evidence for and against 97%
 
@@ -36,12 +35,12 @@ These snapshots can miss peaks. Driver-reserved memory explains the difference
 between used-plus-free and displayed total; allocator reservations may be
 reclaimable. The later 97% startup passed with **347/312 MiB minimum sampled
 free memory**, followed by 19 API checks and near-1M retrieval. A separate
-mixed probe timed out after 180 seconds. More cache did not fix scheduling.
+mixed probe timed out after 180 seconds. More cache didn't fix scheduling.
 See [startup/API evidence](../results/dspark-1m-97-startup-api.json).
 
 After warmup, the 96% log recommends 5.68 GiB KV but reports 5.93 GiB allocated.
 The recommendation includes a 150 MiB buffer for profiling underestimates.
-Likewise, 97% does not guarantee 3% free at runtime.
+Likewise, 97% doesn't guarantee 3% free at runtime.
 
 ## Feature and performance consequences
 
@@ -49,7 +48,7 @@ Raising the percentage trades headroom for KV capacity. DSpark's five proposals,
 model/KV precision, graphs, reasoning, tools, structured output, streaming and
 prefix caching remain enabled.
 
-It does not raise `max_model_len` or add sequence slots. Prompt, reasoning,
+It doesn't raise `max_model_len` or add sequence slots. Prompt, reasoning,
 tool history and output still share the same token limit. Extra KV alone
 promises no single-request speed gain.
 
@@ -63,10 +62,10 @@ The 97% experiment retained these features.
 
 ## How to choose the fastest practical profile
 
-Measure first output, generation and aggregate throughput separately. Prefer
-the lower percentage when the same workload fits and runs equally well. Raise
-it when extra cache or a larger batch measurably helps without startup or
-inference failures.
+I'd use the lowest budget that fits the workload and delivers the measured
+performance we need. Extra KV earns its memory cost when it enables useful
+capacity or a faster batch. Check first output, generation and aggregate
+throughput separately, including startup and inference failures.
 
 Hold revision, quantization, DSpark, graphs and workloads fixed. Stop competing
 builds. Warm kernels, then reset or separate prefixes for uncached tests. Check
@@ -98,7 +97,7 @@ are recorded separately.
 
 Both batch 2560 launches reported **1–2 MiB free** during draft preparation,
 before KV profiling. Sampled minima of 111/76 MiB at 97% and 19/36 MiB at
-96.5% caught different phases and cannot rank true startup minima.
+96.5% caught different phases and can't rank true startup minima.
 
 At the same batch/cap, 96.5% reduced the packed KV pool by **486.5 MiB per GPU**
 versus 97%. Post-ready sampled free memory rose from 1,395/1,360 to
@@ -110,10 +109,10 @@ Later 128K-input/512-output C1/C2 pilots at 96.5% sampled only 587/552 MiB
 free. Output length, request mix and warm allocations can make a shorter
 request use more memory. See [pilot measurements](../results/context-batch-pilot.json).
 
-Weights are prepared before KV sizing. Utilization cannot cap those earlier
+Weights are prepared before KV sizing. Utilization can't cap those earlier
 allocations. Logs identify the phase but lack stacks needed to identify the
 operation, recovery mechanism or skipped tactics. Readiness confirms recovery;
-it does not establish comfortable startup headroom. See
+it doesn't establish comfortable startup headroom. See
 [load/profiling order](https://github.com/jasl/vllm/blob/0f59188db1504b042ce621842bdde6c0fe862df6/vllm/v1/worker/gpu_worker.py#L435)
 and [warning analysis](../results/startup-allocation-review.json).
 
@@ -130,14 +129,14 @@ sequence slots, the conservative admission calculation predicts:
 | 3,072 | 6.584 GiB | 0.296 GiB |
 | 4,096 | 7.436 GiB | -0.556 GiB |
 
-These are admission requirements. Reprofile each batch: larger workspaces can
-reduce available KV. The reservation covers two asynchronous batches. Reducing
-slots from two to one does not shrink this term; it removes concurrency and
-may save other buffers.
+Treat this table as an admission calculation. Larger workspaces can reduce
+actual KV, so reprofile each batch. The reservation covers two asynchronous
+batches; reducing slots from two to one doesn't shrink that term. It removes
+concurrency and may save other buffers.
 
 Use 2,048 as control and 2,560 as the first larger candidate; both passed
 near-1M requests. Try 3,072 only with a measured reason and enough headroom.
-Batch 1,024 may save memory but is not presumed faster. These two-slot candidates
+Batch 1,024 may save memory but isn't presumed faster. These two-slot candidates
 retain DSpark, graphs and APIs.
 
 An untested option is batch 4,096 with synchronous scheduling. The pinned build

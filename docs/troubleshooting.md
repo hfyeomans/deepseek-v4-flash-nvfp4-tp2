@@ -1,7 +1,8 @@
 # Reproduced failures
 
-These fixes apply to the tested image and model revision. Validate proposed
-changes with GPU and API checks before relying on them.
+These are the failures we reproduced and the fixes we checked. Use the symptoms
+to find the relevant case, then validate your own GPU/API behavior if the image
+or model revision differs.
 
 ## FlashInfer cache and TVM ABI
 
@@ -14,8 +15,8 @@ undefined symbol: TVMFFIGetCustomAllocator
 
 The FlashInfer cache is 0.6.16+cu130, commit
 `8da13a29c85f7e5b1c81878d933f84ae9fc4afa9`. Its version matches the Python
-package, but `apache-tvm-ffi==0.1.11` does not export the required symbol.
-Matching version strings did not guarantee ABI compatibility.
+package, but `apache-tvm-ffi==0.1.11` doesn't export the required symbol.
+Matching version strings didn't guarantee ABI compatibility.
 
 `Dockerfile.experimental` removes the precompiled cache so FlashInfer builds
 against the installed runtime. The first rebuild could not find `nvrtc.h`,
@@ -27,9 +28,9 @@ unchanged.
 The rebuilt `fused_moe_120.so` linked and loaded with `LD_BIND_NOW=1` to check
 symbol resolution. Serving still required a separate test.
 
-Keep the kernel-cache volume to reuse compiled kernels. First-start compilation
-can take minutes. Check worker errors and compiler activity before treating
-shared-memory timeout notices as a deadlock.
+Keep the kernel-cache volume so restarts reuse compiled kernels. First startup
+can take minutes. Check worker errors and compiler activity before assuming
+shared-memory timeout messages mean a deadlock.
 
 ## NVFP4 target with MXFP4 DSpark draft
 

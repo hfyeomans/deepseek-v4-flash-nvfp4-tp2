@@ -1,7 +1,7 @@
 # Before/after performance scorecard intake
 
-Document progression from the first working setup through roughly 292 tok/s
-two-request aggregate, alongside the ongoing experiments.
+Make the gains visible from the first working setup through roughly 292 tok/s
+two-request aggregate. Keep this documentation alongside the experiments.
 
 ## Existing evidence anchors
 

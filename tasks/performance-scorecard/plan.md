@@ -18,5 +18,5 @@
 8. Independently check arithmetic, links and claims. Retain regressions and
    neutral results, explain defaults and update after later experiments.
 
-Readers should understand what changed, its measured gain and cost, and how
-to reproduce it.
+Show readers what changed, what it gained and cost, and how they can repeat
+the test.

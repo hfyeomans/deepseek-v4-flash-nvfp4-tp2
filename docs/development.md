@@ -1,8 +1,8 @@
 # Changing and checking the recipe
 
-Keep serving code, verification clients and evidence separate. Standard-library
-Python is enough for these clients. Adaptive implementation belongs in the
-private research repo.
+Keep this repo easy to build, inspect and rerun. Small standard-library Python
+clients are enough; serving code and measured evidence have separate jobs.
+Adaptive implementation stays in the private research repo.
 
 ## Fast local checks
 
@@ -31,9 +31,9 @@ a GPU or model server. Run [image/GPU checks](running.md) separately.
 5. Save results and untested limits. Commit before the next experiment and keep
    the working container.
 
-Keep old result JSON intact. Historical client hashes refer to `recipe-1m-k5`.
-New measurements need new filenames, client/image hashes, settings and
-warmup/cache details. Keep raw host logs and credentials out of Git.
+Don't rewrite an old result to match a new client. Historical hashes refer to
+`recipe-1m-k5`. Give new measurements new filenames and record client/image
+hashes, settings and warmup/cache details. Keep host logs and credentials private.
 
 The [release review](../tasks/release-readiness/review.md) records adversarial
 and duplication findings, fixes and validation limits.

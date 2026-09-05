@@ -1,10 +1,10 @@
 # Experimental runtime patches
 
-Patches target jasl/vllm `0f59188db1504b042ce621842bdde6c0fe862df6`, tag
+These patches fix the failures recorded for jasl/vllm
+`0f59188db1504b042ce621842bdde6c0fe862df6`, tag
 [`sm120-pr-41834-stable-preview-20260804`](https://github.com/jasl/vllm/releases/tag/sm120-pr-41834-stable-preview-20260804).
-All 2,175 installed Python files shared with that checkout matched before
-patching. Generated metadata, bundled third-party modules and compiled binaries
-were outside the comparison.
+Before patching, all 2,175 shared Python files matched the installed image.
+Generated metadata, bundled modules and compiled binaries weren't compared.
 
 - `0001`: honor main-only NVFP4 metadata for the embedded MXFP4 draft.
 - `0002`: match the exact 0731 model's low/high/max reasoning prefixes.

@@ -27,6 +27,6 @@ Review found no critical default-launch defect, duplicate generation/state
 update or competing implementation. The small script structure remains;
 adaptive code stays in its own repo.
 
-CPU tests cannot establish GPU compatibility, model accuracy or acceleration.
-See [deployment qualification](verification.md) for live evidence and
-[release state](state.md) for publication status.
+These CPU tests don't prove GPU compatibility, accuracy or speed. Use
+[deployment qualification](verification.md) for live evidence and
+[release state](state.md) to check publication status.

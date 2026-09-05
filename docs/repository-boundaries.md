@@ -1,11 +1,12 @@
 # Recipe and adaptive development are separate projects
 
-This repo owns the working fixed-K5 NVFP4 TP2 recipe: builds, patches, launch
-profiles, checks, benchmarks and measured speed/memory/context tradeoffs.
+Use this repo to run fixed-K5 NVFP4 at TP2 and understand its measured tradeoffs.
+It includes builds, patches, profiles, checks and benchmarks.
 
-The private adaptive project owns compatibility research and future experiments.
-Both repos keep fixed-mode results: they explain acceleration here and serve
-as controls there. Test and measure candidates before recommending them.
+Keep adaptive compatibility research and future experiments in the private
+project. Both repos retain fixed-mode numbers: they explain this recipe's
+gains and give adaptive work a baseline. Measure a candidate before
+recommending it.
 
 The clean `recipe-1m-k5` snapshot is a new checkpoint. Original combined
 history, research branches, split inventories and the original rollback tag

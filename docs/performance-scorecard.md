@@ -1,9 +1,10 @@
 # Measured optimization progression
 
-Two-request aggregate throughput rose from **32.3 to 168.6 to 292.9 output
-tokens/second** across the recorded configurations: a **9.07x start/end
-difference**. The matched DSpark on/off comparison measured a
-**1.74x aggregate gain**.
+I wanted the gains visible from the first working setup through the useful
+recipe. Two-request aggregate throughput rose **32.3 → 168.6 → 292.9 output
+tokens/second**, a **9.07x historical difference**. The matched DSpark on/off
+test accounts for a **1.74x aggregate gain**; other configuration changes
+contribute to the longer progression.
 
 The absolute aggregate gains are **+136.25 tok/s** from eager to the graph-enabled
 control, **+124.35 tok/s** from that control to DSpark, and **+260.59 tok/s**
@@ -19,8 +20,8 @@ All stages used **30 prose, 39 code and 41 reasoning input tokens**, with
 256-token outputs, temperature zero and seed 42. Single-request rates are medians
 of two repeats after one warmup per exact prompt. Aggregate throughput is
 512 output tokens divided by one concurrent prose/code pair's elapsed time.
-It includes prefill and HTTP/stream time; it is not a single-user decode rate.
-The larger configured windows do not change these short input lengths.
+It includes prefill and HTTP/stream time; it's not a single-user decode rate.
+The larger configured windows don't change these short input lengths.
 
 ## What each improvement establishes
 
@@ -31,14 +32,14 @@ The larger configured windows do not change these short input lengths.
 | DSpark / initial eager | 12.81x | 11.66x | 10.65x | 9.07x | Historical start/end difference |
 
 The eager-to-graph step changed compilation, graph capture and the context
-ceiling. The initial derivative image digest and competing load were not saved,
-so that step cannot isolate graphs or attribute the 9.07x difference to DSpark.
+ceiling. The initial derivative image digest and competing load weren't saved,
+so that step can't isolate graphs or attribute the 9.07x difference to DSpark.
 The later matched runs used the same patched preview with the source build
 stopped. The table follows configuration progression; DSpark was actually
 measured before its graph-enabled control.
 
 First visible output took slightly longer: **69–70 ms eager, 76–78 ms graph
-control and 82–94 ms DSpark**. These small-sample ranges are not p95 estimates.
+control and 82–94 ms DSpark**. These small-sample ranges aren't p95 estimates.
 The historical files record warmups but lack prefix-hit counters; each input
 is smaller than one 256-token cache block.
 
@@ -92,18 +93,18 @@ These profiles all retain DSpark, TP2 and a 1M window.
 | 96% / 2,048 / 1,792 | 269.88 tok/s | 8.906 s | 6.808 s | 1,247 / 1,212 MiB |
 | 96% / 2,048 / 512 | 260.03 tok/s | 12.205 s | 2.186 s | 2,125 / 2,090 MiB |
 
-Cap 512 improved concurrent-tool latency but made the 48K coding request take
-about **37% longer** than cap 1,792. Short-throughput differences are too small
-to establish a ranking. Each column uses three measured trials after warmups.
-Coding inputs/outputs match with zero prefix hits; tool outputs and hits vary,
-so the tool ratio cannot isolate scheduling. See
-[trial details and limits](interactive-latency.md) and
-[unrounded benchmark results](../results/source-image-profile-benchmarks.json).
+Cap 512 helps tools during background prefill, but its 48K coding request takes
+about **37% longer** than cap 1,792. That's the tradeoff behind the two profiles.
+Each column uses three measured trials after warmups. Coding counts match with
+zero hits; tool outputs/hits vary, so their ratio can't isolate scheduling.
+Small short-throughput differences don't establish a ranking. See
+[trial details](interactive-latency.md) and
+[unrounded benchmarks](../results/source-image-profile-benchmarks.json).
 
 ## Primary everyday coding/tools profile
 
-The selected everyday profile keeps **96% memory, a 1M context window, TP2,
-two slots, batch 2,048 and cap 1,792**, with fixed-K5 DSpark, Markov correction
+For everyday coding and tools, I'd start with **96% memory, a 1M window, TP2,
+two slots, batch 2,048 and cap 1,792**. It keeps fixed-K5 DSpark, Markov correction
 and target decode graphs.
 
 It passed 998,869-token retrieval and final LAN API checks. One near-1M tool
@@ -120,12 +121,12 @@ establishing a repeatable latency gain. See
 | Short coding prompt, one request | 16.31 tok/s | 194.47 tok/s | 11.92x |
 | Two short requests, aggregate | 32.31 tok/s | 269.88 tok/s | 8.35x |
 
-These historical ratios combine changes to the image, compilation, graphs,
-speculation, memory budget, cache procedure and sampling. The ceiling grew from
-32K to 1M, but the coding input/output stayed at 39/256 tokens. The baseline
-has two single-request repeats and one pair; the selected profile has nine
-and three. The initial provenance limits above apply. These ratios cannot
-isolate DSpark or predict that everyday coding finishes twelve times faster.
+These ratios show what changed over the project. They don't mean everyday
+coding will finish twelve times faster. Image, compilation, graphs, speculation,
+memory, cache procedure and sample counts changed, and the ceiling grew from
+32K to 1M. The coding test itself stayed at 39 input/256 output tokens. Eager
+has two repeats and one pair; the selected profile has nine and three. The
+initial provenance limits above still apply.
 
 For 48,345-token code, a graph-enabled source control without DSpark took
 11.772 seconds versus 8.906 for the selected profile: **24.3% less time**, or
@@ -156,13 +157,13 @@ C2 DSpark-on trials measured **226.03, 204.43 and 296.16 tok/s**, without a
 separate C2 warmup. First output took about 702 ms in the first two and 89 ms
 in the third. Use the full spread; the historical 292.90 result belongs to
 its own procedure. Short-code first output rose from 75.7 to 84.4 ms. Mixed
-outputs and cache hits vary, so the tool ratio cannot isolate scheduler speed.
+outputs and cache hits vary, so the tool ratio can't isolate scheduler speed.
 Long retrieval stayed around 55 seconds in both modes.
 
-Three observations give descriptive medians, not p95 or an optimum. The
-[control report](primary-control-screen.md) covers warmups, per-pair ratios,
-memory, startup warnings and follow-up fixes; the
-[unrounded results](../results/primary-dspark-comparison.json) retain all trials.
+Keep all three observations when quoting the median. They can't establish
+p95 or an optimum. The [control report](primary-control-screen.md) explains
+warmups, per-pair ratios, memory and startup warnings; the
+[raw comparison](../results/primary-dspark-comparison.json) retains every trial.
 
 ### Community release qualification rerun
 

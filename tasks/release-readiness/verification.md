@@ -3,7 +3,7 @@
 Passed September 5, 2026 with runtime inputs/clients at
 `9cedab8225c03fe2500636b8bb32a982008f4c38`. A new working directory and rebuilt
 image used the original Linux host's drivers, model cache and Docker layers.
-This was not an independent fresh-machine install or the owner's walkthrough.
+This wasn't an independent fresh-machine install or the owner's walkthrough.
 
 - Source build: passed from pinned public source `0f59188db1504b042ce621842bdde6c0fe862df6`
   with `APT_HTTPS_IPV4=1 BUILD_NETWORK=host` and separate image names.
@@ -15,7 +15,7 @@ This was not an independent fresh-machine install or the owner's walkthrough.
 - GPU first launch: passed at the selected 1M/96% profile with a new kernel
   volume. Readiness took 537.743 seconds from rehearsal start, including saved
   service shutdown and candidate launch/load/compile. New request shapes still
-  compiled afterward. This is not a pure kernel compilation timing.
+  compiled afterward. This isn't a pure kernel compilation timing.
 - First launch and warmed restart: 19/19 short feature checks passed on each.
   Each suite retained all four streaming observations, including early
   cancellation, and closed their responses.
@@ -36,10 +36,10 @@ This was not an independent fresh-machine install or the owner's walkthrough.
 Rebuilt image:
 `sha256:ed67a87a0cb1f5e1d337613add7c4255c1c9a5158d6fb026e243344b4fb5f817`.
 Four runtime files and vLLM/Torch/FlashInfer/TVM FFI versions match the preserved
-image. Both startups reported 5.93 GiB KV,1,135,251 cache tokens and 0.10 GiB
+image. Both startups reported 5.93 GiB KV, 1,135,251 cache tokens and 0.10 GiB
 graphs; two full-1M requests remain untested. Captured logs contain no OOM text,
 but shutdown emitted resource-tracker warnings. One restart and synthetic
-traffic cannot establish long-term stability.
+traffic can't establish long-term stability.
 
 [Machine-readable summary](../../results/release-qualification/summary.json),
 [first features](../../results/release-qualification/candidate-features.json),
@@ -50,6 +50,6 @@ traffic cannot establish long-term stability.
 retain exact values and client/build hashes. Raw host logs remain in local
 private evidence storage; synthetic feature observations are included here.
 
-This release check adds no acceleration comparison or near-1M quality result.
-Earlier scorecard and 801K/near-1M evidence retain their recorded image/client
+This check doesn't add a new speed comparison or near-1M quality result.
+The earlier scorecard and 801K/near-1M tests keep their original image/client
 revisions.

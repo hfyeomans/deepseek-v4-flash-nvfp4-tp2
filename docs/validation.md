@@ -1,7 +1,8 @@
 # Validation requirements
 
-Record image/runtime identity, model revision, hardware, context, concurrency,
-generation settings, DSpark and prefix-cache state with each result.
+A result is useful when someone can tell what ran. Save image/runtime and
+model identity, hardware, context, concurrency, generation settings, DSpark
+and prefix-cache state with each run.
 
 | Feature | Observable pass condition |
 |---|---|
@@ -29,15 +30,15 @@ Use actual output counts and elapsed time; streamed chunks may contain several
 tokens. Report first output, decode and total time separately. Test several
 prompt types, single-request latency and two-request aggregate throughput.
 
-Compare functional outputs with the non-speculative baseline. Distinguish
-sampling variation from malformed or corrupted responses. Exact token equality
-across kernels needs separate proof.
+Check the answers against the non-speculative baseline as well as timing them.
+Sampling variation isn't the same as corrupted output, and different kernels
+needn't produce identical tokens. Test that separately if you need the guarantee.
 
 ## Historical request-recording limitation
 
 The old recorder retained mutable requests, so later tool turns could appear
 in earlier saved payloads. Affected records are marked; responses, usage and
-timings remain valid, but those payloads cannot be replayed exactly. The fix
+timings remain valid, but those payloads can't be replayed exactly. The fix
 snapshots data before sending. An HTTP regression failed before the fix and
 passes after it, including nested tool changes. See
 [evidence](../results/request-recording-regression.json).

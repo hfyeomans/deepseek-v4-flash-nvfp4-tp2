@@ -1,8 +1,9 @@
 # Where the fixed-K5 runtime spends GPU work
 
-Six traces map recorded kernels to runner components. Target forward dominates;
-the draft pipeline accounts for 9.2–9.9% of summed kernel time in generation-only
-windows. That share does not predict removable latency or adaptive ROI.
+We profiled the recipe to see where GPU work goes. Six traces show target
+forward dominating, with the draft pipeline taking 9.2–9.9% of summed kernel
+time in generation-only windows. Don't read that as time we can simply remove
+or as an adaptive-verification gain.
 
 ## Generation-only observations
 
@@ -60,12 +61,12 @@ None overlapped the [matched controls](primary-control-screen.md).
 | Short prose/code C2, 256 outputs each | 2.385 s | 9.064 s | 1.764 s |
 | 48,345-token code C1, 512 outputs | 7.313 s | 8.971 s | 2.640 s |
 
-Profiling severely perturbs these timings, especially 48K; the surrounding
-unprofiled requests vary too much to calculate a clean overhead ratio. Use
-kernel costs to choose experiments, not as calibrated cycle costs. Full-request
-cache hits/queries were 0/39, 0/69 and 48,128/48,345, leaving 217 uncached long
-prompt tokens. All windows had zero preemptions. Full-request counters cannot
-normalize a shorter trace or give per-step accepted-token yield.
+The profiler changes timing substantially, especially at 48K. Even the
+surrounding unprofiled requests vary too much for a clean overhead ratio.
+Use these traces to choose experiments. Full-request cache hits/queries were
+0/39, 0/69 and 48,128/48,345, leaving 217 uncached long-prompt tokens. All windows
+had zero preemptions. Those full-request counters can't normalize the shorter
+trace or show accepted tokens per step.
 
 ## Reproducing the analysis
 
@@ -106,8 +107,7 @@ Evidence: [trace index](../results/component-profiles/index.json),
 
 ## How to use these measurements
 
-These profiles explain where fixed-K5 spends GPU work. Padding, overlap and
-instrumentation prevent using them to predict adaptive gains. Use the
-unprofiled [controls](primary-control-screen.md) for latency and throughput.
-The [adaptive project](repository-boundaries.md) shares this evidence but needs
-new matched measurements for any optimization claim.
+Use these profiles to find work worth investigating, then measure gains with
+unprofiled [controls](primary-control-screen.md). Padding and overlap matter,
+and instrumentation changes costs. The [adaptive project](repository-boundaries.md)
+shares these baselines; any new claim needs its own matched measurements.

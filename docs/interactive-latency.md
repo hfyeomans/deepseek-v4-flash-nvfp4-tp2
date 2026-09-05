@@ -1,19 +1,20 @@
 # Tool responsiveness during long prefill
 
-One tool roundtrip took 37.9 seconds during near-1M prefill despite passing API
-checks. We compared batch and prefill caps while keeping 1M, K5 DSpark, Markov
-correction, target graphs, FP8 KV, TP2 and two slots.
+The model passed API checks, but one tool roundtrip still took 37.9 seconds
+during near-1M prefill. We wanted a more useful everyday profile. This test
+changes batch and prefill caps while keeping 1M, K5, Markov correction, target
+graphs, FP8 KV, TP2 and two slots.
 
-**Selected coding profile: 96% memory, batch 2,048, cap 1,792, 1M window.**
-It keeps most larger-batch coding speed with more sampled serving headroom.
-Use cap 512 when tools during long prefill matter more. Neither gave subsecond
-tools in the near-1M probe. See [launch commands](running.md#recommended-coding-profile).
+**For coding, I'd start with 96% memory, batch 2,048, cap 1,792 and 1M context.**
+It keeps most larger-batch speed with more serving headroom. Cap 512 is useful
+when tools during long prefill matter more, but neither profile gave subsecond
+tools near 1M. See [launch commands](running.md#recommended-coding-profile).
 
 ## Repeated 262K protocol
 
 Each profile has one saved warmup and three repeats, without a competing build.
 Retrieval requests 262,000 tokens with a fresh prefix and must return three facts.
-After three seconds, an independent client checks an automatic tool roundtrip:
+Three seconds after the long call starts, an independent client checks a tool roundtrip:
 function, arguments, return value and final answer. Both calls must finish before
 the long request. Each trial saves server counters and two-second GPU samples.
 
@@ -25,41 +26,41 @@ the long request. Each trial saves server counters and two-second GPU samples.
 
 The smaller batch/budget gave more headroom with similar timing. Changing only
 cap 1792 to 512 reduced tool median by 68% while lengthening retrieval by 13%.
-Both caps later passed near-1M mixed retrieval. These 262K trials cannot be
+Both caps later passed near-1M mixed retrieval. These 262K trials can't be
 compared as a speedup over the earlier near-1M probe: length, submission point
 and workload differ.
 
 The first tool input has 295 tokens, but its 45- or 54-token output changes the
 second input to 370 or 379 tokens; the final answer is six tokens. Prefix-hit
 deltas were 0/256/256 in both earlier profiles and 256 in every cap 512 trial;
-global counters cannot assign hits to a call. Cap 512 always generated 45 tokens
+global counters can't assign hits to a call. Cap 512 always generated 45 tokens
 for the call. The one cap 1792 trial with that length took 5.111 seconds versus
-2.155–2.330 seconds across cap 512 trials. That single match cannot isolate the
+2.155–2.330 seconds across cap 512 trials. That single match can't isolate the
 effect precisely. Long inputs ranged 261,865–261,872 tokens. Usage matched server
 counters, with zero preemptions.
 
 Keep per-trial outputs and cache hits beside the medians. Three workload
-comparisons cannot establish an isolated scheduler gain, tail latency or broad
+comparisons can't establish an isolated scheduler gain, tail latency or broad
 tool accuracy.
 
-Tool warmups took 7.216,14.272 and 22.376 seconds, respectively. They remain in
+Tool warmups took 7.216, 14.272 and 22.376 seconds, respectively. They remain in
 the evidence but are excluded from medians under the planned protocol. These
 are warmed results, not first-request guarantees.
 
 DSpark was active throughout. Cap 1792 accepted 188/370 proposed tokens and
 cap 512 accepted 156/425 across measured mixed runs. Those global counters combine
-retrieval and tools; they cannot isolate tool acceptance or DSpark's speed benefit.
+retrieval and tools; they can't isolate tool acceptance or DSpark's speed benefit.
 
 ## Memory and startup
 
 Batch 2048/cap 1792 reported 5.93 GiB KV and 1.14x maximum-length capacity versus
 6.30 GiB/1.12x at batch 2560/cap 2304. Smaller batches reduce in-flight reservation.
-Capacity arithmetic does not test two simultaneous full-1M requests.
+Capacity arithmetic doesn't test two simultaneous full-1M requests.
 
 Cap 1792 reached readiness in 124.4 seconds with the existing FlashInfer cache
 and passed 19 API checks. No early draft-preparation warnings appeared; two
 later autotuning warnings remained. Samples reached 137/102 MiB free and
-allocator logs 110 MiB. One startup cannot establish a consistent margin.
+allocator logs 110 MiB. One startup can't establish a consistent margin.
 
 Cap 512 passed 19 API checks with the same 5.93 GiB KV/1.14x capacity. Readiness
 took 124.5 seconds. It had no early preparation warnings and two later autotuning
@@ -69,18 +70,18 @@ warnings. Startup minima were 173/138 MiB sampled and 146 MiB allocator-reported
 
 Cap 512 retrieved all three facts from **998,866 input tokens**, producing 35
 tokens in 539.998 seconds over HTTP (541.811 for the whole probe). At delay 240
-seconds, tools passed in 18.113 seconds:6.784 for the 54-token call and 11.329 for
+seconds, tools passed in 18.113 seconds: 6.784 for the 54-token call and 11.329 for
 the six-token answer, finishing 281.877 seconds before the long request. Totals
 of 999,540 input/95 output matched server counters, with zero hits/preemptions.
 Minimum free memory across 267 samples was 1,787/1,752 MiB.
 
-This single later-prefill trial cannot guarantee 18-second latency or isolate
-a gain over the earlier 37.9-second test. The 2.2-second median at 262K does not
+This single later-prefill trial can't guarantee 18-second latency or isolate
+a gain over the earlier 37.9-second test. The 2.2-second median at 262K doesn't
 predict near-1M latency. See [the full record](../results/interactive-b2048-t512-1m.json).
 
 Cap 1792 retrieved all three facts from **998,869 input tokens**, producing 35
 tokens in 513.759 seconds over HTTP (515.623 for the probe). At the same 240-second
-delay, tools took **32.035 seconds**:25.045 for the 54-token call and 6.990 for the
+delay, tools took **32.035 seconds**: 25.045 for the 54-token call and 6.990 for the
 six-token answer, finishing 241.716 seconds before retrieval. Totals of 999,543
 input/95 output matched server counters, with zero hits/preemptions. Minimum
 free memory across 254 samples was 1,099/1,064 MiB.
@@ -93,7 +94,7 @@ free memory across 254 samples was 1,099/1,064 MiB.
 Each cap has one trial with matched requested length, delay and tool-output
 lengths. Run order, prefixes and cache histories differ. Accepted/proposed tokens
 were 64/132 at cap 1792 and 67/129 at cap 512, pooled across retrieval and tools.
-These runs do not isolate DSpark, establish sustained speed or compare broad
+These runs don't isolate DSpark, establish sustained speed or compare broad
 accuracy.
 
 Cap 1792 restarted warm in 65.268 seconds and passed 19 API checks before
@@ -101,10 +102,11 @@ benchmarking, then 19 LAN checks after near-1M retrieval. See the
 [retrieval record](../results/interactive-b2048-t1792-1m.json) and
 [restart/API results](../results/interactive-t1792-final-acceptance.json).
 
-The 48K coding fixture shows the cost of cap 512:41.95 output tok/s and 12.205
-seconds median versus 61.50 tok/s and 8.325 seconds at batch 2560/cap 2304. First
-output rose from about 6.3 to 9.5 seconds. Cap 1792 took 8.906 seconds. Faster
-background tools came with slower foreground code.
+The 48K coding fixture changed the choice. Cap 512 took 12.205 seconds median
+at 41.95 output tok/s versus 8.325 seconds at 61.50 tok/s for batch 2560/cap 2304.
+First output rose from about 6.3 to 9.5 seconds. Cap 1792 took 8.906 seconds. For
+everyday coding, I'd accept somewhat slower background tools to keep the
+foreground request moving.
 
 | Source-image profile | Short prose | Short code | Short reasoning | Two short requests, aggregate | 48K code, elapsed / output rate |
 |---|---:|---:|---:|---:|---:|
@@ -116,20 +118,20 @@ Short rates pool nine requests per workload; paired rates use all three trials.
 Code uses three 512-token responses to identical 48,345-token inputs with unique
 salts. All benchmarks had zero hits/preemptions and followed short/code/short/short
 order; earlier mixed workloads and cache histories differ. Small short-input
-differences cannot rank profiles reliably. Code ranges do not overlap between
-caps:8.625–8.925 versus 12.022–12.230 seconds.
+differences can't rank profiles reliably. Code ranges don't overlap between
+caps: 8.625–8.925 versus 12.022–12.230 seconds.
 
-Cap 1792 is the coding choice; cap 512 favors concurrent tools. Both passed
-near-1M retrieval with the same DSpark/API features. Cap 1792's code median is
-about 7% slower than batch 2560/cap 2304, a cost accepted for more headroom. See
-[all profile benchmarks](../results/source-image-profile-benchmarks.json).
+That's why cap 1792 is the coding default and cap 512 is the concurrent-tools
+option. Both passed near-1M retrieval with the same DSpark/API features. The
+selected cap costs about 7% coding time versus batch 2560/cap 2304 for more
+headroom. See [all trials](../results/source-image-profile-benchmarks.json).
 
 ## A flag that does not add a gain here
 
 `--performance-mode interactivity` leaves this recipe's effective graphs
 unchanged. Balanced starts at `[1,2,4,8,16]`, interactivity at `[1…16]`; K5
 alignment makes both `[6,12]` at capture 16. The pinned CUTLASS and Marlin paths
-do not consume this mode. Its other branch only changes unspecified batch
+don't consume this mode. Its other branch only changes unspecified batch
 defaults in throughput mode. With these explicit settings, another trial would
 repeat the same configuration. See
 [defaults](https://github.com/jasl/vllm/blob/0f59188db1504b042ce621842bdde6c0fe862df6/vllm/config/vllm.py#L1897),

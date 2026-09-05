@@ -1,9 +1,9 @@
 # Exact-primary DSpark controls
 
-At the primary coding settings, DSpark measured **2.14x short-code throughput**
-and **26.6% less time on the 48K coding fixture**. First-output latency did not
-improve on every workload. This three-pair comparison cannot establish an
-optimum or p95 latency.
+We already had gains from earlier profiles. This test asks what DSpark adds
+at the everyday settings: **2.14x short-code throughput** and **26.6% less time
+on the 48K fixture**. First output didn't improve on every workload. Three
+pairs can't establish an optimum or p95 latency.
 
 ## What stayed fixed
 
@@ -34,7 +34,7 @@ measured observations below.
 
 Prose/code/reasoning inputs contain 30/39/41 tokens, with 256-token outputs,
 temperature 0 and seed 42. Rates include prefill and HTTP streaming. The 1M
-ceiling does not make these long-input tests. Aggregate rate is 512 output
+ceiling doesn't make these long-input tests. Aggregate rate is 512 output
 tokens divided by the concurrent pair's elapsed time. The long-code client
 also runs short prose/reasoning and a short-prose/long-code pair; those requests
 remain in the evidence.
@@ -66,7 +66,7 @@ short operation finished before the long call. Long prompts contain
 262,007–262,011 tokens. Measured long answers vary from 25 to 35 tokens and tool
 calls from 45 to 54, changing follow-up inputs. Requests are unseeded with no
 fixed minimum output and 256–512 prefix hits per run. The tool ratio therefore
-describes this workload, not an isolated scheduling gain. These checks do not
+describes this workload, not an isolated scheduling gain. These checks don't
 establish broad coding/tool accuracy or equivalent long-request speed.
 
 ## Memory, accounting and remaining uncertainty
@@ -85,9 +85,9 @@ All 24 measurement windows show zero errors, aborts and preemptions. Across
 1,097/1,062 MiB with DSpark and 1,251/1,214 MiB without it.
 
 The first on block started cooler with resident KV; later thermal/cache histories
-differ. Peak sampled temperature was 89 C; clocks and throttling were not
+differ. Peak sampled temperature was 89 C; clocks and throttling weren't
 recorded. Each of three startup segments recovered from two allocator OOM
-warnings during autotuning. Clean request counters do not erase startup
+warnings during autotuning. Clean request counters don't erase startup
 warnings or establish long-term stability. Periodic samples can miss memory
 peaks, and the cause of timing variance remains unknown.
 
@@ -96,15 +96,15 @@ peaks, and the cause of timing variance remains unknown.
 The three on-short clients, including warmups and C2, recorded 1,924 rounds,
 9,620 proposals and 4,233 accepted draft tokens. Positions 1–5 survived
 1,533/1,111/741/511/337 times. The fifth survived **17.5% of all rounds**, or
-337/511 = **65.95%** when the first four survived. These pooled counters cannot
+337/511 = **65.95%** when the first four survived. These pooled counters can't
 be assigned to one C1 workload. See [K5 and acceptance denominators](dspark-k-and-verification.md).
 
-Removing the fifth proposal while holding acceptance fixed would reduce
-estimated tokens advanced per round from 3.200 to 3.025. Cycle cost would need
-to fall more than 5.5% to break even, before adaptive overhead. This calculation
-is not a measured L4 result: shorter prefixes change future proposals, and graph
-padding may retain verification cost. Testing needs a supported prefix path,
-measured cycle costs and calibrated per-request confidence.
+Dropping proposal five would reduce advancement from 3.200 to 3.025 tokens
+per round if acceptance stayed fixed. We'd need more than 5.5% lower cycle
+cost just to break even, before adaptive overhead. That's a useful estimate
+for planning a test. It isn't an L4 result: shorter prefixes change future
+proposals, and graph padding may keep verification cost. We still need a
+supported prefix path, measured cycle costs and calibrated confidence.
 
 Evidence: [all control rows, counters and resources](../results/primary-dspark-controls.json),
 [independently recomputed comparisons and every trial](../results/primary-dspark-comparison.json),

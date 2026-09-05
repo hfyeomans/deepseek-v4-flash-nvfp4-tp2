@@ -1,11 +1,11 @@
 # Source-built image acceptance
 
-The source-built image passed 13 CPU methods, 19 LAN API checks and retrieval
-from **998,868 input tokens** in a 1,000,000-token window. Post-retrieval chat
-and tools also passed. This page records the original 96.5% candidate and its
-matched DSpark control. The later [profile comparison](interactive-latency.md)
-selected 96% / batch 2,048 / cap 1,792 and records its near-1M, restart and API
-checks separately.
+A useful community recipe needs to build from recorded source. This image
+passed 13 CPU test methods, 19 LAN checks and retrieval from **998,868 input
+tokens** in a 1,000,000-token window, followed by chat/tool recovery. This page
+keeps the original 96.5% candidate and its DSpark control. The later
+[comparison](interactive-latency.md) selected 96% / batch 2,048 / cap 1,792 and
+records its retrieval, restart and API checks separately.
 
 After the control, DSpark restarted in 63.3 seconds with the existing kernel
 cache. All 19 LAN API checks passed with the corrected request recorder.
@@ -20,16 +20,16 @@ and image digests are preserved in the linked results.
 
 With a new FlashInfer kernel-cache volume, startup took **519.5 seconds of
 observation**, including compilation, profiling and autotuning. Those stages
-were not timed separately. Both ranks verified 4,608 expert sources,
+weren't timed separately. Both ranks verified 4,608 expert sources,
 99 non-expert sources and 99 bindings. Target graphs used 0.10 GiB. Reported
 KV was 6.30 GiB, or 1,122,401 cache tokens and 1.12x maximum-length capacity;
-this does not test two simultaneous 1M requests.
+this doesn't test two simultaneous 1M requests.
 
 Draft preparation logged 198 allocation warnings before model loading finished.
 Samples caught 7/12 MiB free; allocator messages reached 1/2 MiB. FlashInfer
 gemm2 autotuning later logged two warnings. Startup recovered, but lowering
-the later KV budget cannot be assumed to fix earlier preparation pressure.
-The exact failing operators and recovery path were not traced.
+the later KV budget can't be assumed to fix earlier preparation pressure.
+The exact failing operators and recovery path weren't traced.
 
 See [build and CPU evidence](../results/source-build-provenance.json),
 [startup measurements](../results/source-image-startup.json), and
@@ -51,11 +51,11 @@ The tool check uses 295 input/54 output tokens, then 379 input/6 output tokens.
 Server snapshots showed one request before, two during and one after, with
 none waiting. Admission worked, but generation was still slow. The tiny reply
 and tool check occurred at different prefill points, and post-long cache state
-also differs. Their latencies are not a matched comparison.
+also differs. Their latencies aren't a matched comparison.
 
 The long test, tiny chat and tool roundtrip total four API calls, 999,555 input
 and 101 output tokens. Global timing sums include overlapping work. This
-synthetic test does not establish broad long-context accuracy.
+synthetic test doesn't establish broad long-context accuracy.
 
 See [19 LAN API checks](../results/source-image-lan-api.json),
 [mixed near-1M test and recovery](../results/source-image-1m-mixed.json), and
@@ -63,9 +63,10 @@ See [19 LAN API checks](../results/source-image-lan-api.json),
 
 ## Initial performance observations
 
-Three short-input runs measured **203.4, 302.9 and 263.3 tok/s** aggregate.
-The first pair took roughly 671 ms to first output; logs do not explain why.
-Keep all three trials when comparing speed.
+The first pair measured **203.4 tok/s**; later pairs reached **302.9 and
+263.3 tok/s**. First output took about 671 ms in the first pair, and logs don't
+explain the delay. The slower trial stays. Quoting only the fastest would hide
+what someone repeating this may see.
 
 The frozen fixture has 320 synthetic validators and 48,345 input tokens. With
 fresh salts, three 512-token responses took 8.240–8.373 seconds, with first
@@ -78,7 +79,7 @@ The [exact synthetic fixture](../benchmarks/prompts/code-48k.txt) and its
 [hash and reproduction notes](../benchmarks/prompts/README.md) are included.
 
 Speculative counters combine warmups, workloads and the concurrent pair. They
-cannot isolate long-code acceptance or establish representative coding accuracy.
+can't isolate long-code acceptance or establish representative coding accuracy.
 
 - [First short run](../results/final-dspark-short.json)
 - [Second short run](../results/final-dspark-short-repeat2.json)
@@ -105,7 +106,7 @@ are retained.
 | 48,345-token code input, median of 3 requests | 43.49 tok/s | 61.50 tok/s | 1.41x |
 
 Control pairs ranged 163.93–164.28 tok/s; DSpark pairs ranged 203.38–302.92.
-Three pairs cannot establish tail latency. Long-code median time fell from
+Three pairs can't establish tail latency. Long-code median time fell from
 11.772 to 8.325 seconds, while first-output ranges overlapped around 6.3 seconds.
 After first output, the control took 5.440–5.441 seconds and DSpark
 1.961–2.075 seconds. Those intervals include stream completion and multi-token
@@ -113,7 +114,7 @@ bursts, not just GPU decode.
 
 DSpark reduced available KV from **11.84 to 6.30 GiB per GPU** and calculated
 maximum-length cache concurrency from **2.11x to 1.12x**. These startup estimates
-do not test two full-1M requests. The memory percentage is matched; allocations
+don't test two full-1M requests. The memory percentage is matched; allocations
 change with speculation.
 
 See [unrounded comparison and proof limits](../results/source-image-benchmark-comparison.json),

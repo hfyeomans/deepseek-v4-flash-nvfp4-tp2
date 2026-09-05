@@ -1,13 +1,14 @@
 # Your first deployment
 
-Run these steps on the Linux GPU host. We tested two RTX PRO 6000 Blackwell
-Max-Q cards, 96 GB each, at TP=2, with 246 GiB system RAM and driver 610.57.04.
-RAM and driver values describe the test host; they are not minimum requirements.
-Other GPU architectures are untested.
+Start here to get a coding/tools endpoint running and understand the checks
+along the way. Run everything on the Linux GPU host. We tested two RTX PRO
+6000 Blackwell Max-Q cards, 96 GB each, at TP=2, with 246 GiB RAM and driver
+610.57.04. The RAM and driver describe that machine; they aren't minimum
+requirements. Other GPU architectures haven't been tested.
 
-Weights occupy 175,550,788,904 bytes. Allow additional disk space for Docker
-layers, source and kernel caches. Check free space on both the model and Docker
-disks before starting.
+Check disk space before the download. Weights alone use 175,550,788,904 bytes,
+and Docker layers, source and kernel caches need more. The model and Docker
+may be on different disks; check both.
 
 ## 1. Check the machine
 
@@ -37,7 +38,7 @@ docker run --rm --gpus all \
   nvidia-smi
 ```
 
-Both cards should appear. Resolve access errors before building.
+You should see both cards. Fix access errors here before spending time on a build.
 
 ## 2. Get the recipe and checkpoint
 
@@ -78,7 +79,7 @@ Ubuntu HTTP downloads stall, retry with
 `APT_HTTPS_IPV4=1 BUILD_NETWORK=host bash build.sh` and a separate log. This
 keeps the signed repositories; see [the diagnosed failure](troubleshooting.md#slow-ubuntu-package-downloads-during-the-public-rebuild).
 
-Run the CPU tests inside your newly built image before using its GPUs:
+Check the patches and model metadata inside your new image before loading GPUs:
 
 ```bash
 export CHECK_MODEL_DIR="/root/.cache/huggingface/hub/models--nvidia--DeepSeek-V4-Flash-0731-NVFP4/snapshots/$REVISION"
@@ -93,13 +94,13 @@ docker run --rm --entrypoint bash \
     done'
 ```
 
-All 13 methods must pass. They check patched CPU behavior and checkpoint
-metadata; GPU validation comes next.
+All 13 methods must pass. These check CPU behavior and checkpoint metadata.
+Next, we'll check the running model.
 
 ## 4. Launch your everyday coding/tools profile
 
-Let existing requests finish, then stop the old model container. This recipe
-needs both GPUs. Keep the old container and image for recovery.
+Let the old model finish its requests, then stop its container. You'll need
+both GPUs. Keep that container and image so recovery is a restart away.
 
 ```bash
 IMAGE="$FINAL_IMAGE" CONTAINER_NAME=dsv4-first-run \
@@ -114,7 +115,7 @@ Use a new kernel-volume name for first qualification, then keep it for
 restarts. Wait for **Application startup complete**. Ctrl-C leaves the detached
 server running. The fresh-cache rehearsal took about nine minutes to readiness;
 some later request shapes still needed compilation. Busy CPU compilers with
-low GPU use and periodic shared-memory wait messages do not, alone, indicate a
+low GPU use and periodic shared-memory wait messages don't, alone, indicate a
 hang. See the [qualification timings](../tasks/release-readiness/verification.md).
 
 ```bash
@@ -126,10 +127,10 @@ curl --fail http://127.0.0.1:8000/v1/chat/completions \
 python3 verify.py --output results/raw/first-run-features.json
 ```
 
-Health should return HTTP 200 with an empty body; `/v1/models` should list
-`dsv4-nvfp4`. All 19 short feature checks should pass. They test APIs, including
-reasoning, tools and streaming. Coding accuracy, 1M retrieval and DSpark speed
-need separate measurements.
+Expect HTTP 200 with an empty health response and `dsv4-nvfp4` in `/v1/models`.
+All 19 short feature checks should pass. These cover APIs such as tools, reasoning
+and streaming. You'll need separate measurements for coding accuracy, 1M
+retrieval and DSpark speed.
 
 ## 5. Reconnect, recover and choose the next check
 
@@ -148,9 +149,9 @@ filename. Connect a local client to `http://127.0.0.1:8000/v1` with model
 The coding profile is ready to use. The [running guide](running.md) covers
 benchmarks, DSpark counters, 801K/1M probes and the secondary profile. Budget
 time for large probes: the measured near-1M mixed run took about 514 seconds.
-Two full-window requests have not been qualified. For recovery, use the
+Two full-window requests haven't been qualified. For recovery, use the
 [saved container or tagged rebuild](running.md#preserved-baseline-and-rollback).
 
-The [release record](../tasks/release-readiness/verification.md) identifies the
-steps rehearsed on the existing host. An independent fresh-machine installation
-and the owner's first walkthrough remain untested.
+The [release record](../tasks/release-readiness/verification.md) says exactly
+what we rehearsed on the existing host. I haven't personally walked these
+steps yet, and an independent fresh-machine install is still untested.

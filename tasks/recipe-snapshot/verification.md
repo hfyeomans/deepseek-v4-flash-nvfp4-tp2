@@ -9,6 +9,6 @@ validated bytes. The scorecard and raw measurements stayed intact; docs now
 separate recipe provenance from research administration. This history operation
 created no performance or quality result.
 
-The clean snapshot has independent ancestry at `recipe-1m-k5`. Original history
-and rollback tags remain private. Use a new clone and keep old combined
-branches out of it.
+Use `recipe-1m-k5` for the clean snapshot. It has independent ancestry; original
+history and rollback tags remain private. Start with a new clone and don't
+merge old combined branches into it.

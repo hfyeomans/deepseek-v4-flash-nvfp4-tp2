@@ -31,7 +31,7 @@ measured behavior from advertised capabilities.
 Attempt 801K and 1M and explain successes or failures through measured speed
 and memory. A failed attempt is useful evidence; stopping at 64K would leave
 the goal unfinished. Use 801,000 and 1,000,000 total-token windows with output
-headroom. Label tests at the model's1,048,576 ceiling separately.
+headroom. Label tests at the model's 1,048,576 ceiling separately.
 
 ## Performance optimization criterion
 
@@ -68,8 +68,8 @@ if other allocations match, with all features retained.
 
 ## Context versus batch experiment
 
-Compare 262,144,524,288 and 1,000,000 windows with feasible batches from 2,048,
-2,560,4,096 and 6,144, alongside 801K/1M capacity goals. Fix input at 131,072,
+Compare 262,144, 524,288 and 1,000,000 windows with feasible batches from 2,048,
+2,560, 4,096 and 6,144, alongside 801K/1M capacity goals. Fix input at 131,072,
 output at 512 and compare C1/C2 separately. Match memory or label differences.
 Record warm uncached TTFT, prefill, decode, aggregate throughput, probes, memory,
 preemptions and correctness. Use controlled final-image results to choose defaults.
@@ -85,28 +85,20 @@ fresh recorded salts and verify zero hits for uncached comparisons.
 
 ## DSpark effectiveness and capability audit
 
-- [x] Compare primary-source expectations against the exact pinned implementation.
-- [x] Establish active parallel drafting and Markov correction, fixed K=5, and
-  loaded-but-unused confidence head. Document adaptive verification as absent
-  from the preview rather than removed by memory tuning.
-- [x] Clarify that measured graphs cover target decode. Record the disabled,
-  experimental draft-forward graph and its one-active-draft/TP-opt-in limits.
-- [ ] If evaluating that prototype after the baseline, use an isolated candidate
-  and measure capture/replay correctness, C1 benefit, C2 fallback, memory and
-  mixed-request behavior; do not infer a gain from the flag alone.
-- [x] Repeat matched DSpark on/off controls on the final image for coding,
-  longer inputs and two-request load. Separate prefill,
-  generation, total latency, and acceptance; preserve existing short results.
-  Reuse benchmark.py with optional --code-prompt-file and --cache-mode inputs:
-  preserve warm-prefix defaults, freeze and hash exact code-prompt bytes, and
-  assign a fresh recorded cache salt to every request in uncached mode. Regress
-  the actual outgoing payloads and default behavior. The existing concurrent
-  pair remains prose + code, so a long-code override makes it a mixed-length
-  pair. Global speculative counters still cover the entire run, not code alone.
-- [x] Compare tool round trips during long prefill across feasible scheduling
-  profiles. Preserve DSpark and API behavior; measure the latency, prefill-speed
-  and memory costs before selecting a default.
-- [x] Separate adaptive research and candidate qualification into the
-  [private adaptive project](../../docs/repository-boundaries.md). Candidate
-  implementation remains unfinished there; the recipe retains usable fixed-K5
-  profiles and their acceleration evidence.
+- [x] Compare primary sources with the pinned implementation.
+- [x] Confirm parallel drafting, Markov correction, K=5 and unused confidence.
+  Adaptive verification was absent before memory tuning.
+- [x] Distinguish target graphs from the disabled draft-forward prototype and
+  its one-active-draft/TP-opt-in limits.
+- [ ] Test that prototype separately for capture/replay, C1 speed, C2 fallback,
+  memory and mixed requests before claiming a gain.
+- [x] Repeat DSpark on/off on the final image for short/long coding and C2. Keep
+  prefill, generation, total time and acceptance separate. Reuse benchmark.py
+  with --code-prompt-file and --cache-mode; keep warm-prefix defaults and freeze
+  prompt hashes. Use fresh salts per uncached request and test outgoing payloads.
+  The pair remains prose + code; global counters combine all workloads.
+- [x] Compare tools during long prefill across feasible profiles. Measure the
+  prefill and memory cost while preserving DSpark and APIs.
+- [x] Move adaptive implementation and qualification to the
+  [private project](../../docs/repository-boundaries.md). Keep working fixed-K5
+  profiles and their measured gains here.

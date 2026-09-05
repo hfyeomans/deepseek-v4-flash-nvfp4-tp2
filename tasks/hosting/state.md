@@ -13,8 +13,8 @@ fixed-K5 deployment code and findings. The split changed no serving settings.
 ## Verified
 
 - Recorded branch: `recipe/validated-tp2`.
-- Two RTX PRO 6000 Blackwell Max-Q GPUs,97,887 MiB each, TP=2.
-- Driver 610.57.04, Linux 7.0.0-30-generic,246 GiB RAM; NODE topology within one
+- Two RTX PRO 6000 Blackwell Max-Q GPUs, 97,887 MiB each, TP=2.
+- Driver 610.57.04, Linux 7.0.0-30-generic, 246 GiB RAM; NODE topology within one
   NUMA node, no NVLink.
 - Snapshot `f1caa71142bd0be02f728c79f75042ac1e461579`: all 48 shard sizes match
   Hub metadata, totaling 175,550,788,904 bytes.
@@ -39,15 +39,16 @@ fixed-K5 deployment code and findings. The split changed no serving settings.
   GEMM1 profiling. Marlin resolved startup without changing target backend.
 - All 20 checks passed at 32K, including reasoning/tools and 24,417-token retrieval:
   `results/dspark-marlin-features.json`.
-- One snapshot recorded 37 rounds,181 proposals and 133 accepted tokens. It proves
+- One snapshot recorded 37 rounds, 181 proposals and 133 accepted tokens. It proves
   activity, not a representative acceptance rate.
 - Patch 0003 passed four CPU methods, including missing weight/scale cases. Both
-  ranks verified 4,608 expert sources,99 non-expert sources and 99 bindings.
+  ranks verified 4,608 expert sources, 99 non-expert sources and 99 bindings.
 
 ## Large-context learning goals
 
-The goal was 801K/1M with retrieval or recorded failures, plus memory/speed
-explanations.64K was an intermediate milestone.
+The goal was to reach 801K/1M and understand the limits. Keep successful
+retrievals and failures with their memory/speed evidence; 64K was an
+intermediate step.
 
 - 64K/graphs passed 20 checks and 61,287-token retrieval.
 - Matched short-input graphs control measured 95.5 tok/s versus 174–209 with
@@ -55,16 +56,16 @@ explanations.64K was an intermediate milestone.
 - 801K started at 95% with 5.22 GiB KV and 928,987 calculated capacity. All facts
   were correct at 799,847 input tokens; short recovery passed. Probe/HTTP times
   were 343.6/342.2 seconds, with JIT/build contention.
-- 1M failed at 95%:5.73 GiB needed,4.98 available, estimated ceiling 813,056. At 96%,
+- 1M failed at 95%: 5.73 GiB needed, 4.98 available, estimated ceiling 813,056. At 96%,
   retrieval passed at 998,847 input tokens, then 19 API checks. Probe/HTTP/prefill
   times were 509.7/507.9/505.4 seconds; decode took 0.425 seconds for 35 tokens.
   JIT/build limits apply. See `results/dspark-1m-95-startup-failure.json`.
 - Public rebuild passed using HTTPS/IPv4 and host networking. Image:
   `sha256:1f0776d3ac4a990186899d122ebee81e5ad0bcdf1dbb95ebccb30d5f94c6908e`.
-  It passed 13 CPU methods, fresh-cache startup in 519.5 seconds,19 LAN checks,
- 998,868-token retrieval and chat/tool recovery. Details: docs/source-image-validation.md.
+  It passed 13 CPU methods, fresh-cache startup in 519.5 seconds, 19 LAN checks,
+  998,868-token retrieval and chat/tool recovery. Details: docs/source-image-validation.md.
 
-- 97%/1M passed startup,19 checks and 998,847-token retrieval in 508.1 seconds.
+- 97%/1M passed startup, 19 checks and 998,847-token retrieval in 508.1 seconds.
   KV was 6.88 GiB, calculated capacity 1.32x and startup minima 347/312 MiB.
   Build/JIT/mixed timing limits apply.
 - A short request still timed out after 180 seconds despite a second slot and
@@ -72,10 +73,10 @@ explanations.64K was an intermediate milestone.
 
 - 97% / batch 2560 / cap 2304 passed mixed retrieval with 6.77–6.78 GiB KV. Short
   replies took 4.720/3.242 seconds; retrieval used 998,847 input/35 output tokens
-  in 525.519 seconds (523.662 HTTP).19 checks passed. Startup/inference minima:
- 111/76 and 453/418 MiB.
-- 96.5% passed the same protocol:998,871/35 tokens,525.619 seconds (523.813 HTTP),
-  short replies 4.199/2.252 seconds,19 checks, serving minima 1,011/976 MiB. Neither
+  in 525.519 seconds (523.662 HTTP). 19 checks passed. Startup/inference minima:
+  111/76 and 453/418 MiB.
+- 96.5% passed the same protocol: 998,871/35 tokens, 525.619 seconds (523.813 HTTP),
+  short replies 4.199/2.252 seconds, 19 checks, serving minima 1,011/976 MiB. Neither
   run is a controlled timing comparison.
 - Both batch 2560 launches recovered from preparation warnings reporting 1–2 MiB
   free. Lower utilization shrank later KV without fixing earlier pressure:
@@ -90,7 +91,7 @@ explanations.64K was an intermediate milestone.
 - Source audit confirms K5/Markov and an unused confidence head. Adaptive
   verification was absent before memory tuning; later upstream compatibility
   remains untested.
-- The built-in probe's23.809-second median includes shared-connection waiting.
+- The built-in probe's 23.809-second median includes shared-connection waiting.
   Use the independent client with server observations.
 - Seed 101 salted C1/C2 pilots matched 262,144 input/1,024 output tokens with zero
   hits. At 1M/96.5%/batch 2560/cap 2304, rates were 20.531/21.312 tok/s and median
@@ -100,9 +101,9 @@ explanations.64K was an intermediate milestone.
   free; C1 was 18.920, its saved repeat 21.084 and C2 21.966 tok/s.
 - At 1M/batch 2048/cap 1792, C1/C2 measured 18.804/19.996 tok/s with 795/760 MiB free.
   All pilots used 96.5%, matching counts and zero hits/preemptions. Small samples
-  during a build cannot rank these profiles. See results/context-batch-pilot.json.
+  during a build can't rank these profiles. See results/context-batch-pilot.json.
 - The source candidate passed 1M/96.5%/batch 2560/cap 2304 and its DSpark-off control.
-  After restoration,19 LAN checks passed. It was saved before interactive trials.
+  After restoration, 19 LAN checks passed. It was saved before interactive trials.
 
 ## Selected profile and remaining phases
 
@@ -112,7 +113,7 @@ remain 64K/95%; use explicit overrides. Clean checkpoint `recipe-1m-k5` is
 private; see [publication status](../publication/state.md).
 
 The [interactive report](../../docs/interactive-latency.md) records three 262K
-trials per profile and warmups. Both 96% caps passed 19 APIs and near-1M retrieval.
+trials per profile and warmups. Both 96% caps passed 19 API checks and near-1M retrieval.
 Cap 512 favors tools; cap 1792 favors coding. All outputs, hit differences,
 serving minima and single-trial near-1M limits are retained there. Cap 1792 also
 passed a 65.268-second restart and 19 post-long LAN checks.
@@ -139,5 +140,5 @@ docs/performance-scorecard.md.
 
 ## User-reported MXFP4 comparison
 
-Earlier MXFP4 results of 801K and possibly 1M are owner-reported, not reproduced
-here. Compare actual allocations and settings before explaining a gap.
+The owner reported 801K and possibly 1M with MXFP4. We haven't reproduced that
+run here, so compare allocations and settings before explaining a gap.

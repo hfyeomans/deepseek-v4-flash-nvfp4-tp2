@@ -1,12 +1,12 @@
 # Community recipe readiness
 
-Keep fixed-K5 and its findings. Give new users an ordered path through
-prerequisites, download, build, launch, checks and recovery. Review the complete
-workflow and fix reproduced defects without adding frameworks.
+Keep the working K5 runtime and measured findings. New users need a clear path
+through prerequisites, download, build, launch, checks and recovery. Review
+that whole path and fix reproduced problems without adding a framework.
 
 Finish review triage, regressions and reproducible local checks. Distinguish
 prerequisites from preinstalled tools, and label unsupported platforms/unrun
-checks. Synthetic API and 1M tests cannot establish broad accuracy or a
+checks. Synthetic API and 1M tests can't establish broad accuracy or a
 fresh-machine installation.
 
 - [x] Inspect build/launch, benchmark/client and documentation ownership.

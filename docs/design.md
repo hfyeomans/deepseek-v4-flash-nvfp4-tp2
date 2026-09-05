@@ -2,10 +2,10 @@
 
 ## Objective
 
-Serve the exact NVIDIA DeepSeek V4 Flash 0731 NVFP4 checkpoint on two RTX PRO
-6000 Blackwell Max-Q GPUs at TP=2. Publish a working recipe that explains its
-limits. Attempt 801K and 1M to learn what enables or blocks them, measuring
-memory, correctness and speed. The 64K result is an intermediate step.
+I wanted a working recipe for the exact NVIDIA DeepSeek V4 Flash 0731 NVFP4
+checkpoint on two RTX PRO 6000 Blackwell Max-Q GPUs at TP=2, with enough detail
+to learn from the process. The goal was to attempt 801K and 1M and explain the
+memory, correctness and speed limits we found.64K was a step along the way.
 
 ## Selected approach
 
@@ -14,9 +14,9 @@ paths, pinned dependencies and HTTP feature checks. Record model/runtime
 revisions with results. The final build must use public dependencies; an
 unidentified local image is useful only for exploration.
 
-Prefer upstream if it passes SM120 and mixed NVFP4/MXFP4 draft checks. Add small,
-attributed patches only for reproduced failures that configuration or released
-fixes cannot solve. A full fork would add maintenance.
+I'd keep this upstream if it passes the SM120 and mixed NVFP4/MXFP4 checks.
+When a reproduced failure needs a patch, keep it small and attributed. A full
+fork adds maintenance; configuration or a released fix may already solve it.
 
 ## Deployment flow
 
@@ -26,7 +26,7 @@ fixes cannot solve. A full fork would add maintenance.
 4. Fix reproduced failures individually and compare against baseline.
 5. Check APIs with DSpark on/off and two concurrent requests.
 6. Attempt 801,000- and 1,000,000-token windows. Save retrieval results or failures,
-   actual prompt lengths and output headroom. Test the model's1,048,576 ceiling
+   actual prompt lengths and output headroom. Test the model's 1,048,576 ceiling
    separately if useful. Use DSpark-off and bounded memory/offload experiments
    to investigate limits.
 7. Rebuild, restart and repeat acceptance.
@@ -43,7 +43,7 @@ fixes cannot solve. A full fork would add maintenance.
 ## Failure handling
 
 Keep the existing launcher until validation passes. Stop only this task's
-containers. A healthy endpoint cannot replace a failed feature check. Save
+containers. A healthy endpoint can't replace a failed feature check. Save
 failures for diagnosis and keep raw host logs out of Git.
 
 ## Publication gate

@@ -4,11 +4,11 @@
 client/build hardening, onboarding and CPU CI. Historical results and runtime
 patches remain unchanged. See [provenance](../../docs/provenance.md).
 
-Original history, research branches, split inventories and rollback tags remain
-in the private adaptive repo. The replacement recipe repo has clean refs;
-probed old research commits are unavailable. Source rebuild, 13 image CPU
-methods, GPU serving/restart/recovery and CPU CI passed. Publication remains
-paused for prose review, then visibility approval and an anonymous clone check.
+The private adaptive repo keeps original history, research branches, inventories
+and rollback tags. The replacement recipe has clean refs; old research commits
+checked against it are unavailable. Rebuild, 13 image CPU methods, GPU serving,
+restart/recovery and CPU CI passed. Keep publication paused for the owner's
+prose review. Visibility approval and an anonymous clone check still follow.
 See [release state](../release-readiness/state.md) and
 [qualification](../release-readiness/verification.md).
 

@@ -1,21 +1,24 @@
 # DeepSeek V4 Flash NVFP4 on two RTX PRO 6000 Max-Q GPUs
 
-A tested vLLM recipe for `nvidia/DeepSeek-V4-Flash-0731-NVFP4` on two NVIDIA
-RTX PRO 6000 Blackwell Max-Q GPUs, 96 GB each, at tensor parallelism 2.
-It includes build inputs, runtime patches, launch instructions, benchmark
-clients and findings. Download model weights separately.
+I wanted this model for everyday coding and tools, with room for very long
+inputs. I also wanted to understand what it took to reach 801K and 1M context
+on two GPUs. This repo turns that work into a recipe you can run and learn from:
+`nvidia/DeepSeek-V4-Flash-0731-NVFP4` on two NVIDIA RTX PRO 6000 Blackwell Max-Q
+GPUs, 96 GB each, at tensor parallelism 2. Build inputs, patches, clients and
+measurements are included; download the weights separately.
 
-**Selected everyday coding/tools profile: 1,000,000-token ceiling, 96% memory,
-batch budget 2,048, prefill cap 1,792, two request slots and fixed-K5 DSpark.**
-It passed near-1M synthetic retrieval, a warmed restart and 19 short API checks.
-These tests do not establish broad coding accuracy or capacity for two
-simultaneous 1M requests.
+**For everyday coding/tools, start with the tested 1,000,000-token ceiling,
+96% memory, batch budget 2,048, prefill cap 1,792, two slots and fixed-K5 DSpark.**
+DSpark proposes draft tokens for the main model to verify. This profile passed
+near-1M synthetic retrieval, a warmed restart and 19 short API checks. Broad
+coding accuracy and two simultaneous 1M requests still need testing.
 
 ## Build and use it
 
-Start with [your first deployment](docs/first-run.md) to check prerequisites,
-build the image and connect your client to the coding/tools endpoint. The
-[full running guide](docs/running.md) covers other profiles and experiments.
+Follow [your first deployment](docs/first-run.md) to prepare the host, build
+and check the image, then connect a client. Use the
+[running guide](docs/running.md) when you're ready to compare profiles or
+repeat the experiments.
 
 The launcher defaults to 64K / 95%; the selected profile needs explicit
 overrides. The secondary profile changes only the prefill cap to 512. It
@@ -24,10 +27,10 @@ coding. See [both launch commands and the tradeoff](docs/running.md#recommended-
 
 ## Acceleration benefits and costs
 
-The [performance scorecard](docs/performance-scorecard.md) tracks gains from
-the first working setup through the selected coding profile. This
-[matched DSpark on/off comparison](docs/primary-control-screen.md) holds the
-image, checkpoint and primary settings fixed:
+The [scorecard](docs/performance-scorecard.md) shows what each optimization
+actually bought us. For the selected profile, this
+[DSpark on/off test](docs/primary-control-screen.md) keeps the image, checkpoint
+and other settings fixed:
 
 | Workload | DSpark off | DSpark on | Observed benefit |
 |---|---:|---:|---|
@@ -39,7 +42,7 @@ These are medians of three observations. Concurrent DSpark-on trials ranged
 from 204.43 to 296.16 tok/s, with a median of 226.03 and no separate C2 warmup.
 Short-code first output rose from 75.7 to 84.4 ms despite faster completion.
 DSpark reduced the reporting worker's available KV budget from 11.43 to
-5.93 GiB. This sample cannot establish p95 latency or an optimum.
+5.93 GiB. This sample can't establish p95 latency or an optimum.
 
 The earlier matched 64K comparison measured about **95.5 tok/s with graphs
 alone and 174–209 with DSpark**, a **1.8–2.2×** gain. One two-request trial
@@ -47,18 +50,20 @@ reached **292.90 tok/s**, versus 168.55 without DSpark. Those 30–41-token
 prompts tell us about short-input speed. The scorecard keeps these historical
 results separate from the latest matched medians.
 
-For learning how the gains arise, see [DSpark activity and capabilities](docs/dspark-evaluation.md),
-[why the recipe uses K5](docs/dspark-k-and-verification.md),
-[diagnostic component profiles](docs/component-profiling.md), and
-[the matched measurement protocol](docs/optimization-evaluation.md).
+To understand where the gains come from, read
+[how we check DSpark](docs/dspark-evaluation.md),
+[why K5 is fixed](docs/dspark-k-and-verification.md),
+[where GPU time goes](docs/component-profiling.md) and
+[how to measure a fair comparison](docs/optimization-evaluation.md).
 
 ## Context, memory and feature findings
 
-Both 801K and near-1M synthetic retrieval goals were reached. In one mixed
-test, the selected profile completed a 998,869-token prompt in 513.759 seconds
-and an overlapping tool roundtrip in 32.035 seconds. Cap 512 took 539.998 and
-18.113 seconds respectively. These single trials do not establish general
-long-context accuracy or sustained throughput.
+We reached both synthetic retrieval goals. In one mixed test, the selected
+profile completed a 998,869-token prompt in 513.759 seconds and an overlapping
+tool roundtrip in 32.035 seconds. Cap 512 took 539.998 and 18.113 seconds.
+That's useful capacity, but tools can still take tens of seconds during a huge
+input. These single trials don't establish general long-context accuracy or
+sustained throughput.
 
 - [Profile tradeoffs](docs/interactive-latency.md): everyday coding versus tools
   overlapping long prefill, with all measured repeats.

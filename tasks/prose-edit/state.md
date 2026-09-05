@@ -1,9 +1,12 @@
 # Prose review
 
-Humanizer pass complete across 41 authored Markdown files. Main changes: shorter
-instructions, less repetition and clearer separation of historical plans from
-completed measurements. Tables, headings, code blocks, inline literals, link
-destinations and all tracked non-documentation files match the release checkpoint.
+Both passes are complete across the 41 existing documentation files. Humanizer
+is saved at `08b7a31`; Hank's technical voice follows it on `docs/concise-voice`.
+The release recovery point remains `0b67089`.
 
-Next: apply Hank's technical voice, check the final diff and save a second
-checkpoint. Publication remains paused for the owner's review.
+The docs keep the learning goal and working deployment steps while cutting
+repeated explanations. Tables, visuals, commands, source links and measured
+records are preserved. See [verification](verification.md).
+
+Review this branch before publication. The recipe remains private, and neither
+the default branch nor the adaptive repo changed during this edit.

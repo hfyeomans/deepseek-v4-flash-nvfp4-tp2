@@ -5,7 +5,7 @@
 The [pinned NVIDIA model](https://huggingface.co/nvidia/DeepSeek-V4-Flash-0731-NVFP4/tree/f1caa71142bd0be02f728c79f75042ac1e461579)
 has 43 main layers and three DSpark layers. Target experts use group-16 NVFP4;
 drafts retain group-32 MXFP4. Five draft positions and the 1,048,576 ceiling
-describe the checkpoint, not hardware validation. NVIDIA did not test
+describe the checkpoint, not hardware validation. NVIDIA didn't test
 speculation for this release.
 
 The installed encoder used older reasoning prefixes. CPU comparisons against
@@ -14,13 +14,13 @@ the 0731 low/high/max encoder reproduced the mismatch and verified the fix.
 ## Runtime provenance
 
 Buildx history identifies `vllm-sm120-dsv4:preview-20260804` as
-[jasl/vllm0f59188](https://github.com/jasl/vllm/tree/0f59188db1504b042ce621842bdde6c0fe862df6),
-target `vllm-openai`, CUDA 13.0.3, SM12.0,16 build jobs and eight NVCC threads.
+[jasl/vllm revision 0f59188](https://github.com/jasl/vllm/tree/0f59188db1504b042ce621842bdde6c0fe862df6),
+target `vllm-openai`, CUDA 13.0.3, SM12.0, 16 build jobs and eight NVCC threads.
 Sanitized provenance is in `results/`.
 
 Runtime versions: vLLM 20260804, Torch 2.13.0+cu130, Transformers 5.16.1,
 FlashInfer 0.6.16 and TVM FFI 0.1.11. All 2,175 shared Python files matched source;
-compiled binaries were not compared.
+compiled binaries weren't compared.
 
 ## Reproduced compatibility gaps
 
@@ -38,6 +38,6 @@ pinned model/runtime/hardware.
 
 ## User-reported MXFP4 comparison
 
-Earlier MXFP4 results of 801K and possibly 1M are owner-reported and have not
-been reproduced here. Compare actual weight/draft/KV allocations and launch
-settings before explaining a gap.
+The earlier MXFP4 run is a useful reference: the owner reported 801K and
+possibly 1M. We haven't reproduced it here. Check actual allocations and launch
+settings before explaining any difference.
