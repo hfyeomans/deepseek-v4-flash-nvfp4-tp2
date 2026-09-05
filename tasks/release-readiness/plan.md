@@ -1,15 +1,13 @@
 # Community recipe readiness
 
-The release keeps the tested fixed-K5 runtime and measured acceleration findings.
-A newcomer needs an ordered path from prerequisites and model download to build,
-launch, API checks and rollback. Review scripts, tests and documentation as one
-user workflow; fix reproducible defects without unnecessary shared frameworks.
+Keep fixed-K5 and its findings. Give new users an ordered path through
+prerequisites, download, build, launch, checks and recovery. Review the complete
+workflow and fix reproduced defects without adding frameworks.
 
-Acceptance: independent adversarial and duplication reviews are triaged; focused
-regressions cover fixes; local checks can be reproduced; setup steps identify
-what is required and what is already installed; unsupported platforms and unrun
-checks remain labeled. Existing synthetic feature checks and 1M capacity results
-must not become broad accuracy or clean-machine reproducibility claims.
+Finish review triage, regressions and reproducible local checks. Distinguish
+prerequisites from preinstalled tools, and label unsupported platforms/unrun
+checks. Synthetic API and 1M tests cannot establish broad accuracy or a
+fresh-machine installation.
 
 - [x] Inspect build/launch, benchmark/client and documentation ownership.
 - [x] Correct release-impacting findings and remove stale status claims.

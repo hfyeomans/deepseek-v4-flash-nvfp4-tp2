@@ -1,64 +1,56 @@
 # Fixed-K5 acceleration measurement protocol
 
-Status: **exact-primary DSpark on/off controls and diagnostic profiles complete**.
-The recipe keeps this protocol to explain its acceleration measurements and
-their limits. Historical baseline protocol commit `e25dba7` and rollback tag
+The primary DSpark controls and diagnostic profiles are complete. This is the
+protocol behind their acceleration measurements. Commit `e25dba7` and tag
 `baseline-1m-k5` refer to the private development archive; see
-[provenance](provenance.md). The clean recipe checkpoint is `recipe-1m-k5`.
-No serving profile changed during this screen.
+[provenance](provenance.md). The clean checkpoint is `recipe-1m-k5`. The selected
+profile stayed unchanged after testing.
 
-Results: [exact-primary controls](primary-control-screen.md) and
-[component profiling](component-profiling.md). The original primary service was
-restored and passed 19 API checks. These fixed-K5 results are also preserved as
-controls in the separate [adaptive research project](repository-boundaries.md).
+See [control results](primary-control-screen.md) and
+[component profiles](component-profiling.md). The restored primary service
+passed 19 API checks. The [adaptive project](repository-boundaries.md) retains
+these fixed-K5 baselines too.
 
 ## Primary matched controls
 
-Compare the same source-built image and checkpoint at TP2, 1M maximum context,
-96% memory budget, two request slots, batch 2,048, long-prefill cap 1,792,
-FP8 KV/block256 and FULL_DECODE_ONLY target graphs with maximum capture size16.
-Control A enables native K5 probabilistic DSpark/Marlin; control B omits
-speculative configuration. Actual graph sizes and available KV memory can
-change as a consequence of disabling speculation and must be recorded.
+Use the same image/checkpoint, TP2, 1M ceiling, 96% memory, two slots, batch 2,048,
+cap 1,792, FP8 KV/block 256 and FULL_DECODE_ONLY target graphs capped at 16.
+A enables K5 probabilistic DSpark/Marlin; B omits speculation. Record graph
+sizes and available KV, which change when speculation is disabled.
 
-Predeclared screening order: **A B / B A / A B** across three paired blocks.
-Every block retains one warmup and one measured short request per workload,
-one short C2 pair, one warmup and one measured 48K code request plus the
-existing client's other workloads and mixed short/long C2 pair. Each block
-also retains one warmup and one measured 262K long-prefill/tool-roundtrip probe.
-Thus each mode has three measured C1 observations per workload, three short
-C2 pairs and three measured mixed probes, with warmups in every block.
-This is a screen, not the five-block finalist protocol or a p95 estimate.
+The planned order was **A B / B A / A B**. Each block retained one warmup and
+one measured short request per workload, one short C2 pair, one warmup and one
+measured 48K code request, plus the long-code client's other workloads and
+mixed C2 pair. It also retained one warmup and one measured 262K/tool probe.
+Each mode therefore has three measured C1 observations per workload, three
+short C2 pairs and three mixed probes. This is smaller than the five-block
+finalist protocol and cannot estimate p95.
 
-Observed measurement limitation: C1 warmups did not warm the same-concurrency
-C2 case. Retain the three C2 trials and their onset variability. Before finalists,
-add a separate C2 warmup and distinguish cold onset from steady measurements.
-Record GPU clocks/throttling and more consistent cache/thermal history as well;
-the initial preserved on container started cooler with resident KV.
+C1 warmups did not separately warm C2. Keep all three C2 trials and their
+onset variation. Finalist tests need C2 warmups, separate cold/warm records,
+clock/throttling telemetry and more consistent thermal/cache history. The first
+on container started cooler with resident KV.
 
-Use unchanged `benchmark.py`, `mixed_probe.py`, `verify.py` and the frozen
-`benchmarks/prompts/code-48k.txt`. Benchmark requests use fresh cache salts,
-temperature0, seed42 and fixed 256 output tokens (short) or512 (long-code
-client). Reasoning mode remains workload-specific and fixed across controls.
-Mixed probes use independent fresh long prefixes, delay3 seconds and checked
-automatic tools; retain output counts and cache-hit differences rather than
-interpreting their timing as isolated scheduler cost.
+Use matched versions of `benchmark.py`, `mixed_probe.py`, `verify.py` and frozen
+`benchmarks/prompts/code-48k.txt`. Benchmarks use fresh salts, temperature 0,
+seed 42 and 256 output tokens for short clients or 512 for long-code clients.
+Reasoning stays fixed per workload. Mixed probes use fresh long prefixes,
+delay 3 seconds and checked automatic tools. Their variable outputs and hits
+prevent isolating scheduler cost.
 
-Capture before/after server metrics and both GPUs at two-second intervals.
-Reconcile all benchmark tokens including warmups/concurrent requests, require
-zero prefix hits for salted benchmarks, and retain failures. No source builds,
-kernel probes or profiling run alongside these measurements. The original
-primary container is preserved and restored after switching controls.
+Capture before/after metrics and both GPUs every two seconds. Reconcile tokens
+including warmups/pairs, require zero hits for salted benchmarks and retain
+failures. Run builds, kernel probes and profiling separately. Preserve and
+restore the original primary container.
 
 ## Diagnostic component profiles
 
-Profiling ran as separate diagnostic traffic, excluded from control timings.
-GPU kernel sums, CPU scheduling time and overlapping request-time sums are
-distinct. The profiles locate work but do not measure an uninstrumented critical
-path or predict an adaptive speedup. The inactive confidence head cannot be
-calibrated from fixed-mode API timings.
+Profiling is separate diagnostic traffic. Kernel sums, CPU time and overlapping
+request durations cannot be added into an uninstrumented critical path or
+adaptive speedup estimate. Fixed-mode API timings cannot calibrate the unused
+confidence head.
 
-The [manifest](../benchmarks/optimization-manifest.json) retains client hashes,
-settings, measurement limitations and links to the raw controls and restoration
-records. Additional adaptive compatibility, kernel work and candidate tests
-are owned by the [private research repository](repository-boundaries.md).
+The [manifest](../benchmarks/optimization-manifest.json) pins historical client
+hashes, settings, limitations and evidence, including service restoration. The
+[private research repo](repository-boundaries.md) owns adaptive compatibility,
+kernel changes and candidate tests.

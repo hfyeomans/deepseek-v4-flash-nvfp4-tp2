@@ -1,26 +1,21 @@
 # Recipe and adaptive development are separate projects
 
-This repository owns the tested fixed-K5 NVFP4 TP2 recipe: build provenance,
-runtime patches, launch profiles, API checks, benchmarks, performance scorecard,
-component profiles and measured memory/context tradeoffs.
+This repo owns the working fixed-K5 NVFP4 TP2 recipe: builds, patches, launch
+profiles, checks, benchmarks and measured speed/memory/context tradeoffs.
 
-Adaptive research, compatibility engineering and future experiments belong in
-the separate private adaptive project. Shared fixed-mode measurements remain
-here to explain acceleration benefits and costs. The research project retains
-the same observations as controls. A future candidate must be qualified and
-measured before its gains or losses become recipe recommendations.
+The private adaptive project owns compatibility research and future experiments.
+Both repos keep fixed-mode results: they explain acceleration here and serve
+as controls there. Test and measure candidates before recommending them.
 
-The recipe uses a clean snapshot history. Its original combined ancestry,
-research branch, split inventories and original rollback tag are archived in
-the private adaptive repository. The new `recipe-1m-k5` tag is a distinct recipe
-checkpoint, not a renamed historical experiment. See [provenance](provenance.md).
+The clean `recipe-1m-k5` snapshot is a new checkpoint. Original combined
+history, research branches, split inventories and the original rollback tag
+remain in the private archive. See [provenance](provenance.md).
 
-The recipe GitHub repository was replaced under the same name after local
-research preservation. Checks against the replacement report the probed old
-research commit IDs as unavailable; the adaptive archive stays private. The
-[publication record](../tasks/publication/state.md) tracks visibility and
-[release qualification](../tasks/release-readiness/verification.md) tracks live tests.
+After research was saved locally, GitHub's recipe repo was replaced under the
+same name. Probed old research commits were unavailable in the replacement.
+See [visibility status](../tasks/publication/state.md) and
+[live qualification](../tasks/release-readiness/verification.md).
 
-For use now, follow [build and launch](running.md#recommended-coding-profile),
-then [API validation](validation.md). For measured outcomes, see the
-[everyday coding scorecard](performance-scorecard.md#primary-everyday-codingtools-profile).
+Start with [launching](running.md#recommended-coding-profile) and
+[API checks](validation.md). The [everyday scorecard](performance-scorecard.md#primary-everyday-codingtools-profile)
+shows measured outcomes.

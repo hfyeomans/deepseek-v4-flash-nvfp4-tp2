@@ -6,48 +6,41 @@ This audit applies to vLLM commit
 
 ## Counts and streaming
 
-The client requests streamed usage and normally replaces dataset estimates with
-the server's actual prompt and completion counts. When usage is absent, it has
-tokenizer-based fallbacks; saved JSON does not identify that provenance. For the
-128K-input pilot, server metric deltas independently confirmed 262,144 prompt
-tokens and 1,024 output tokens across two requests, with no prefix-cache hits.
+The client requests streamed usage and usually replaces estimates with server
+token counts. Without usage it falls back to tokenization, but saved JSON does
+not identify which path supplied the counts. Server deltas independently
+confirmed 262,144 prompt and 1,024 output tokens across the two 128K pilot
+requests, with zero prefix hits.
 
-TTFT ends at the first stream event containing choices. TPOT divides elapsed
-generation time after that event by actual output tokens minus one. It is an
-average, including the effects of multi-token bursts. ITL measures time between
-stream events: with DSpark, an event may contain several tokens. In the C1 pilot,
-512-token outputs produced 298 and 212 ITL intervals. Those intervals are not
-individual-token observations.
+TTFT ends at the first stream event with choices. TPOT divides the remaining
+generation time by output tokens minus one. ITL measures gaps between stream
+events, which can carry several DSpark tokens. In the C1 pilot, 512-token outputs
+produced 298 and 212 ITL intervals. Those gaps are not per-token timings.
 
 Source: [streaming client and usage handling](https://github.com/jasl/vllm/blob/0f59188db1504b042ce621842bdde6c0fe862df6/vllm/benchmarks/lib/endpoint_request_func.py#L175),
 [metric calculation](https://github.com/jasl/vllm/blob/0f59188db1504b042ce621842bdde6c0fe862df6/vllm/benchmarks/serve.py#L587).
 
 ## Why the built-in mixed probe was rejected
 
-Our pilot sent two 131,072-input/512-output main requests at client concurrency
-one, with `--probe-request-rate 0.5`. Three tiny probes completed. Their reported
-median was **23.809 seconds**, but aggregate server timing did not support
-interpreting that as short-request server latency.
+The pilot sent two 131,072-input/512-output requests at concurrency one with
+`--probe-request-rate 0.5`. Three tiny probes reported a median **23.809 seconds**,
+which server timings did not support as short-request server latency.
 
-The source explains the discrepancy: main requests and probes share an HTTP
-connection pool capped at `max_concurrency`. Probes bypass the main semaphore,
-but they still need that connection. At concurrency one, the long response holds
-the sole connection; a probe's timer includes its client-side wait. We did not
-capture connection tracing, so we cannot assign an exact fraction of each delay.
-This measurement does not justify a server scheduling change.
-[Preserved pilot observation](../results/builtin-probe-measurement-failure.json).
+Probes bypass the request semaphore but share a connection pool capped at
+`max_concurrency`. At concurrency one, the long response holds the only
+connection, so probe timing includes client-side waiting. Without connection
+traces we cannot split that delay precisely. It is not evidence for changing
+the scheduler. See the [pilot record](../results/builtin-probe-measurement-failure.json).
 
-The probe loop also awaits each response before sleeping for the inverse of the
-rate. A value of 0.5 gives a two-second pause after completion, not an independent
-arrival every two seconds. The benchmark awaits the final probe and its sleep
-before stopping the main throughput timer. Main token totals exclude probes,
-while global speculative metric deltas include them.
+The probe loop waits for a response, then sleeps. Rate 0.5 means a two-second
+pause after completion, not arrivals every two seconds. The main throughput
+timer also waits for the final probe and its sleep. Main token totals exclude
+probes; global speculative counters include them.
 
-Use [the independent request-bound probe](../mixed_probe.py), with server
-running/waiting observations, for mixed-request responsiveness. Its own proof
-boundary is completion-call overlap; server admission and prefill timing still
-require separate evidence. Do not increase the main benchmark concurrency to
-work around the connection limit and describe the result as the same workload.
+Use [the independent probe](../mixed_probe.py) with server running/waiting
+observations. It measures completion-call overlap; admission and prefill still
+need server evidence. Raising benchmark concurrency to avoid the connection
+limit changes the workload.
 
 Source: [shared connector](https://github.com/jasl/vllm/blob/0f59188db1504b042ce621842bdde6c0fe862df6/vllm/benchmarks/serve.py#L808),
 [serial probe loop](https://github.com/jasl/vllm/blob/0f59188db1504b042ce621842bdde6c0fe862df6/vllm/benchmarks/serve.py#L978),
@@ -55,28 +48,25 @@ Source: [shared connector](https://github.com/jasl/vllm/blob/0f59188db1504b042ce
 
 ## Matched prompts without cross-run prefix hits
 
-A fresh `cache_salt` in `--extra-body` reaches the first cache-block hash and
-therefore its descendants. This permits identical seeded prompts across runs
-without reusing their prior cache keys. Save the salt explicitly with
-`--metadata`, because the benchmark does not automatically record extra body.
-It does not purge old entries or prevent reuse among requests within one run.
-Check the server's cache-hit deltas every time.
+A fresh `cache_salt` in `--extra-body` changes the first cache-block hash and
+its descendants, separating identical seeded prompts across runs. Record it
+with `--metadata`; extra body is not saved automatically. Salting neither
+purges old entries nor prevents reuse within a run. Check server hit deltas.
 
-The [runnable context/batch example](context-batch.md#run-a-benchmark-case)
-includes these controls. Keep warmed runtime state, build activity, request
-counts, sampling settings and actual input/output lengths with every comparison.
+The [context/batch example](context-batch.md#run-a-benchmark-case) includes
+these controls. Record warm state, build activity, request counts, sampling
+and actual input/output lengths.
 
 Source: [completion request salt](https://github.com/jasl/vllm/blob/0f59188db1504b042ce621842bdde6c0fe862df6/vllm/entrypoints/openai/completion/protocol.py#L185),
 [cache hash construction](https://github.com/jasl/vllm/blob/0f59188db1504b042ce621842bdde6c0fe862df6/vllm/v1/core/kv_cache_utils.py#L543).
 
 ## The recipe's chat benchmark
 
-`benchmark.py` is a separate, small chat-completions client. Its default remains
-one warmup per exact prose, code and reasoning prompt, followed by measured
-repeats and one concurrent prose/code pair. It requires streamed server usage,
-the requested completion count and a final `[DONE]` event; it has no estimated
-token-count fallback. First output means visible content or reasoning, not an
-empty stream event. End-to-end rates include prefill and stream completion.
+`benchmark.py` uses chat completions. It warms each exact prose/code/reasoning
+prompt, then runs repeats and one concurrent prose/code pair. It requires
+server usage, the requested output count and final `[DONE]`; token counts have
+no estimation fallback. First output means visible content or reasoning. Rates
+include prefill and stream completion.
 
 To compare the same longer coding prompt across DSpark configurations:
 
@@ -86,17 +76,15 @@ python3 benchmark.py --label dspark-long-code --tokens 512 --repeats 3 \
   --output long-code-dspark.json
 ```
 
-Use the identical UTF-8 file and arguments for the control. The output preserves
-the prompt, its SHA-256, actual usage, warmup observations and each request's
-fresh cache salt. Salts differ even between identical warmup/repeat/concurrent
-requests. Check server cache-hit deltas as live evidence; the two HTTP-boundary
-regression tests prove payload construction, not runtime cache isolation.
+Use the same UTF-8 file and arguments for the control. Results retain prompt
+bytes, SHA-256, usage, warmups and a unique salt for every request. Verify
+server hit deltas too: HTTP payload regressions check construction, not live
+cache isolation.
 
-The concurrent pair remains **prose plus code**. A long-code override therefore
-measures mixed short/long requests, not two long coding requests. Speculative
-counters span the entire run, including warmups and all workloads. Do not label
-their aggregate acceptance as long-code acceptance. Longer synthetic code is
-also not a broad coding-quality evaluation.
+The pair remains **prose plus code**, so a long-code override tests mixed
+short/long inputs. Speculative counters include all warmups and workloads;
+they cannot isolate long-code acceptance. Synthetic code also does not measure
+broad coding accuracy.
 
 Source: [chat request salt](https://github.com/jasl/vllm/blob/0f59188db1504b042ce621842bdde6c0fe862df6/vllm/entrypoints/openai/chat_completion/protocol.py#L475),
 [chat rendering forwards the salt](https://github.com/jasl/vllm/blob/0f59188db1504b042ce621842bdde6c0fe862df6/vllm/renderers/online_renderer.py#L440).

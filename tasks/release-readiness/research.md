@@ -1,34 +1,28 @@
 # Release findings
 
-Two independent reviews inspected the complete clean snapshot `c678eeb`, then
-cross-reviewed the fixes. The scope covered executable build/serve/client paths,
-state ownership, accidental repeated work, first-user instructions, SDLC checks
-and unsupported claims. No architectural expansion was justified.
+Two independent reviewers audited `c678eeb` and cross-checked fixes. They
+covered build/serve/clients, state ownership, duplication, onboarding, SDLC
+and unsupported claims. No architectural expansion was needed.
 
-The demonstrated defects were incomplete benchmark stream acceptance, omitted
-streaming diagnostics, colliding profiler report destinations, reverse patch
-application and a rollback image mismatch. Cross-review also caught an explicit
-server-error envelope being ignored and an onboarding command that launched a
-second container with the wrong image. See [resolution and evidence](review.md).
+Findings: incomplete stream acceptance/diagnostics, colliding report paths,
+reverse patching and a rollback-image mismatch. Cross-review caught ignored
+server errors and an onboarding command using the wrong image for a second
+container. See [resolutions](review.md).
 
-The first-run prerequisite instructions were checked against the official
+Prerequisites were checked against the
 [HF CLI guide](https://huggingface.co/docs/huggingface_hub/guides/cli) and
-[NVIDIA Container Toolkit installation guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
-on September 5, 2026. CLI setup, GPU visibility, checkpoint reuse and the source
-build passed rehearsal on the original Linux host. Existing drivers and
-Docker layers make this a same-host rehearsal, not an independent clean-machine
-installation. Raw host evidence stays outside the published repository.
+[NVIDIA Container Toolkit guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
+on September 5, 2026. CLI setup, GPU visibility, cache reuse and source build
+passed on the existing host. Installed drivers and cached layers prevent
+calling it a fresh-machine test. Raw host logs remain private.
 
 ## Ownership decision
 
-The API client owns stream transport, snapshots, closure and one observation
-record. Feature checks retain their own semantic assertions. The benchmark
-keeps its separate timing path because general feature observations would change
-the measured workload. This fixes four missing observation paths without adding
-a forwarding layer or a second request/state owner. Revert the shared boundary
-if it causes duplicate dispatch, changes cancellation or loses partial evidence;
-regressions exercise those conditions.
+The API client owns transport, request snapshots, closure and one observation.
+Feature checks own assertions. Benchmarks keep separate timing semantics.
+This fixes four missing record paths without another request owner or forwarding
+layer. Regressions cover duplicate dispatch, cancellation and partial evidence;
+revert the boundary if those break.
 
-Profiler analysis validates report destinations before writing. Existing result
-formats and filenames remain unchanged for valid input. Frozen baseline copies
-and historical measurement records are intentional provenance, not dead code.
+Profiler destinations are checked before writes; valid output formats stay
+unchanged. Frozen baselines and historical results are deliberate evidence.

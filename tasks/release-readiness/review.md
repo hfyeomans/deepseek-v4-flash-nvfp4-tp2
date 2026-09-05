@@ -1,9 +1,8 @@
 # Adversarial release review
 
-Reviewed the complete `c678eeb` snapshot and the subsequent release changes.
-Two independent reviewers inspected executable behavior, newcomer commands,
-duplication/state ownership, SDLC structure and unnecessary complexity. Each
-reviewer cross-checked the other's changes; the main task ran the common suite.
+Two independent reviewers audited `c678eeb` and release changes for behavior,
+onboarding, duplication, state ownership and SDLC. They cross-checked fixes;
+the main task ran the shared suite.
 
 | Finding | Resolution | Evidence |
 |---|---|---|
@@ -18,20 +17,16 @@ reviewer cross-checked the other's changes; the main task ran the common suite.
 
 ## Verification and scope
 
-The local suite passes **28 test methods**: five benchmark, five mixed-probe,
-eight observation, nine trace-analysis and one real patch-command method with
-three Docker-stage subcases. Bash syntax and ShellCheck pass. The new local
-runner initially exposed a Python import-path mistake; using module discovery
-fixed it before release. Historical results, input manifests, prompts and all
-three runtime patch files retain their original bytes.
+All **28 methods** pass: five benchmark, five mixed-probe, eight observation,
+nine trace-analysis and one patch-command method with three Docker subcases.
+Bash/ShellCheck pass. Module discovery fixed an initial test-runner import
+error. Historical results, manifests, prompts and three runtime patches are
+byte-identical.
 
-No critical runtime defect was established in the pinned default launch. No
-confirmed duplicate generation dispatch, normal state update or competing
-implementation was found. The review kept the small script-based structure;
-it did not add an application framework or move adaptive code into this recipe.
+Review found no critical default-launch defect, duplicate generation/state
+update or competing implementation. The small script structure remains;
+adaptive code stays in its own repo.
 
-CPU fixtures do not prove GPU compatibility, model quality, large-context
-accuracy or acceleration. [Deployment qualification](verification.md) records
-the actual rebuild, serving checks and their limits. Remaining publication
-administration belongs in [current state](state.md); passing tests alone does not
-mean the GitHub repository has been made public.
+CPU tests cannot establish GPU compatibility, model accuracy or acceleration.
+See [deployment qualification](verification.md) for live evidence and
+[release state](state.md) for publication status.

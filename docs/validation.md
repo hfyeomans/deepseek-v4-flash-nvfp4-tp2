@@ -1,7 +1,7 @@
 # Validation requirements
 
-Every result records runtime/image identity, model revision, hardware, context,
-concurrency, generation settings, and whether DSpark and prefix caching are active.
+Record image/runtime identity, model revision, hardware, context, concurrency,
+generation settings, DSpark and prefix-cache state with each result.
 
 | Feature | Observable pass condition |
 |---|---|
@@ -24,34 +24,28 @@ concurrency, generation settings, and whether DSpark and prefix caching are acti
 
 ## DSpark performance
 
-Compare identical prompts and generation settings with speculation on and off.
-Use real completion-token counts and elapsed time; never count streamed chunks as
-tokens. Report time to first token separately from decode and total request time.
-Warmup and prefix-cache conditions must be matched. Compare multiple prompt types
-because acceptance depends on the workload. Record concurrency-one latency and
-concurrency-two aggregate throughput separately.
+Match prompts, generation, warmups and prefix-cache state with DSpark on/off.
+Use actual output counts and elapsed time; streamed chunks may contain several
+tokens. Report first output, decode and total time separately. Test several
+prompt types, single-request latency and two-request aggregate throughput.
 
-Speculative decoding does not establish correctness merely by increasing speed.
-Check functional outputs against the non-speculative baseline and distinguish
-sampling variation from malformed or corrupted responses. Do not promise exact
-token equality across kernels unless that property was separately demonstrated.
+Compare functional outputs with the non-speculative baseline. Distinguish
+sampling variation from malformed or corrupted responses. Exact token equality
+across kernels needs separate proof.
 
 ## Historical request-recording limitation
 
-The original verifier stored a mutable request object. Later tool-turn messages
-could therefore appear inside an earlier saved request. Affected observations
-are explicitly annotated: their response, server usage and timing remain valid,
-but the saved request is not an exact replay payload. The fix snapshots request
-data before transmission. An HTTP-boundary regression failed before the fix and
-passes afterward, including later transcript and nested tool-definition changes.
-See [regression evidence](../results/request-recording-regression.json).
+The old recorder retained mutable requests, so later tool turns could appear
+in earlier saved payloads. Affected records are marked; responses, usage and
+timings remain valid, but those payloads cannot be replayed exactly. The fix
+snapshots data before sending. An HTTP regression failed before the fix and
+passes after it, including nested tool changes. See
+[evidence](../results/request-recording-regression.json).
 
 ## Mixed tool responsiveness
 
-The independent mixed probe can reuse the automatic tool check. Five local
-regressions cover delayed prompt preparation, completed-long rejection, fresh
-prefixes, both actual tool payloads and an incorrect tool-result answer. The two
-new tool tests failed before the option existed and pass afterward. A separate
-review delayed the second tool response past the long request: functional checks
-passed, but the overall overlap check correctly failed. Server admission and
-prefill remain separately observed properties, not conclusions from client timing.
+The independent probe reuses the automatic tool check. Five regressions cover
+delayed preparation, early long completion, fresh prefixes, both tool payloads
+and wrong tool-result answers. The two tool cases failed before implementation
+and passed afterward. A separate delayed-second-response check passed functionally
+but correctly failed overlap. Server admission/prefill still need server evidence.

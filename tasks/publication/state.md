@@ -1,19 +1,16 @@
 # Recipe publication state
 
-The `recipe-1m-k5` clean checkpoint contains usable fixed-K5 profiles and the
-recorded acceleration findings. The release-readiness changes add client/build
-hardening, a first-run guide and CPU CI. Historical measurement files and runtime
-patch contents are unchanged. See [snapshot provenance](../../docs/provenance.md).
+`recipe-1m-k5` preserves tested profiles and findings. Later release fixes add
+client/build hardening, onboarding and CPU CI. Historical results and runtime
+patches remain unchanged. See [provenance](../../docs/provenance.md).
 
-Original combined history, the prior research branch, split inventories and the
-original rollback tag are maintained in the separate private adaptive repository.
-History-separation administration is recorded there. The recipe GitHub repository
-was replaced under the same name with clean refs; old research commit probes
-return unavailable. A separate source rebuild and 13 image CPU checks passed.
-GPU serving/restart/restoration qualification and CPU CI passed. The recipe
-remains private until the pending visibility change and anonymous clone check. See
-[current release state](../release-readiness/state.md) and
-[qualification evidence](../release-readiness/verification.md).
+Original history, research branches, split inventories and rollback tags remain
+in the private adaptive repo. The replacement recipe repo has clean refs;
+probed old research commits are unavailable. Source rebuild, 13 image CPU
+methods, GPU serving/restart/recovery and CPU CI passed. Publication remains
+paused for prose review, then visibility approval and an anonymous clone check.
+See [release state](../release-readiness/state.md) and
+[qualification](../release-readiness/verification.md).
 
 See [repository boundaries](../../docs/repository-boundaries.md),
 [recipe verification](../recipe-snapshot/verification.md), and

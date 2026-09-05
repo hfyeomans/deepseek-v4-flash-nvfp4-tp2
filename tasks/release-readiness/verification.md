@@ -1,10 +1,9 @@
 # Release deployment qualification
 
-Status: **passed September 5, 2026**, using reviewed runtime inputs and clients
-at `9cedab8225c03fe2500636b8bb32a982008f4c38`. This is a fresh recipe/source
-working directory and a distinct rebuilt image on the original Linux GPU host, with existing
-drivers, model cache and reusable Docker layers. It is not an independent
-clean-machine installation or the user's own walkthrough.
+Passed September 5, 2026 with runtime inputs/clients at
+`9cedab8225c03fe2500636b8bb32a982008f4c38`. A new working directory and rebuilt
+image used the original Linux host's drivers, model cache and Docker layers.
+This was not an independent fresh-machine install or the owner's walkthrough.
 
 - Source build: passed from pinned public source `0f59188db1504b042ce621842bdde6c0fe862df6`
   with `APT_HTTPS_IPV4=1 BUILD_NETWORK=host` and separate image names.
@@ -34,14 +33,13 @@ clean-machine installation or the user's own walkthrough.
 - [CPU CI passed](https://github.com/hfyeomans/deepseek-v4-flash-nvfp4-tp2/actions/runs/33985710528).
   Publication status is tracked [separately](../publication/state.md).
 
-The rebuilt image is
+Rebuilt image:
 `sha256:ed67a87a0cb1f5e1d337613add7c4255c1c9a5158d6fb026e243344b4fb5f817`.
-The four checked runtime files and vLLM/Torch/FlashInfer/TVM FFI versions match
-the preserved image. Both candidate startups reported 5.93 GiB available KV,
-1,135,251 cache tokens and 0.10 GiB decode graph allocation. This does not prove
-two simultaneous 1M requests. No out-of-memory text appeared in the captured
-candidate log; shutdown emitted Python resource-tracker warnings. One restart
-and bounded synthetic traffic do not establish long-duration stability.
+Four runtime files and vLLM/Torch/FlashInfer/TVM FFI versions match the preserved
+image. Both startups reported 5.93 GiB KV,1,135,251 cache tokens and 0.10 GiB
+graphs; two full-1M requests remain untested. Captured logs contain no OOM text,
+but shutdown emitted resource-tracker warnings. One restart and synthetic
+traffic cannot establish long-term stability.
 
 [Machine-readable summary](../../results/release-qualification/summary.json),
 [first features](../../results/release-qualification/candidate-features.json),
@@ -52,6 +50,6 @@ and bounded synthetic traffic do not establish long-duration stability.
 retain exact values and client/build hashes. Raw host logs remain in local
 private evidence storage; synthetic feature observations are included here.
 
-No new acceleration comparison or near-1M quality claim is made by this release
-check. The earlier measured scorecard and 801K/near-1M observations remain
-historical evidence at their recorded image and client revisions.
+This release check adds no acceleration comparison or near-1M quality result.
+Earlier scorecard and 801K/near-1M evidence retain their recorded image/client
+revisions.

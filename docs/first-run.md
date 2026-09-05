@@ -1,13 +1,13 @@
 # Your first deployment
 
-Run these steps in a terminal on the Linux GPU host. This recipe was tested on
-two RTX PRO 6000 Blackwell Max-Q cards, 96 GB each, at TP=2. The measured host had
-246 GiB system RAM and driver 610.57.04; these observations are not minimum
-requirements for every compatible machine. Other GPU architectures are untested.
+Run these steps on the Linux GPU host. We tested two RTX PRO 6000 Blackwell
+Max-Q cards, 96 GB each, at TP=2, with 246 GiB system RAM and driver 610.57.04.
+RAM and driver values describe the test host; they are not minimum requirements.
+Other GPU architectures are untested.
 
-The source build and model download are substantial. Weights alone occupy
-175,550,788,904 bytes; allow more space for Docker layers, source and kernel
-caches. Check both the model disk and Docker's disk before starting.
+Weights occupy 175,550,788,904 bytes. Allow additional disk space for Docker
+layers, source and kernel caches. Check free space on both the model and Docker
+disks before starting.
 
 ## 1. Check the machine
 
@@ -22,13 +22,12 @@ curl --version
 df -h
 ```
 
-You need Linux x86_64, Git, curl, Python 3.10+, Docker with BuildKit and permission to
-run `docker` as your login user. Seeing both GPUs in `nvidia-smi` does not prove
-Docker can use them. If Docker or GPU access is missing, complete the official
+You need Linux x86_64, Git, curl, Python 3.10+, Docker with BuildKit and permission
+to run `docker` as your login user. Check GPU access inside Docker even if
+`nvidia-smi` works on the host. If needed, follow the official
 [Docker Engine installation](https://docs.docker.com/engine/install/) and
 [NVIDIA Container Toolkit setup](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
-with your administrator. Do not restart a working Docker daemon as a routine
-recipe step; that can interrupt other containers.
+with your administrator. Restarting Docker can interrupt other containers.
 
 Verify Docker GPU visibility using the recipe's pinned CUDA base:
 
@@ -38,7 +37,7 @@ docker run --rm --gpus all \
   nvidia-smi
 ```
 
-Both cards should appear. Stop here and resolve access errors before building.
+Both cards should appear. Resolve access errors before building.
 
 ## 2. Get the recipe and checkpoint
 
@@ -56,14 +55,13 @@ export HF_CACHE="$HOME/.cache/huggingface"
 hf download "$MODEL" --revision "$REVISION" --cache-dir "$HF_CACHE/hub"
 ```
 
-If Ubuntu reports that `venv` is unavailable, install `python3-venv` first.
-The [official HF CLI guide](https://huggingface.co/docs/huggingface_hub/guides/cli)
-describes installation and authentication; 1.30.0 is the CLI package version
-used in this rehearsal. An existing complete pinned cache
-can be reused; no GGUF conversion or second draft download is required.
-`HF_CACHE` names the parent of `hub`, which the launcher mounts into Docker.
-Set it consistently when downloading and serving. Keep these exports in the
-same terminal, or set them again after reconnecting.
+If Ubuntu lacks `venv`, install `python3-venv`. The
+[HF CLI guide](https://huggingface.co/docs/huggingface_hub/guides/cli) covers
+installation and authentication; this rehearsal used package version 1.30.0.
+Reuse a complete pinned cache if you have one. No GGUF conversion or separate
+draft download is needed. `HF_CACHE` is the parent of `hub`; use the same value
+for downloading and serving. Keep these exports in this terminal or set them
+again after reconnecting.
 
 ## 3. Build and check the image
 
@@ -73,13 +71,12 @@ bash build.sh > results/raw/build.log 2>&1
 docker image inspect "$FINAL_IMAGE" --format '{{.Id}}'
 ```
 
-The build must exit successfully. In another terminal, `tail -f
-results/raw/build.log` shows progress. The default is 16 build jobs and 8 NVCC
-threads; reduce `BUILD_JOBS` and `NVCC_THREADS` if your machine needs less
-parallel compilation. If Ubuntu HTTP downloads stall as they did on the test
-host, retry with `APT_HTTPS_IPV4=1 BUILD_NETWORK=host bash build.sh`, saving a
-separate log. This retains the signed repositories; see
-[the diagnosed failure](troubleshooting.md#slow-ubuntu-package-downloads-during-the-public-rebuild).
+Wait for a successful build exit. In another terminal, `tail -f
+results/raw/build.log` shows progress. Defaults are 16 build jobs and 8 NVCC
+threads; lower `BUILD_JOBS` and `NVCC_THREADS` to reduce compilation load. If
+Ubuntu HTTP downloads stall, retry with
+`APT_HTTPS_IPV4=1 BUILD_NETWORK=host bash build.sh` and a separate log. This
+keeps the signed repositories; see [the diagnosed failure](troubleshooting.md#slow-ubuntu-package-downloads-during-the-public-rebuild).
 
 Run the CPU tests inside your newly built image before using its GPUs:
 
@@ -96,14 +93,13 @@ docker run --rm --entrypoint bash \
     done'
 ```
 
-All 13 methods must pass. These validate patched CPU behavior and checkpoint
-metadata, not GPU inference.
+All 13 methods must pass. They check patched CPU behavior and checkpoint
+metadata; GPU validation comes next.
 
 ## 4. Launch your everyday coding/tools profile
 
-Let any existing requests finish and stop the old model container first. Both
-GPUs are needed; do not start a second copy alongside a model using their memory.
-Keep the old container and image so you can restart them if needed.
+Let existing requests finish, then stop the old model container. This recipe
+needs both GPUs. Keep the old container and image for recovery.
 
 ```bash
 IMAGE="$FINAL_IMAGE" CONTAINER_NAME=dsv4-first-run \
@@ -114,14 +110,12 @@ MAX_BATCHED_TOKENS=2048 MAX_NUM_SEQS=2 \
 docker logs -f dsv4-first-run
 ```
 
-Use a previously unused kernel-volume name for your first qualification. Keep
-it for subsequent restarts. Wait for **Application startup complete**; weight
-loading alone is insufficient. Ctrl-C leaves the detached server running.
-The fresh-cache rehearsal took about nine minutes to first readiness, and some
-new request shapes compiled afterward. CPU compilers can be busy while GPU
-utilization is low; periodic shared-memory wait messages alone do not prove a
-hang. The [qualification record](../tasks/release-readiness/verification.md)
-retains the exact scope and timings.
+Use a new kernel-volume name for first qualification, then keep it for
+restarts. Wait for **Application startup complete**. Ctrl-C leaves the detached
+server running. The fresh-cache rehearsal took about nine minutes to readiness;
+some later request shapes still needed compilation. Busy CPU compilers with
+low GPU use and periodic shared-memory wait messages do not, alone, indicate a
+hang. See the [qualification timings](../tasks/release-readiness/verification.md).
 
 ```bash
 curl --fail http://127.0.0.1:8000/health
@@ -132,10 +126,10 @@ curl --fail http://127.0.0.1:8000/v1/chat/completions \
 python3 verify.py --output results/raw/first-run-features.json
 ```
 
-Health returns HTTP 200 with an empty body; `/v1/models` lists `dsv4-nvfp4`.
-The short feature suite should pass all 19 checks. It covers reasoning, tools,
-streaming and other APIs, but does not establish broad coding accuracy, 1M
-retrieval or DSpark acceleration by itself.
+Health should return HTTP 200 with an empty body; `/v1/models` should list
+`dsv4-nvfp4`. All 19 short feature checks should pass. They test APIs, including
+reasoning, tools and streaming. Coding accuracy, 1M retrieval and DSpark speed
+need separate measurements.
 
 ## 5. Reconnect, recover and choose the next check
 
@@ -146,19 +140,17 @@ docker restart dsv4-first-run
 docker logs -f dsv4-first-run
 ```
 
-Wait for startup again, then repeat health and the feature suite with a new
-output filename. A client on this host uses `http://127.0.0.1:8000/v1` and model
-`dsv4-nvfp4`. For a client on another machine, configure the LAN binding using
-[the server instructions](running.md#start-the-server).
+Wait for startup, then repeat health and the feature suite with a new output
+filename. Connect a local client to `http://127.0.0.1:8000/v1` with model
+`dsv4-nvfp4`. For another machine, follow the
+[LAN binding instructions](running.md#start-the-server).
 
-You can now use the coding profile. The [full running guide](running.md) adds
-benchmark comparisons, DSpark counters, optional 801K/1M probes and the
-secondary profile for tools during long input processing. A 1M configured limit
-does not prove two simultaneous full-window requests will fit. The measured
-near-1M mixed run took about 514 seconds, so start large-input experiments only
-when you can let them finish. For rollback, use the
-[saved-container or explicitly tagged rebuild instructions](running.md#preserved-baseline-and-rollback).
+The coding profile is ready to use. The [running guide](running.md) covers
+benchmarks, DSpark counters, 801K/1M probes and the secondary profile. Budget
+time for large probes: the measured near-1M mixed run took about 514 seconds.
+Two full-window requests have not been qualified. For recovery, use the
+[saved container or tagged rebuild](running.md#preserved-baseline-and-rollback).
 
-Our [release validation record](../tasks/release-readiness/verification.md)
-states which steps were rehearsed on the existing host. An independent fresh
-machine installation and your own first-person walkthrough are separate checks.
+The [release record](../tasks/release-readiness/verification.md) identifies the
+steps rehearsed on the existing host. An independent fresh-machine installation
+and the owner's first walkthrough remain untested.

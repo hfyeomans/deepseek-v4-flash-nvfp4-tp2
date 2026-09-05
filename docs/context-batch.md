@@ -1,15 +1,13 @@
 # Choosing context and batch size from measurements
 
-The learning question is: **how much prompt-processing speed or concurrency do
-we gain by accepting a shorter maximum conversation?** The 801,000- and
-1,000,000-token windows remain attempted goals. Smaller windows are useful
-alternatives to measure, and a failed configuration is worth recording.
+Reducing context may free enough memory for faster prefill or more concurrent
+work. This plan tests that tradeoff alongside the original 801,000- and
+1,000,000-token goals. Keep failed configurations in the results too.
 
-The default workload is **interactive coding and tools, with occasional very
-long inputs**. Prioritize first-output delay, generation and tool round trips,
-including short requests arriving during a long prefill. Maximum aggregate
-throughput alone does not decide the default. Retaining 1M with a modest prefill
-chunk may be more useful than a smaller window with a larger batch; measure it.
+For **interactive coding and tools, with occasional long inputs**, prioritize
+first output, completion and tool latency during prefill. A 1M window with
+smaller chunks may serve this workload better than a smaller window with
+higher aggregate throughput.
 
 ## Three different settings
 
@@ -19,22 +17,20 @@ chunk may be more useful than a smaller window with a larger batch; measure it.
 | `max_num_batched_tokens` | Token budget per scheduling step, shared by active requests | Larger temporary and cache working buffers; longer steps can delay other requests |
 | `max_num_seqs` | Maximum active request slots | More simultaneous histories and decode work |
 
-Batch tokens and simultaneous requests are different knobs. A 4,096-token batch
-does not mean 4,096 users. In these first comparisons, keep two request slots and
-measure one versus two active requests separately.
+A 4,096-token batch is a per-step token budget, not 4,096 users. Keep two
+request slots and measure one versus two active requests separately.
 
-Lowering the configured window does not necessarily lower idle GPU memory:
-vLLM allocates its KV pool from the remaining utilization budget. It lowers the
-memory needed to admit a maximum-length request, and may reduce non-KV buffers.
-That can make a larger batch feasible. Each configuration still needs its own
-startup profile and a real request.
+A shorter window need not lower idle GPU memory: vLLM still fills the KV pool
+from its budget. It reduces maximum-request admission needs and may shrink
+other buffers, potentially allowing a larger batch. Reprofile and serve a real
+request for each setting.
 
 ## What the pinned source predicts
 
-These are **per-GPU conservative KV admission requirements**, not total GPU
-memory, observed free memory, or speed predictions. They apply to this pinned
-model/source with DSpark five, asynchronous scheduling, FP8 KV, block size 256,
-and two request slots. Model weights and other allocations are additional.
+These are **conservative KV admission requirements per GPU** for the pinned
+model/source, K5 DSpark, asynchronous scheduling, FP8 KV, block 256 and two slots.
+Weights and other allocations are additional. The table does not predict free
+memory or speed.
 
 | Total context limit | Batch 2,048 | Batch 2,560 | Batch 4,096 | Batch 6,144 | Batch 8,192 |
 |---|---:|---:|---:|---:|---:|
@@ -50,23 +46,21 @@ required_bytes = (ceil(context_limit / 256) + 13 * batch_tokens / 16 + 26)
                  * 1,099,584
 ```
 
-The context term represents history. The batch term includes compression and
-sliding-window working space for two in-flight asynchronous batches. The stride
-is the conservative padded group size used in startup admission; actual packed
-pool allocation uses a different stride. This is not a generic transformer
-KV-bytes-per-token formula, and TP=2 does not make two independent pools additive.
-See [the full memory analysis](context-memory.md) and
-[pinned admission implementation](https://github.com/jasl/vllm/blob/0f59188db1504b042ce621842bdde6c0fe862df6/vllm/v1/core/kv_cache_utils.py).
+Context charges for history; batch charges cover compression and sliding-window
+workspaces for two in-flight asynchronous batches. The stride is padded for
+admission; actual packed allocation uses another stride. This model-specific
+formula cannot be used as generic KV bytes/token, and TP=2 pools are not
+additive. See [memory details](context-memory.md) and
+[admission code](https://github.com/jasl/vllm/blob/0f59188db1504b042ce621842bdde6c0fe862df6/vllm/v1/core/kv_cache_utils.py).
 
-For example, reducing 1M to 801K saves about **0.797 GiB** of admission space,
-while increasing batch 2,048 to 4,096 costs **1.704 GiB**. That small context
-reduction alone does not buy a doubled batch. Reducing to 524,288 makes batch
-4,096 a more plausible candidate. Neither statement predicts throughput.
+Dropping 1M to 801K saves **0.797 GiB** in admission, while doubling batch 2,048
+to 4,096 costs **1.704 GiB**. That context reduction alone cannot cover the batch
+increase. At 524,288, batch 4,096 is more plausible; speed still needs measuring.
 
 ## Bounded test matrix
 
-Start with the following candidates, subject to startup profiling. These rows
-are a test plan, not recommended or benchmarked configurations.
+This initial candidate matrix requires startup profiling. The later pilot
+results appear below; inclusion here is not a recommendation.
 
 | Context | Batch | Long-prefill cap | Purpose |
 |---|---:|---:|---|
@@ -77,23 +71,20 @@ are a test plan, not recommended or benchmarked configurations.
 | 262,144 | 4,096 | 3,840 | Isolate a further context reduction |
 | 262,144 | 6,144 | 5,888 | Explore a larger batch if its startup profile fits |
 
-With DSpark five and two slots, eight tokens are reserved from the nominal
-batch. These caps leave 248 scheduled tokens for other work. The cap also
-applies when the long request is alone, so record it as part of the performance
-configuration. Two long requests can still occupy both slots; this is not a
-general priority guarantee.
+K5 with two slots reserves eight tokens from the nominal batch. These caps
+leave 248 scheduled tokens for other work, even when the long request is
+alone. Record the cap with timings. Two long requests can still fill both
+slots, so this does not guarantee priority for short work.
 
-Use a common memory utilization for matched rows where feasible. If a row
-requires another utilization or cannot start, label that change or failure;
-do not silently compare it as if only the batch changed.
+Match memory utilization where possible. Label any changed budget or startup
+failure so a comparison does not imply that only batch size changed.
 
 ## Workloads and metrics
 
-First use the same **131,072-token input and 512-token output** across all rows.
-This fits each proposed window and avoids confusing a shorter input with a
-faster configuration. Warm kernels with a different prompt, use fresh/reset
-prefixes, and keep seeds, image, clocks, speculation, and load controlled.
-Repeat measurements; save individual results as well as medians.
+Use **131,072 input tokens and 512 output tokens** across all rows so every
+profile processes the same length. Warm with a different prompt, separate
+prefixes and control seed, image, clocks, speculation and load. Save all
+repeats alongside medians.
 
 | Measurement | Decision it supports |
 |---|---|
@@ -106,51 +97,39 @@ Repeat measurements; save individual results as well as medians.
 | Proposed/accepted draft tokens | Is DSpark still active, and how does acceptance change? |
 | Retrieval, reasoning, tools and structured output checks | Do the tested features still work? |
 
-For short probes, report individual latencies and enough repeated observations
-before treating p50/p95 as stable. Two observations cannot establish a meaningful
-tail-latency guarantee. Prefill metrics require isolated requests or explicit
-per-request attribution; aggregate counters during mixed tests include all work.
+Save individual probe latencies; two samples cannot establish p50/p95 stability.
+Isolate prefill requests or attribute work per request, since mixed global
+counters include every call.
 
-TTFT includes queueing and input processing, so it describes the user's initial
-wait. Decode time per output token describes generation after output begins.
-The benchmark's aggregate output throughput divides all output tokens by the
-whole run duration, including input processing. A long input can therefore have
-low end-to-end output throughput while still decoding quickly after its first
-token. Keep those rates separate.
+TTFT measures the initial wait, including queueing and input processing. Decode
+time/token measures generation afterward. Aggregate output throughput divides
+all output tokens by the full run time. A long input can therefore have low
+end-to-end throughput despite fast generation once output starts.
 
-With DSpark, one streamed event can carry several tokens. Inter-event gaps
-describe display cadence; counting streamed chunks or taking the reciprocal of
-their average gap does not establish token throughput. Use actual completion
-token counts and the appropriate elapsed interval.
+DSpark can stream several tokens per event. Event gaps describe display cadence;
+use actual completion-token counts and the relevant elapsed time for throughput.
 
-Then run near-limit retrieval separately. Record actual prompt tokens and leave
-room for reasoning and output. A configured 1M window, a successful 998K-input
-retrieval, a fast 128K workload, and broad long-context accuracy are four
-different claims.
+Test near-limit retrieval separately, recording actual input tokens and reserving
+reasoning/output space. A configured 1M window, successful 998K retrieval, fast
+128K processing and broad long-context accuracy each need their own evidence.
 
 ## What we give up
 
-A shorter window rejects conversations that no longer fit and leaves less room
-for long generated answers. It does not inherently disable DSpark, CUDA graphs,
-reasoning, tools, structured output, or change model precision on fitting
-requests. Those features still need acceptance checks on the chosen profile.
+A shorter window rejects longer conversations and leaves less output room.
+Fitting requests keep the same model precision, DSpark, graphs, reasoning, tools
+and structured output. Recheck those features on the chosen profile.
 
-A larger batch may improve prefill throughput while increasing temporary memory
-or the duration of each scheduling step. The outcome can favor an interactive
-profile and a separate bulk/large-document profile. Choose them from measured
-tradeoffs, rather than declaring the largest batch universally fastest.
+A larger batch may speed prefill while using more temporary memory and making
+steps longer. Measure that tradeoff before choosing everyday and bulk-input
+profiles.
 
 Current observations and their limitations are in [performance.md](performance.md).
 
 ## Run a benchmark case
 
-After launching one candidate and checking `/health`, use the benchmark bundled
-in that same image. These flags were checked against the pinned CLI. The example
-uses a raw-completion synthetic workload; the API feature suite separately
-tests chat, reasoning, tools and structured output.
-Random tokens exercise memory and scheduling but do not represent coding
-accuracy or natural code generation. Include the fixed coding prompts and tool
-round trips when choosing the interactive default.
+Launch a candidate, check `/health` and use its bundled benchmark. The flags
+below match the pinned CLI. Random completions exercise memory and scheduling;
+include coding fixtures, tool roundtrips and API checks when choosing a default.
 
 ```bash
 CONTAINER_NAME=dsv4-nvfp4
@@ -182,28 +161,20 @@ mkdir -p results/raw
 docker cp "$CONTAINER_NAME:/tmp/$LABEL.json" "results/raw/$LABEL.json"
 ```
 
-Before measurement, run separate C1 and C2 warmup cases with a different seed
-and labels; warming only one concurrency does not establish warm kernels for
-the other execution shapes.
-For repeats, reuse the same seed list (for example 101, 102) across configurations
-and concurrency levels, with a fresh `CACHE_SALT` for each invocation. The salt
-separates prefix-cache keys without changing the prompt tokens. It does not
-purge older entries or prevent shared-prefix reuse within one invocation, so
-verify cache-hit deltas. Record the salt explicitly: the result does not save
-`--extra-body` automatically. Read saved actual token counts and corroborate
-them with server counters; requested dataset lengths alone are insufficient.
-Increase `CONCURRENCY` to 2 with a new label and salt, keeping the seed matched.
+Warm C1 and C2 separately with another seed and distinct labels. For measured
+repeats, use the same seed list, such as 101 and 102, across configurations.
+Assign a fresh `CACHE_SALT` each invocation: it separates keys without changing
+prompt tokens, but does not purge old entries or stop reuse within a run.
+Record it explicitly because `--extra-body` is not saved. Check actual usage
+against server counters and verify hit deltas. Set `CONCURRENCY` to 2 for the
+paired case, with a new label/salt and matched seed.
 
-For mixed-load responsiveness, use [the independent probe](../mixed_probe.py)
-and confirm server activity around its short request. **Do not use this pinned
-benchmark's built-in probes as server responsiveness evidence at bounded client
-concurrency.** They bypass its semaphore but share a connection pool capped at
-`max_concurrency`. At one connection, a probe waits in the client for the long
-response to finish. Its reported latency includes that wait. The probe loop is
-also serial, with a pause after each response; its rate flag does not establish
-an independent arrival rate. See [the measurement audit](benchmark-measurement.md).
+Use [the independent mixed probe](../mixed_probe.py) with server activity
+observations. The built-in probes share a pool capped at `max_concurrency`;
+with one connection, they wait behind the long response in the client. Their
+serial loop also pauses after each response. Those timings cannot establish
+server responsiveness. See [the audit](benchmark-measurement.md).
 
-Save `/metrics` before and after each run for prefill and DSpark counters, and
-sample GPU memory during the run. Preserve the exact server arguments next to
-each result. The benchmark JSON supplies request timings; it does not by itself
-establish peak memory, prefill-phase attribution, or application correctness.
+Save `/metrics` before/after each run, sample GPU memory and retain exact
+server arguments. Benchmark JSON supplies request timings; it needs resource
+and server evidence to establish memory use or prefill activity.

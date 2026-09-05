@@ -1,17 +1,14 @@
 # Interactive latency research
 
-The source-built 1M/batch2560/cap2304 candidate passes retrieval and all API
-checks, but one automatic tool round trip during near-1M prefill took 37.941 s.
-A tiny reply took 2.095 s. Admission was observed, so testing only a tiny reply
-misses the longer generation delay. Sampled serving free memory reached
-507/472 MiB per GPU. See [source-image evidence](../../docs/source-image-validation.md).
+The source 1M/batch 2560/cap 2304 candidate passed retrieval/APIs but took 37.941
+seconds for tools during near-1M prefill versus 2.095 for a tiny reply. Admission
+was observed; serving free memory reached 507/472 MiB. See
+[source evidence](../../docs/source-image-validation.md).
 
-The existing `mixed_probe.py` already excludes prompt preparation from its overlap
-boundary, uses an independent client, records fresh long-input prefixes and checks
-retrieval correctness. `verify.py` already implements a checked automatic tool
-round trip. Reuse both by adding a probe choice, retaining the existing default.
+`mixed_probe.py` already measures call overlap, uses independent requests and
+fresh prefixes, and checks retrieval. `verify.py` has an automatic tool check.
+Reuse them through a probe option and keep the default reply.
 
-Smaller prefill chunks may shorten each mixed generation step but reduce long-input
-throughput. Lower batch and utilization may improve serving headroom; early draft
-preparation pressure is a separate concern. The pinned fixed-K5 DSpark, Markov
-correction, precision and target graphs remain enabled throughout this comparison.
+Smaller chunks may improve tools while slowing prefill. Lower batch/utilization
+may improve serving headroom; preparation pressure needs separate checks. Keep
+K5, Markov, precision and target graphs unchanged.

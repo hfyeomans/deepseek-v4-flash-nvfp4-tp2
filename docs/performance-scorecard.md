@@ -1,9 +1,9 @@
 # Measured optimization progression
 
-The recorded two-request aggregate rate progressed from **32.3 to 168.6 to
-292.9 output tokens/second**. That is a **9.07x observed start/end difference**
-across configurations. The matched DSpark on/off comparison accounts for a
-**1.74x aggregate gain**. These are different comparisons.
+Two-request aggregate throughput rose from **32.3 to 168.6 to 292.9 output
+tokens/second** across the recorded configurations: a **9.07x start/end
+difference**. The matched DSpark on/off comparison measured a
+**1.74x aggregate gain**.
 
 The absolute aggregate gains are **+136.25 tok/s** from eager to the graph-enabled
 control, **+124.35 tok/s** from that control to DSpark, and **+260.59 tok/s**
@@ -15,13 +15,12 @@ across the historical start/end configurations.
 | Compilation and target decode graphs enabled, DSpark off | 65,536 | 95.53 tok/s | 95.57 tok/s | 95.48 tok/s | 168.55 tok/s |
 | Same graph-enabled profile with fixed-five-token DSpark | 65,536 | 209.43 tok/s | 190.15 tok/s | 173.99 tok/s | **292.90 tok/s** |
 
-All three used the same short prompts: **30 prose, 39 code and 41 reasoning
-input tokens**, with 256 output tokens, temperature zero and seed42. The
-configured window is capacity, not the amount of text processed. Single-request
-rates are medians of two measured repeats after one warmup per exact prompt.
-Aggregate throughput is 512 output tokens divided by the elapsed time of one
-concurrent prose/code pair. It is neither single-user speed nor the sum of
-separately timed request rates. All rates include prefill and HTTP/stream time.
+All stages used **30 prose, 39 code and 41 reasoning input tokens**, with
+256-token outputs, temperature zero and seed 42. Single-request rates are medians
+of two repeats after one warmup per exact prompt. Aggregate throughput is
+512 output tokens divided by one concurrent prose/code pair's elapsed time.
+It includes prefill and HTTP/stream time; it is not a single-user decode rate.
+The larger configured windows do not change these short input lengths.
 
 ## What each improvement establishes
 
@@ -31,29 +30,25 @@ separately timed request rates. All rates include prefill and HTTP/stream time.
 | DSpark / graph-enabled control | 2.19x | 1.99x | 1.82x | 1.74x | Matched DSpark comparison |
 | DSpark / initial eager | 12.81x | 11.66x | 10.65x | 9.07x | Historical start/end difference |
 
-The eager-to-graph transition changes compilation, graph capture and the
-configured window. The exact initial derivative image digest and competing-load
-state were not preserved in the inspected evidence. Do not present that row as
-a graph-only experiment or label the 9.07x start/end difference as DSpark's gain.
-The later graph-enabled runs use the same patched preview image, with the source
-build stopped during both runs. Table order represents configuration progression;
-the DSpark graph run actually preceded its graph-enabled control measurement.
+The eager-to-graph step changed compilation, graph capture and the context
+ceiling. The initial derivative image digest and competing load were not saved,
+so that step cannot isolate graphs or attribute the 9.07x difference to DSpark.
+The later matched runs used the same patched preview with the source build
+stopped. The table follows configuration progression; DSpark was actually
+measured before its graph-enabled control.
 
-Throughput improved while first visible output took slightly longer: **69–70 ms
-eager, 76–78 ms graph control, and 82–94 ms DSpark** in the measured single-request
-trials. These are ranges from a small sample, not p95 guarantees. Warmup describes
-the procedure; these historical files do not preserve prefix-hit counters, and
-their inputs are smaller than one 256-token cache block.
+First visible output took slightly longer: **69–70 ms eager, 76–78 ms graph
+control and 82–94 ms DSpark**. These small-sample ranges are not p95 estimates.
+The historical files record warmups but lack prefix-hit counters; each input
+is smaller than one 256-token cache block.
 
 ## Configuration and evidence
 
-All stages use the same pinned NVFP4 checkpoint, TP=2, two sequence slots, 95%
-memory utilization, FP8 KV and main FlashInfer CUTLASS experts. The initial
-eager log records batch2048, block256 and prefix caching. It reports 77.83 GiB
-model memory and 11.82 GiB available KV on the reporting worker; those are startup values,
-not measured benchmark peaks. The later DSpark profile uses a Marlin draft,
-K=5 and FULL_DECODE_ONLY target graphs with maximum capture16. Its separate
-experimental draft-forward graph remains disabled.
+All stages use the pinned NVFP4 checkpoint, TP=2, two slots, 95% memory, FP8 KV
+and FlashInfer CUTLASS target experts. The eager log records batch 2048, block 256
+and prefix caching, with 77.83 GiB model memory and 11.82 GiB available KV on the
+reporting worker at startup. The later DSpark profile uses Marlin, K=5 and
+FULL_DECODE_ONLY target graphs capped at 16. Draft-forward graphs are disabled.
 
 - [Initial eager observations](../results/baseline-benchmark.json)
 - [Initial feature/configuration record](../results/baseline-features.json)
@@ -65,11 +60,10 @@ experimental draft-forward graph remains disabled.
 
 ## Source-built 1M candidate
 
-This later comparison uses a 1M ceiling, 96.5% memory, batch2560 and prefill
-cap2304. It is a tested candidate, not a confirmed optimal default. Single short
-rates pool nine measured requests per workload; aggregate rates are medians of
-all three paired trials. Its sample counts and configuration differ from the
-historical preview table above.
+This later candidate uses a 1M ceiling, 96.5% memory, batch 2560 and cap 2304.
+Short rates pool nine requests per workload; aggregate rates are medians of
+three paired trials. Those settings and sample counts differ from the preview
+comparison above.
 
 | Source-built configuration | Short prose | Short code | Short reasoning | Two short requests, aggregate median | 48,345-token code input |
 |---|---:|---:|---:|---:|---:|
@@ -77,23 +71,20 @@ historical preview table above.
 | Target graphs, DSpark on | 192.32 tok/s | 187.42 tok/s | 189.58 tok/s | 263.31 tok/s | 61.50 tok/s |
 | DSpark/control | 2.05x | 2.00x | 2.03x | 1.61x | 1.41x |
 
-DSpark's three paired results were 203.4, 302.9 and 263.3 tok/s. Keep the slower
-initial observation; its first-output delay was larger but its cause was not
-established. The longer code input uses three measured 512-token responses,
-identical prompt bytes and fresh salts with zero prefix hits. First-output time
-remained around 6.3 seconds in both configurations. See the
-[full protocol, memory cost and raw evidence](source-image-validation.md#matched-dspark-control-on-the-source-image).
+DSpark paired trials measured 203.4, 302.9 and 263.3 tok/s. The initial delay
+has no established cause; all three trials count. Long code uses identical
+inputs, three 512-token responses and fresh salts, with zero prefix hits.
+First output stayed around 6.3 seconds in both modes. See
+[protocol, memory cost and evidence](source-image-validation.md#matched-dspark-control-on-the-source-image).
 
-During a separate near-1M prefill, a tiny reply completed in 2.1 seconds while a
-two-call tool round trip took 37.9 seconds. Reported KV availability was 6.30 GiB
-with DSpark versus 11.84 GiB without it. These costs matter when choosing the
-interactive recipe. **Neither 292.9 nor 302.9 tok/s describes generation after
-a 1M input.**
+During a separate near-1M prefill, a tiny reply took 2.1 seconds and a two-call
+tool roundtrip took 37.9 seconds. Available KV was 6.30 GiB with DSpark versus
+11.84 GiB without it. **Neither 292.9 nor 302.9 tok/s describes generation
+after a 1M input.**
 
 ## Source-image profile tradeoffs
 
-All rows below retain DSpark, TP2 and a 1M window. These are configuration
-comparisons, not additional DSpark-on/off experiments.
+These profiles all retain DSpark, TP2 and a 1M window.
 
 | Memory / batch / prefill cap | Two short requests, aggregate median | 48K code HTTP median | Tool round trip during 262K input, median | Minimum sampled free memory during 262K tests, GPU0 / GPU1 |
 |---|---:|---:|---:|---:|
@@ -101,29 +92,26 @@ comparisons, not additional DSpark-on/off experiments.
 | 96% / 2,048 / 1,792 | 269.88 tok/s | 8.906 s | 6.808 s | 1,247 / 1,212 MiB |
 | 96% / 2,048 / 512 | 260.03 tok/s | 12.205 s | 2.186 s | 2,125 / 2,090 MiB |
 
-The smaller cap improves observed tool responsiveness during background prefill,
-but its 48K foreground coding request takes about **37% longer** than at cap1,792.
-Short-throughput differences do not establish a stable ranking. Each throughput
-column uses all three paired trials; coding and tool columns use three measured
-trials after warmups. Coding has identical input/output counts and zero prefix
-hits. Tool outputs and cache hits vary, so the tool ratio is not an isolated
-scheduling effect. All trials and proof limits appear in the
-[interactive comparison](interactive-latency.md) and
-[unrounded profile benchmark results](../results/source-image-profile-benchmarks.json).
+Cap 512 improved concurrent-tool latency but made the 48K coding request take
+about **37% longer** than cap 1,792. Short-throughput differences are too small
+to establish a ranking. Each column uses three measured trials after warmups.
+Coding inputs/outputs match with zero prefix hits; tool outputs and hits vary,
+so the tool ratio cannot isolate scheduling. See
+[trial details and limits](interactive-latency.md) and
+[unrounded benchmark results](../results/source-image-profile-benchmarks.json).
 
 ## Primary everyday coding/tools profile
 
-For everyday coding and tools with occasional very long inputs, the selected
-profile uses **96% memory budget, a 1M context window, TP2, two sequence slots,
-a 2,048-token batch budget and a 1,792-token long-prefill cap**. It retains
-fixed-K5 DSpark with Markov correction and target decode graphs.
+The selected everyday profile keeps **96% memory, a 1M context window, TP2,
+two slots, batch 2,048 and cap 1,792**, with fixed-K5 DSpark, Markov correction
+and target decode graphs.
 
-It passed 998,869-token retrieval and final LAN API checks.
-Its near-1M tool round trip took 32.035 seconds, versus 18.113 seconds at cap512;
-long HTTP times were 513.759 and 539.998 seconds. These single trials expose the
-tradeoff without establishing a precise speedup or latency guarantee. See
-[near-1M evidence and limits](interactive-latency.md#near-1m-and-coding-limits) and
-[the runnable profile](running.md#recommended-coding-profile).
+It passed 998,869-token retrieval and final LAN API checks. One near-1M tool
+roundtrip took 32.035 seconds versus 18.113 at cap 512; long HTTP times were
+513.759 and 539.998 seconds. These single trials show the tradeoff without
+establishing a repeatable latency gain. See
+[near-1M evidence](interactive-latency.md#near-1m-and-coding-limits) and
+[launch commands](running.md#recommended-coding-profile).
 
 ### Gain over the first working baseline
 
@@ -132,22 +120,20 @@ tradeoff without establishing a precise speedup or latency guarantee. See
 | Short coding prompt, one request | 16.31 tok/s | 194.47 tok/s | 11.92x |
 | Two short requests, aggregate | 32.31 tok/s | 269.88 tok/s | 8.35x |
 
-These are overall historical configuration gains, not DSpark-only gains or
-predictions that everyday coding tasks finish twelve times faster. The initial
-profile used a 32K ceiling, while the selected profile keeps 1M. Image,
-compilation, graphs, speculation, memory budget, cache procedure and sample counts
-also differ; the initial provenance limits above still apply. Short coding has
-39 input / 256 output tokens. The baseline has two measured single-request
-repeats and one pair; the selected profile has nine and three, respectively.
+These historical ratios combine changes to the image, compilation, graphs,
+speculation, memory budget, cache procedure and sampling. The ceiling grew from
+32K to 1M, but the coding input/output stayed at 39/256 tokens. The baseline
+has two single-request repeats and one pair; the selected profile has nine
+and three. The initial provenance limits above apply. These ratios cannot
+isolate DSpark or predict that everyday coding finishes twelve times faster.
 
-For the larger 48,345-token coding fixture, a different, graph-enabled source
-control without DSpark took 11.772 seconds, versus 8.906 seconds for the selected
-profile: **24.3% less elapsed time**, or **1.32x end-to-end output rate**. Both
-generate 512 tokens with zero prefix hits. This compares the control at
-96.5% / batch2,560 / cap2,304 with the selected 96% / batch2,048 / cap1,792,
-so it also does not isolate DSpark alone. Those earlier records contain no
-equivalent 48K eager-baseline or matched tool-roundtrip measurement. The new
-exact-primary controls below close the DSpark comparison gap.
+For 48,345-token code, a graph-enabled source control without DSpark took
+11.772 seconds versus 8.906 for the selected profile: **24.3% less time**, or
+**1.32x output rate**. Both generated 512 tokens with zero prefix hits. The
+control used 96.5% / batch 2,560 / cap 2,304 versus 96% / batch 2,048 / cap 1,792,
+so this also combines configuration changes. No equivalent 48K eager or matched
+tool baseline was recorded. The next comparison isolates DSpark at the primary
+settings.
 
 Sources: [initial baseline](../results/baseline-benchmark.json),
 [selected profile](../results/source-image-profile-benchmarks.json), and
@@ -155,9 +141,9 @@ Sources: [initial baseline](../results/baseline-benchmark.json),
 
 ### New matched DSpark comparison at the exact primary settings
 
-The three-pair screen keeps the primary's 1M ceiling, 96% memory, batch2048 and
-cap1792, and changes only the speculative configuration. All 132 requests
-reconcile with server counters, and every salted benchmark has zero prefix hits.
+This three-pair comparison changes only speculation at the primary 1M / 96% /
+batch 2048 / cap 1792 settings. All 132 requests match server token counters;
+every salted benchmark has zero prefix hits.
 
 | Everyday workload | DSpark off | DSpark on | Observed gain |
 |---|---:|---:|---:|
@@ -166,35 +152,30 @@ reconcile with server counters, and every salted benchmark has zero prefix hits.
 | 48,345-token code input, 512-token answer | 11.983 s | 8.790 s | **26.6% less time** |
 | Checked tool roundtrip during roughly 262K input | 18.881 s | 5.212 s | **72.4% less time, observed** |
 
-The C2 on trials were **226.03, 204.43 and 296.16 tok/s**. They had no separate
-C2 warmup, and the first two incurred about 702 ms before first output versus
-89 ms in the third. Keep the full spread; it does not invalidate the historical
-292.90 observation or make that best result representative. Short-code first
-output also rose from 75.7 to 84.4 ms despite faster completion. Mixed outputs
-and cache hits vary, so its tool ratio is not isolated scheduler speed.
-The measured long retrieval duration stayed around 55 seconds in both modes.
+C2 DSpark-on trials measured **226.03, 204.43 and 296.16 tok/s**, without a
+separate C2 warmup. First output took about 702 ms in the first two and 89 ms
+in the third. Use the full spread; the historical 292.90 result belongs to
+its own procedure. Short-code first output rose from 75.7 to 84.4 ms. Mixed
+outputs and cache hits vary, so the tool ratio cannot isolate scheduler speed.
+Long retrieval stayed around 55 seconds in both modes.
 
-These are descriptive medians of three observations, not p95 or an optimum.
-The [full control report](primary-control-screen.md) preserves warmups,
-per-pair ratios, memory cost, startup warnings and the next measurement fixes;
-[unrounded results](../results/primary-dspark-comparison.json) retain every trial.
+Three observations give descriptive medians, not p95 or an optimum. The
+[control report](primary-control-screen.md) covers warmups, per-pair ratios,
+memory, startup warnings and follow-up fixes; the
+[unrounded results](../results/primary-dspark-comparison.json) retain all trials.
 
 ### Community release qualification rerun
 
-The September 5 source rebuild at the primary 1M/96% settings recorded
-**201.36 tok/s** median short code and **265.95 tok/s** in one concurrent pair.
-The 61,287-token synthetic retrieval check passed in **22.744 seconds**.
-This was a functional qualification with warm-prefix short prompts, C1 warmups
-and no independent C2 warmup or matched DSpark-off arm. It does not replace the
-controlled comparison above or establish a new optimization gain. See
-[all unrounded trials](../results/release-qualification/benchmark.json) and
-[build, startup, feature and recovery evidence](../tasks/release-readiness/verification.md).
+The September 5 rebuild at 1M/96% recorded **201.36 tok/s** median short code,
+**265.95 tok/s** in one concurrent pair and a passing 61,287-token retrieval in
+**22.744 seconds**. This checked functionality using warm-prefix prompts and
+C1 warmups. It had no separate C2 warmup or DSpark-off control, so it establishes
+no new optimization gain. See [trials](../results/release-qualification/benchmark.json)
+and [build, startup, API and recovery checks](../tasks/release-readiness/verification.md).
 
 ## Adaptive verification boundary
 
-All acceleration in this scorecard comes from the recorded fixed-mode recipe
-configurations. Adaptive-verification ROI remains unmeasured. The same baseline
-numbers are retained in the [separate private research project](repository-boundaries.md)
-for future comparisons; this scorecard will add gains or losses only after a
-compatible candidate is qualified and measured. The repository split changes
-documentation ownership, not the running profile or these results.
+Adaptive-verification ROI is unmeasured. The
+[private research project](repository-boundaries.md) retains these fixed-mode
+baselines for future comparisons. Add adaptive gains or losses here only after
+a compatible implementation is tested and measured.

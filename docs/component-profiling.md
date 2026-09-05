@@ -1,16 +1,15 @@
 # Where the fixed-K5 runtime spends GPU work
 
-Six diagnostic traces attribute all recorded kernels to their runner components.
-Target forward is the largest category; the draft pipeline accounts for about
-9.2–9.9% of summed kernel work in the generation-only windows. These percentages
-are not achievable latency savings or a prediction of adaptive-verification ROI.
+Six traces map recorded kernels to runner components. Target forward dominates;
+the draft pipeline accounts for 9.2–9.9% of summed kernel time in generation-only
+windows. That share does not predict removable latency or adaptive ROI.
 
 ## Generation-only observations
 
-Values are **sums of kernel durations in milliseconds**, including overlap.
-Each rank is reported separately. Target forward includes attention/indexer,
-MoE/linear work and collective kernels. Draft includes preparation, draft forward
-and Markov sampling. Postprocess includes target logits projection.
+Values sum kernel durations in milliseconds, including overlap, separately
+per rank. Target forward includes attention/indexer, MoE/linear and collectives.
+Draft includes preparation, forward and Markov sampling. Postprocess includes
+target logits projection.
 
 | Case | Rank | Steps | Target forward | Postprocess | Target sampling | Draft pipeline | Other | Total |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
@@ -21,44 +20,39 @@ and Markov sampling. Postprocess includes target logits projection.
 | Short prose/code C2 | 0 | 19 | 402.408 | 7.693 | 3.448 | 44.134 | 1.276 | 458.959 |
 | Short prose/code C2 | 1 | 19 | 398.795 | 7.682 | 3.403 | 44.075 | 1.279 | 455.234 |
 
-Both C1 traces contain twenty `generation_1(6)` steps with no context requests.
-C2 has a mixed first step (`context_1(39)_generation_1(6)`) and nineteen
-`generation_2(12)` steps. That first step is excluded above: its kernel sums
-were 107.732/32.969 ms on ranks 0/1. The trace does not establish the cause of the
-asymmetry. It remains in the per-rank results rather than being discarded.
+C1 traces contain twenty `generation_1(6)` steps. C2 starts with
+`context_1(39)_generation_1(6)`, followed by nineteen `generation_2(12)` steps.
+The mixed first step is excluded above but retained in results: 107.732/32.969 ms
+on ranks 0/1. The cause of that asymmetry is unknown.
 
-The named MQA-logits subset is 5.058/5.013 ms for short C1, 10.530/10.532 ms
-for 48K C1 and 5.428/5.353 ms for the nineteen C2 steps. These values are already
-inside target forward. They omit projections, compression, cache operations,
-generic top-k and metadata; they are not total indexer cost.
+Named MQA-logits kernels sum to 5.058/5.013 ms for short C1, 10.530/10.532 ms
+for 48K C1 and 5.428/5.353 ms for nineteen C2 steps. They are already included
+in target forward. Total indexer cost also includes projections, compression,
+cache work, generic top-k and metadata that this subset omits.
 
 ## Why these numbers cannot be added into request latency
 
-For short C1/rank 0, summed kernel work is 395.106 ms, but the union of occupied
-kernel intervals is 306.771 ms and the first-to-last kernel span is 317.230 ms.
-Streams overlap. The draft CPU scope totals 152.890 ms while its GPU kernels
-sum 38.870 ms; CPU dispatch and GPU execution also overlap. Adding these numbers
-would count overlapping work more than once. Summing both ranks would likewise
-not produce request latency. Interval unions, spans, CPU scopes, memory activity
-and per-step breakdowns remain separate in the published JSON.
+Short C1/rank 0 sums to 395.106 ms of kernels, but their occupied-interval union
+is 306.771 ms and first-to-last span is 317.230 ms. Streams overlap. The draft
+CPU scope totals 152.890 ms while draft GPU kernels sum to 38.870 ms; these
+also overlap. Adding CPU/GPU times or both ranks would double-count work.
+The JSON reports unions, spans, scopes, memory activity and steps separately.
 
-The parser joins each kernel to exactly one CUDA runtime/driver launch through
-its correlation ID, then uses the innermost runner scope on that CPU thread.
-Graph nodes identify their particular `cudaGraphLaunch`; a reused graph ID alone
-is insufficient. All six traces have 100% coarse kernel attribution, with no
-ambiguous links or unpaired steps. Sample/draft scopes occur after the execute
-annotation, so they are associated with the preceding execution on that thread.
-Duplicate GPU annotation rollups are excluded. This is not a reconstructed
-dependency critical path or full layer-level attribution.
+The parser links each kernel to one CUDA launch by correlation ID and the
+innermost runner scope on that CPU thread. Graph nodes link to their specific
+`cudaGraphLaunch`, not just a reused graph ID. All six traces have 100% coarse
+attribution, no ambiguous links and no unpaired steps. Sample/draft scopes
+follow execute and attach to that thread's preceding execution. Duplicate GPU
+annotation summaries are excluded. This maps components, not a full dependency
+critical path or every layer.
 
 ## Profiler perturbation and cache conditions
 
-Profiling used a separate container with the exact primary image/settings,
-custom runner scopes enabled and the existing Torch profiler. Requests used
-temperature 0, seed 42, thinking disabled, fixed output length and a warm-prefix
-policy. Each case ran a same-concurrency warmup, an unprofiled bracket, the
-profiled request(s), then another unprofiled bracket. It was separate from all
-[matched controls](primary-control-screen.md).
+A separate container used the primary image/settings, custom runner scopes
+and Torch profiler. Requests used temperature 0, seed 42, thinking off, fixed
+output length and warm prefixes. Each case ran a same-concurrency warmup, an
+unprofiled request, the profiled request(s), then another unprofiled request.
+None overlapped the [matched controls](primary-control-screen.md).
 
 | Case | Unprofiled before | Profiled request/batch | Unprofiled after |
 |---|---:|---:|---:|
@@ -66,13 +60,12 @@ profiled request(s), then another unprofiled bracket. It was separate from all
 | Short prose/code C2, 256 outputs each | 2.385 s | 9.064 s | 1.764 s |
 | 48,345-token code C1, 512 outputs | 7.313 s | 8.971 s | 2.640 s |
 
-Perturbation is severe and the brackets are not stable, particularly for 48K.
-There is no clean profiler-overhead ratio. Recorded kernel costs can guide
-experiments but must not be treated as calibrated unprofiled cycle costs.
-Full profiled-request cache hits/queries were 0/39, 0/69 and 48,128/48,345;
-the long request still had 217 uncached prompt tokens. All metric windows had
-zero preemptions. These full-request counters cannot normalize the shorter
-trace window or establish per-step accepted-token yield.
+Profiling severely perturbs these timings, especially 48K; the surrounding
+unprofiled requests vary too much to calculate a clean overhead ratio. Use
+kernel costs to choose experiments, not as calibrated cycle costs. Full-request
+cache hits/queries were 0/39, 0/69 and 48,128/48,345, leaving 217 uncached long
+prompt tokens. All windows had zero preemptions. Full-request counters cannot
+normalize a shorter trace or give per-step accepted-token yield.
 
 ## Reproducing the analysis
 
@@ -83,13 +76,12 @@ append this profiler configuration to a separate copy of the primary launch:
 {"profiler":"torch","torch_profiler_dir":"/experiment/traces","torch_profiler_with_stack":false,"torch_profiler_record_shapes":false,"ignore_frontend":true,"delay_iterations":2,"max_iterations":20}
 ```
 
-Mount the trace output directory. Memory/stack/shape profiling was disabled.
-Use the code and prose inputs in `benchmark.py` and the frozen 48K prompt. Each
-case uses the warmup/bracket procedure above. POST `/start_profile`, submit the
-case, then POST `/stop_profile`; require two actual trace files, not just 200
-responses. The requested iteration cap was 20; the observed traces contain 20
-execute steps. Request JSON is non-streaming for these diagnostic cases.
-The public request records preserve hashes, counts and timing brackets.
+Mount the output directory. Disable memory/stack/shape profiling. Use
+`benchmark.py` code/prose inputs and the frozen 48K fixture with the warmup and
+bracket procedure above. POST `/start_profile`, submit the case, then POST
+`/stop_profile`. Require two trace files, not only HTTP 200. The cap was 20
+iterations; traces contain 20 execute steps. These diagnostic requests are
+non-streaming. Published records retain hashes, counts and timing brackets.
 
 Group copied `*.pt.trace.json.gz` files in one subdirectory per case, then run:
 
@@ -98,13 +90,12 @@ python3 -B -m unittest discover -s tests -p test_profile_trace_analysis.py
 python3 -B experiments/profile_trace_analysis.py "$TRACE_ROOT" --output-dir "$ANALYSIS_OUTPUT"
 ```
 
-The [parser](../experiments/profile_trace_analysis.py) and six regressions cover
-asynchronous launches, reused graph IDs, ambiguous/missing links, thread
-separation, overlap and mixed steps. Independent raw-event conservation checks
-reconciled kernel plus memory activity with every profiler self-CUDA total
-within 0.0005 ms of print rounding. A fresh publication reparse reproduced all
-six result files exactly. Trace hashes are retained; raw trace files and local
-host paths are excluded from the repository.
+The [parser](../experiments/profile_trace_analysis.py) has regressions for
+asynchronous launches, reused graph IDs, ambiguous/missing links, threads,
+overlap and mixed steps. Independent raw-event checks reconciled kernel plus
+memory activity with profiler self-CUDA totals within 0.0005 ms of rounding.
+Reparsing reproduced all six published result files exactly. Trace hashes are
+retained; raw traces and local host paths stay outside the repo.
 
 Evidence: [trace index](../results/component-profiles/index.json),
 [verification](../results/component-profiles/verification.json),
@@ -115,10 +106,8 @@ Evidence: [trace index](../results/component-profiles/index.json),
 
 ## How to use these measurements
 
-These fixed-K5 profiles help explain where the accelerated recipe spends GPU
-work. They do not predict the gain from removing a draft position or adding
-confidence/compaction. Padding, overlap and instrumentation can change costs.
-Use the unprofiled [matched controls](primary-control-screen.md) for measured
-latency and throughput benefits. The same profile evidence serves as a baseline
-in the [separate adaptive project](repository-boundaries.md); new optimization
-claims require their own matched measurements.
+These profiles explain where fixed-K5 spends GPU work. Padding, overlap and
+instrumentation prevent using them to predict adaptive gains. Use the
+unprofiled [controls](primary-control-screen.md) for latency and throughput.
+The [adaptive project](repository-boundaries.md) shares this evidence but needs
+new matched measurements for any optimization claim.

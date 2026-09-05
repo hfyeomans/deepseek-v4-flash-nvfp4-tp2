@@ -1,39 +1,35 @@
 # Source-built image acceptance
 
-The public-source image passed its 13 CPU regression methods, all 19 short API
-checks over the LAN, and retrieval from **998,868 actual input tokens** in a
-1,000,000-token window. Post-retrieval chat and a tool round trip also passed.
-This establishes a working source-built candidate. Its matched DSpark control
-is complete. The subsequent [interactive comparison](interactive-latency.md)
-selects a 96% / batch2,048 / cap1,792 coding profile, with separate near-1M,
-restart and final API evidence. The measurements below retain the original
-96.5% candidate and its matched control.
+The source-built image passed 13 CPU methods, 19 LAN API checks and retrieval
+from **998,868 input tokens** in a 1,000,000-token window. Post-retrieval chat
+and tools also passed. This page records the original 96.5% candidate and its
+matched DSpark control. The later [profile comparison](interactive-latency.md)
+selected 96% / batch 2,048 / cap 1,792 and records its near-1M, restart and API
+checks separately.
 
-After the control, the DSpark service restarted in 63.3 seconds of observation
-using its existing kernel cache. All 19 LAN API checks passed again with the
-corrected request recorder. See [restart evidence](../results/source-image-restart-api.json).
+After the control, DSpark restarted in 63.3 seconds with the existing kernel
+cache. All 19 LAN API checks passed with the corrected request recorder.
+See [restart evidence](../results/source-image-restart-api.json).
 
-The tested settings are TP2, 96.5% memory utilization, batch2560, long-prefill
-cap2304, two sequence slots, FP8 KV/block256, fixed-K5 DSpark with a Marlin
+The tested settings are TP2, 96.5% memory utilization, batch 2560, long-prefill
+cap 2304, two sequence slots, FP8 KV/block 256, fixed-K5 DSpark with a Marlin
 draft, main FlashInfer CUTLASS and FULL_DECODE_ONLY target graphs. Model revision
 and image digests are preserved in the linked results.
 
 ## First startup and memory
 
-With a newly created FlashInfer kernel-cache volume, startup reached readiness
-after **519.5 seconds of observation**. Startup included kernel compilation,
-profiling and autotuning; their individual durations were not measured. Both
-ranks verified all 4,608 expert sources, 99 non-expert sources and 99 bindings.
-Target graph capture completed using 0.10 GiB; reported KV availability was
-6.30 GiB, with 1,122,401 reported cache tokens and 1.12x maximum-length capacity.
-That does not establish two simultaneous 1M requests.
+With a new FlashInfer kernel-cache volume, startup took **519.5 seconds of
+observation**, including compilation, profiling and autotuning. Those stages
+were not timed separately. Both ranks verified 4,608 expert sources,
+99 non-expert sources and 99 bindings. Target graphs used 0.10 GiB. Reported
+KV was 6.30 GiB, or 1,122,401 cache tokens and 1.12x maximum-length capacity;
+this does not test two simultaneous 1M requests.
 
-During draft preparation, 198 allocation warnings occurred before model loading
-completed. Samples caught 7/12 MiB free; allocator messages reached 1/2 MiB.
-Two later warnings occurred during FlashInfer gemm2 autotuning. Startup recovered,
-but the early pressure occurs before the later KV report. Lowering the KV budget
-alone does not establish safer weight preparation. Exact failing operators and
-recovery mechanics were not traced.
+Draft preparation logged 198 allocation warnings before model loading finished.
+Samples caught 7/12 MiB free; allocator messages reached 1/2 MiB. FlashInfer
+gemm2 autotuning later logged two warnings. Startup recovered, but lowering
+the later KV budget cannot be assumed to fix earlier preparation pressure.
+The exact failing operators and recovery path were not traced.
 
 See [build and CPU evidence](../results/source-build-provenance.json),
 [startup measurements](../results/source-image-startup.json), and
@@ -51,17 +47,15 @@ See [build and CPU evidence](../results/source-build-provenance.json),
 | Sampled minimum serving free memory | 507/472 MiB per GPU |
 | Prefix hits / preemptions during mixed test | Zero / zero |
 
-The tiny reply is not a substitute for the tool measurement. The tool check
-uses 295 input/54 output tokens, then 379 input/6 output tokens. Server activity
-was one request before, two during, and one after the tool check, with no waiting
-requests in those snapshots. Admission succeeds, but mixed-batch generation can
-still be slow. These probes occurred at different points in the prefill; they
-are not a matched latency comparison. Post-long cache conditions also differ.
+The tool check uses 295 input/54 output tokens, then 379 input/6 output tokens.
+Server snapshots showed one request before, two during and one after, with
+none waiting. Admission worked, but generation was still slow. The tiny reply
+and tool check occurred at different prefill points, and post-long cache state
+also differs. Their latencies are not a matched comparison.
 
-The long test includes both the tiny chat and the additional tool round trip.
-Global metrics therefore cover four API calls, totaling 999,555 input and 101
-output tokens. Do not label their timing sums as isolated GPU compute time.
-This is a small synthetic retrieval/feature test, not broad long-context quality.
+The long test, tiny chat and tool roundtrip total four API calls, 999,555 input
+and 101 output tokens. Global timing sums include overlapping work. This
+synthetic test does not establish broad long-context accuracy.
 
 See [19 LAN API checks](../results/source-image-lan-api.json),
 [mixed near-1M test and recovery](../results/source-image-1m-mixed.json), and
@@ -69,42 +63,38 @@ See [19 LAN API checks](../results/source-image-lan-api.json),
 
 ## Initial performance observations
 
-Three short-input runs preserve their individual observations. Initial aggregate
-throughput was **203.4 tok/s**, with roughly 671 ms to first output in the paired
-requests. Subsequent paired trials reached **302.9 and 263.3 tok/s**. The logs
-do not establish the cause of the initial delay. Keep all trials; do not promote
-the fastest one to a general speed guarantee.
+Three short-input runs measured **203.4, 302.9 and 263.3 tok/s** aggregate.
+The first pair took roughly 671 ms to first output; logs do not explain why.
+Keep all three trials when comparing speed.
 
-The frozen coding fixture contains 320 synthetic validator modules and measures
-48,345 actual input tokens. With fresh per-request cache salts, three measured
-512-token responses took 8.240–8.373 seconds, with first output at 6.239–6.364
-seconds. Median end-to-end output rate was **61.50 tok/s**. Server counters
-confirmed actual usage and zero cache hits. The separate paired trial combines
-short prose with this long code, not two long code requests. Its prose request
-took 10.012 seconds despite first output arriving in 86 ms.
+The frozen fixture has 320 synthetic validators and 48,345 input tokens. With
+fresh salts, three 512-token responses took 8.240–8.373 seconds, with first
+output at 6.239–6.364 seconds and median end-to-end rate **61.50 tok/s**. Server
+counters confirmed usage and zero hits. A separate pair combines short prose
+with long code; its prose response took 10.012 seconds despite first output
+arriving in 86 ms.
 
 The [exact synthetic fixture](../benchmarks/prompts/code-48k.txt) and its
 [hash and reproduction notes](../benchmarks/prompts/README.md) are included.
 
-These observations do not establish representative code quality or long-code-only
-acceptance; speculative counters span warmups, every workload and the concurrent pair.
+Speculative counters combine warmups, workloads and the concurrent pair. They
+cannot isolate long-code acceptance or establish representative coding accuracy.
 
 - [First short run](../results/final-dspark-short.json)
 - [Second short run](../results/final-dspark-short-repeat2.json)
 - [Third short run](../results/final-dspark-short-repeat3.json)
 - [Frozen long-code input and measurements](../results/final-dspark-long-code.json)
 
-The [historical scorecard](performance-scorecard.md) remains distinct from these
-source-built 1M observations. The tool latency and narrow memory margin motivated
-the completed [lower-memory profile comparison](interactive-latency.md).
+The [scorecard](performance-scorecard.md) separates historical preview results
+from these source-image measurements. Slow tools and narrow memory margins
+led to the [lower-memory comparison](interactive-latency.md).
 
 ## Matched DSpark control on the source image
 
-The control uses the same image, 1M window, 96.5% memory budget, batch2560,
-prefill cap2304, two slots and target graphs, with DSpark disabled. It passed
-all 19 short API checks. Both configurations followed the same benchmark order:
-first short run, frozen long code, then two further short runs. All runs are
-preserved; no competing source build ran.
+The DSpark-off control keeps the same image, 1M window, 96.5% memory, batch 2560,
+cap 2304, two slots and target graphs. It passed 19 API checks. Both modes ran
+short, long code, then two more short runs without a competing build. All runs
+are retained.
 
 | Workload | DSpark off | DSpark on | Ratio |
 |---|---:|---:|---:|
@@ -114,17 +104,17 @@ preserved; no competing source build ran.
 | Two short requests, median of all 3 paired trials | 163.96 tok/s | 263.31 tok/s | 1.61x |
 | 48,345-token code input, median of 3 requests | 43.49 tok/s | 61.50 tok/s | 1.41x |
 
-The control paired trials ranged from 163.93–164.28 tok/s; DSpark ranged from
-203.38–302.92. Three pairs do not establish stable tail behavior. The long-code
-median elapsed time fell from 11.772 to 8.325 seconds. First output ranges
-overlapped around 6.3 seconds; time after first output was 5.440–5.441 seconds
-without DSpark and 1.961–2.075 seconds with it. That interval includes stream
-completion and multi-token bursts, so it is not isolated GPU decode time.
+Control pairs ranged 163.93–164.28 tok/s; DSpark pairs ranged 203.38–302.92.
+Three pairs cannot establish tail latency. Long-code median time fell from
+11.772 to 8.325 seconds, while first-output ranges overlapped around 6.3 seconds.
+After first output, the control took 5.440–5.441 seconds and DSpark
+1.961–2.075 seconds. Those intervals include stream completion and multi-token
+bursts, not just GPU decode.
 
-There is a capacity cost: reported KV availability fell from **11.84 to 6.30 GiB
-per GPU**, and reported maximum-length cache concurrency from **2.11x to 1.12x**.
-These are startup reports, not a test of two simultaneous full-1M requests.
-Memory utilization is matched; actual allocations necessarily change with DSpark.
+DSpark reduced available KV from **11.84 to 6.30 GiB per GPU** and calculated
+maximum-length cache concurrency from **2.11x to 1.12x**. These startup estimates
+do not test two full-1M requests. The memory percentage is matched; allocations
+change with speculation.
 
 See [unrounded comparison and proof limits](../results/source-image-benchmark-comparison.json),
 [control API checks](../results/source-image-control-api.json),
@@ -134,6 +124,6 @@ See [unrounded comparison and proof limits](../results/source-image-benchmark-co
 [third control](../results/final-control-short-repeat3.json), and
 [long-code control](../results/final-control-long-code.json).
 
-Historical tool request objects affected by the recorder's later-mutation bug
-are marked in their observations. Responses, usage and timings remain valid;
-see [the recording fix and regression](validation.md#historical-request-recording-limitation).
+Historical request objects affected by the later-mutation bug are marked in
+the results. Responses, usage and timings remain valid. See the
+[recorder fix and regression](validation.md#historical-request-recording-limitation).

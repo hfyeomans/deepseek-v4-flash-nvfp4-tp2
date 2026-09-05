@@ -23,88 +23,65 @@
   including the progression to 292.9 tok/s aggregate and its comparison limits.
 - [ ] Publish only after the completed repository is reviewed for sharing.
 
-Keep raw host logs under private scratch storage. Preserve failed tests alongside
-retests; distinguish observed performance from advertised model capabilities.
+Keep raw host logs private. Retain failures beside retests and distinguish
+measured behavior from advertised capabilities.
 
 ## Learning goal clarified by the user
 
-801K and 1M are explicit attempted context targets. Success is not presumed.
-The community recipe should teach why a configuration succeeds or fails and
-show the practical speed/memory tradeoffs. A well-evidenced failed attempt counts
-as an informative result; stopping at a smaller working context does not address
-this learning objective. Use 801,000 and 1,000,000 total-token windows, with
-output headroom in retrieval prompts, and identify any additional test at the
-model's 1,048,576-token ceiling separately.
+Attempt 801K and 1M and explain successes or failures through measured speed
+and memory. A failed attempt is useful evidence; stopping at 64K would leave
+the goal unfinished. Use 801,000 and 1,000,000 total-token windows with output
+headroom. Label tests at the model's1,048,576 ceiling separately.
 
 ## Performance optimization criterion
 
-The user wants the fastest practical recipe with critical evaluation of 97% GPU
-memory utilization. Keep DSpark, CUDA graphs, and API features enabled while
-comparing feasible profiles. Assess long-input prefill latency, output generation
-rate, and concurrency separately; no single metric establishes a universal optimum.
+Find the fastest practical profile and critically test 97% memory. Keep DSpark,
+graphs and APIs enabled. Compare prefill, generation and concurrency separately.
 
-The user selected **interactive coding and tools, with occasional very long
-inputs**, as the default workload. Prioritize short-request TTFT and tail latency,
-generation and tool round trips during a concurrent long prefill. Preserve the
-large-window option where feasible; a larger-batch throughput profile is optional
-and must earn its context/headroom cost with measured gains.
+The selected workload is **interactive coding and tools, with occasional long
+inputs**. Prioritize first output, tail latency and tools during long prefill.
+Keep a large window where feasible; a larger-batch profile needs measured
+benefits to justify less context or headroom.
 
-- Establish the 1M/96% capacity result and sampled inference headroom.
-- Evaluate 97% unchanged first as a capacity/headroom experiment; it is not an
-  automatic speed optimization and must survive startup and actual requests.
-- Use pinned cache-sizing code to select a small feasible batching comparison.
-  Preserve two sequence slots in the main profile; a one-slot profile must be
-  explicitly labeled as a concurrency tradeoff.
-- Run controlled timing after the source build finishes, using the final image.
-  Separate first-use compilation, cached-prefix reuse, and cold-input prefill.
-  Warm kernels, then invalidate prefixes or reset the cache before timed long
-  inputs. Record actual prompt/output tokens and speculative acceptance deltas.
-- Select a default from measured results. If short-input serving and near-1M
-  prefill prefer different settings, publish both profiles and their tradeoffs.
+- Establish 1M/96% capacity and sampled serving headroom.
+- Test 97% unchanged for capacity and headroom before treating it as faster.
+- Use pinned sizing code to choose a small batch comparison. Keep two slots;
+  label any one-slot test as a concurrency tradeoff.
+- Time the final image without a competing build. Separate cold compilation,
+  cached prefixes and warm uncached prefill. Record tokens and draft acceptance.
+- Choose profiles from measurements; publish separate short/long choices if
+  their tradeoffs warrant it.
 
 ## Mixed-length responsiveness gate
 
-The uncapped 97% profile admitted only the long prefill into execution; a short
-request queued and timed out after 180 seconds. Preserve that failure evidence.
-Test batch2560 with long-prefill threshold2304, yielding 248 scheduled tokens
-for other work after DSpark's eight reserved slots. Require the short request to
-finish while the long prefill remains active, and require the long retrieval to
-complete correctly. No runtime source patch is planned for this configuration
-issue.
+The uncapped 97% profile queued a short request until its 180-second timeout.
+Retain the failure. Test batch 2560/cap 2304, leaving 248 scheduled tokens after
+DSpark reserves eight. Require correct retrieval and a short reply before
+long prefill finishes. This is a configuration test; no scheduler patch is planned.
 
-For a later matched interactive comparison, batch2048/threshold1792 at 96% also
-leaves 248 scheduling tokens. Compare it with batch2560/threshold2304 at 97%,
-keeping speculation, graphs, sequence slots, prompts, cache state, and competing
-load controlled. This compares a real responsiveness-preserving speed tradeoff.
+Then compare 96% / batch 2048 / cap 1792 with 97% / batch 2560 / cap 2304. Both leave
+248 scheduling tokens. Match speculation, graphs, slots, prompts, cache and load.
 
-After the current mixed trial, test 96.5% with the same batch2560/threshold2304
-settings. Its projected KV budget is about 6.30 GiB versus 6.158 GiB admission
-required, but the profile must confirm the fit. This should reclaim approximately
-0.475 GiB per GPU if other allocations remain comparable; preserve all features.
+Test 96.5% with batch 2560/cap 2304. Projected KV is 6.30 GiB versus 6.158 GiB
+required; startup must confirm fit. The expected saving is 0.475 GiB per GPU
+if other allocations match, with all features retained.
 
 ## Context versus batch experiment
 
-Keep the attempted 801K/1M goals alongside smaller-window alternatives. Compare
-262,144, 524,288, and 1,000,000 total-token limits with feasible batches selected
-from 2,048, 2,560, 4,096, and 6,144. First hold actual input at 131,072 tokens,
-output at 512, and concurrency at one; then test two requests. Keep DSpark,
-graphs, precision, memory utilization, and proportional prefill reservations
-explicit. Record warm uncached TTFT, prefill throughput, decode latency,
-aggregate throughput, short-probe latency, memory, preemptions, and correctness.
-Near-limit retrieval is a separate capacity experiment. Use final-image results
-without a concurrent build before selecting a performance default.
+Compare 262,144,524,288 and 1,000,000 windows with feasible batches from 2,048,
+2,560,4,096 and 6,144, alongside 801K/1M capacity goals. Fix input at 131,072,
+output at 512 and compare C1/C2 separately. Match memory or label differences.
+Record warm uncached TTFT, prefill, decode, aggregate throughput, probes, memory,
+preemptions and correctness. Use controlled final-image results to choose defaults.
 
-The standalone mixed probe previously started its overlap timer during prompt
-preparation, allowing a false pass before the long HTTP request started. That
-narrow measurement bug is fixed with request-bound timestamps, a fresh recorded
-prompt prefix, and regressions for delayed preparation and early completion.
-Keep the existing live observations, whose separate running-request metrics
-support overlap. Do not expand the probe into another benchmark framework.
+The mixed probe previously counted prompt preparation as overlap. Request-bound
+timestamps, unique prefixes and delayed-preparation/early-completion regressions
+fix that false-pass path. Keep earlier live results supported by server metrics.
+Reuse this client rather than adding a benchmark framework.
 
-The pinned built-in probe has a separate shared-connection bottleneck at bounded
-client concurrency. Use the independent client for responsiveness. Keep identical
-random seeds across C1/C2 and profiles with fresh per-run cache salts, explicitly
-recorded, and verify zero cache-hit deltas for uncached comparisons.
+The built-in probe has a shared-connection bottleneck. Use the independent
+client for responsiveness. Match random seeds across C1/C2 and profiles, assign
+fresh recorded salts and verify zero hits for uncached comparisons.
 
 ## DSpark effectiveness and capability audit
 

@@ -1,17 +1,15 @@
 # Build, serve, and reproduce the checks
 
-Run these commands from the recipe repository on the Linux GPU host.
-If this is your first deployment, follow the [ordered walkthrough](first-run.md)
-for clone, prerequisite checks, CLI installation and expected results.
-The measured hardware is two RTX PRO 6000 Blackwell Max-Q GPUs at TP=2.
-The tested driver is 610.57.04. The recipe targets SM120 and the pinned preview
-source; it has not been validated on other architectures or a stock vLLM image.
+Run these commands from the recipe directory on the Linux GPU host. First-time
+users should start with the [deployment walkthrough](first-run.md). We tested
+two RTX PRO 6000 Blackwell Max-Q GPUs at TP=2 with driver 610.57.04. This recipe
+targets SM120 and pinned preview source; other architectures and stock vLLM
+images are untested.
 
-The existing preview image plus these patches has passed the recorded checks.
-The public-source rebuild completed and passed all 13 CPU regression methods,
-19 LAN API checks and near-1M retrieval. See [source-image acceptance](source-image-validation.md)
-for its settings and limits, and the [profile comparison](interactive-latency.md)
-for the selected coding configuration.
+The patched preview and public-source rebuild passed their recorded checks.
+The rebuild passed 13 CPU methods, 19 LAN API checks and near-1M retrieval.
+See [source-image acceptance](source-image-validation.md) and the
+[selected profile comparison](interactive-latency.md).
 
 ## Obtain the pinned checkpoint
 
@@ -23,41 +21,38 @@ export REVISION=f1caa71142bd0be02f728c79f75042ac1e461579
 hf download "$MODEL" --revision "$REVISION"
 ```
 
-The weight shards total 175,550,788,904 bytes. Allow additional space for source,
-Docker layers, build caches, and compiled kernels. `serve.sh` defaults to offline
-use of `$HOME/.cache/huggingface`; set `HF_CACHE` if your cache lives elsewhere.
-The draft layers are already in this snapshot. No GGUF conversion or separate
-draft checkpoint is needed for this vLLM recipe.
+Weight shards total 175,550,788,904 bytes. Allow extra space for source, Docker
+layers and build/kernel caches. `serve.sh` uses `$HOME/.cache/huggingface`
+offline by default; set `HF_CACHE` for another location. This snapshot includes
+the draft layers, so no GGUF conversion or separate draft download is needed.
 
 ## Build the runtime
 
-Docker with NVIDIA GPU access and Git must work on the host. `build.sh` checks out
-the pinned public source into `work/vllm-source`, reconstructs the recorded SM120
-build, fixes the FlashInfer cache ABI issue, and applies the three runtime patches.
+Check Docker GPU access and Git first. `build.sh` checks out the pinned source
+into `work/vllm-source`, recreates the SM120 build, fixes the FlashInfer cache
+ABI issue and applies three runtime patches.
 
 ```bash
 bash build.sh
 ```
 
-On the test host, Ubuntu HTTP downloads stalled. The following transport
-workaround passed that stage while keeping the same signed repositories and
-pinned CUDA base images:
+Ubuntu HTTP downloads stalled on the test host. This workaround passed that
+stage with the same signed repositories and pinned CUDA base images:
 
 ```bash
 APT_HTTPS_IPV4=1 BUILD_NETWORK=host bash build.sh
 ```
 
-The resulting image name is `dsv4-nvfp4:recipe`. Defaults use 16 build jobs and
-8 NVCC threads; `BUILD_JOBS` and `NVCC_THREADS` override them. See
-[source/build provenance](../results/original-build-provenance.json) and
-[the diagnosed compatibility failures](troubleshooting.md).
+The image is named `dsv4-nvfp4:recipe`. Override the defaults of 16 build jobs
+and 8 NVCC threads with `BUILD_JOBS` and `NVCC_THREADS`. See
+[build provenance](../results/original-build-provenance.json) and
+[compatibility fixes](troubleshooting.md).
 
-The completed build's [image digests, dependency versions and CPU results](../results/source-build-provenance.json)
-are recorded separately from the original image. That JSON preserves the
-build-stage snapshot, whose GPU acceptance was still pending at collection;
-[subsequent GPU acceptance](source-image-validation.md) completed. This was a source rebuild on
-the same host with reusable base/download layers, not a clean-machine test or
-a claim of bit-for-bit reproducibility.
+The [build record](../results/source-build-provenance.json) contains image
+digests, dependencies and CPU results. GPU acceptance was pending when that
+record was saved; [later tests passed](source-image-validation.md). This build
+reused base/download layers on the existing host. It does not establish a
+fresh-machine build or bit-for-bit reproducibility.
 
 Run the 13 CPU regression methods against the pinned checkpoint metadata:
 
@@ -74,9 +69,9 @@ docker run --rm --entrypoint bash \
     done'
 ```
 
-These tests do not exercise GPUs. Use a previously unused `KERNEL_CACHE` volume
-name on the first GPU acceptance launch to check kernel compilation independently
-of existing FlashInfer cache files. Retain that volume for warmed restarts.
+These are CPU tests. For the first GPU launch, use a new `KERNEL_CACHE` volume
+to test compilation without existing FlashInfer cache files. Keep it for warmed
+restarts.
 
 ## Start the server
 
@@ -85,9 +80,8 @@ bash serve.sh
 docker logs -f dsv4-nvfp4
 ```
 
-Wait for application startup to complete. The initial launch compiles kernels;
-model weights loading successfully is only one startup stage. The launcher binds
-to loopback by default and uses the following settings:
+Wait for application startup to complete, including initial kernel compilation.
+The launcher binds to loopback and defaults to:
 
 | Setting | Default |
 |---|---|
@@ -115,10 +109,9 @@ Use `http://<gpu-host>:8000/v1` as the OpenAI-compatible base URL and
 
 ## Recommended coding profile
 
-For the tested two-GPU host and interactive coding with occasional very long
-inputs, use these explicit overrides. Stop the earlier recipe container first;
-use a new name to preserve its logs. The generic launcher defaults above remain
-64K at 95%.
+For everyday coding with occasional long inputs on the tested two-GPU host,
+use these overrides. Stop the earlier recipe container and use a new name to
+keep its logs. The launcher defaults remain 64K at 95%.
 
 ```bash
 CONTAINER_NAME=dsv4-nvfp4-coding \
@@ -127,14 +120,12 @@ MAX_BATCHED_TOKENS=2048 MAX_NUM_SEQS=2 \
   bash serve.sh --long-prefill-token-threshold 1792
 ```
 
-This profile passed near-1M retrieval, concurrent tools, a warmed restart and all
-19 short API checks over the LAN afterward. The cap limits long-prefill work
-per scheduling step; it does not shorten the 1M context window. In the tested
-48K coding fixture, median completion time was 8.906 seconds. A tool round trip
-during the near-1M prefill took 32.035 seconds, so capacity does not imply instant
-responses while a very long input is processing.
+This profile passed near-1M retrieval, concurrent tools, a warmed restart and
+19 subsequent LAN API checks. The cap limits prefill work per scheduling step
+while keeping the 1M window. The 48K coding fixture took a median 8.906 seconds;
+one tool roundtrip during near-1M prefill took 32.035 seconds.
 
-If tool responsiveness during background prefill matters more, choose cap512
+If tool responsiveness during background prefill matters more, choose cap 512
 instead, after stopping the active recipe container:
 
 ```bash
@@ -144,16 +135,16 @@ MAX_BATCHED_TOKENS=2048 MAX_NUM_SEQS=2 \
   bash serve.sh --long-prefill-token-threshold 512
 ```
 
-Cap512 measured a 2.186-second tool median during the repeated 262K input test
-and 18.113 seconds in one near-1M test. The coding fixture slowed to 12.205
-seconds. Both profiles retain fixed-K5 DSpark, Markov correction and target
-decode graphs; neither enables adaptive verification or the optional draft
-forward graph. See [all profile measurements and startup limits](interactive-latency.md).
+Cap 512 reduced the tool median to 2.186 seconds during repeated 262K inputs
+and took 18.113 seconds in one near-1M trial. The coding fixture slowed to
+12.205 seconds. Both profiles keep fixed-K5 DSpark, Markov correction and target
+decode graphs. Adaptive verification and optional draft-forward graphs are
+disabled. See [measurements and startup limits](interactive-latency.md).
 
 ## Run the API checks
 
-The test clients require Python 3 and its standard library only. They send
-synthetic requests to the running server and exit nonzero on a failed check.
+The clients use Python 3 and its standard library. They send synthetic requests
+and exit nonzero if a check fails.
 
 ```bash
 mkdir -p results/raw
@@ -163,15 +154,14 @@ python3 benchmark.py --label dspark-graphs-64k \
   --output results/raw/benchmark-64k.json
 ```
 
-`verify.py` adds `/v1` itself: its `--base-url` is the server origin, such as
-`http://127.0.0.1:8000`. It covers chat, reasoning, tools and their round trips,
-structured output, streaming, concurrency, prefix reuse, cancellation recovery,
-and optional long-context retrieval. See [pass conditions](validation.md).
+`verify.py` adds `/v1`, so pass the server origin to `--base-url`, for example
+`http://127.0.0.1:8000`. It checks chat, reasoning, tools, structured output,
+streaming, concurrency, prefix reuse and cancellation recovery, with optional
+long retrieval. See [pass conditions](validation.md).
 
-For a matched DSpark comparison, save the first results, stop this recipe's
-container, and use a **different container name** for `DSPARK=0`, keeping all
-other settings identical. A stopped container retains its name; running another
-container with that name fails. For the default names/settings above:
+For a matched DSpark comparison, save the results, stop the recipe container
+and launch `DSPARK=0` with identical other settings. Use a **different container
+name**: stopped containers still hold their names. With the defaults above:
 
 ```bash
 docker stop dsv4-nvfp4
@@ -184,9 +174,9 @@ docker stop dsv4-nvfp4-control
 docker start dsv4-nvfp4
 ```
 
-Keep other workloads idle. The benchmark warms every exact
-prompt, generates 256 tokens per request, and records two measured repeats plus
-one pair of concurrent requests. It measures short inputs even on a large window.
+Keep other workloads idle. The benchmark warms each exact prompt, generates
+256 tokens per request and records two repeats plus one concurrent pair. Its
+inputs remain short regardless of the configured window.
 
 The source-image comparison used three measured repeats per workload and three
 separate short runs, with the frozen coding run between the first and second.
@@ -200,17 +190,16 @@ python3 benchmark.py --label your-profile-code --tokens 512 --repeats 3 \
   --output results/raw/your-profile-code.json
 ```
 
-Record later short runs under distinct output names to preserve all trials.
-The [fixture description and hash](../benchmarks/prompts/README.md) identify the
-exact bytes. The code override replaces only the code workload: its concurrent
-pair remains short prose plus long code, not two long code requests. Uncached
-mode gives every request a fresh cache salt; still verify server hit counters.
+Use distinct filenames for later runs. The
+[fixture description](../benchmarks/prompts/README.md) records its exact hash.
+The override replaces the code workload; the concurrent pair is short prose
+plus long code. Uncached mode assigns each request a fresh salt; verify server
+cache-hit counters too.
 
 ## Attempt large context
 
-The 801K configuration has passed a single 799,847-token retrieval request on the
-patched preview image. Stop the earlier recipe container before changing its
-window. Use a new name to preserve its logs:
+The patched preview passed one 799,847-token retrieval at 801K. Stop the earlier
+container before changing the window; use a new name to keep its logs:
 
 ```bash
 docker stop dsv4-nvfp4
@@ -225,15 +214,13 @@ python3 verify.py --only identity,long_context,chat \
   --output results/raw/features-801k.json
 ```
 
-The 1M experiment uses `MAX_MODEL_LEN=1000000` and
-`--long-context-tokens 999000` and `GPU_MEMORY_UTILIZATION=0.96`. This passed
-998,847-token retrieval and all 19 follow-up API checks on the patched preview;
-95% failed the startup memory check. The public rebuild subsequently passed at
-96.5% with the larger batch below and at 96% with both recommended-profile caps.
-The model window includes
-prompt and completion tokens; these probes reserve output room and report the
-actual tokenizer count. A successful single request does not establish two
-simultaneous full-window requests or broad retrieval quality.
+The 1M experiment uses `MAX_MODEL_LEN=1000000`,
+`--long-context-tokens 999000` and `GPU_MEMORY_UTILIZATION=0.96`. The patched
+preview passed 998,847-token retrieval and 19 follow-up API checks; 95% failed
+startup admission. The source rebuild passed at 96.5% with the larger batch
+below and at 96% with both recommended caps. Probes reserve output space within
+the window and report actual token counts. These single requests do not test
+two full windows or broad retrieval accuracy.
 
 The initial source-built 1M candidate used the following overrides, after stopping the
 previous recipe container:
@@ -245,16 +232,15 @@ MAX_BATCHED_TOKENS=2560 \
   bash serve.sh --long-prefill-token-threshold 2304
 ```
 
-This is a measured candidate, not the selected interactive default. Retrieval
-and short API checks passed, but a concurrent tool round trip took 37.9 seconds
-and sampled serving free memory fell to 507/472 MiB. See
-[the complete source-image report](source-image-validation.md).
+This earlier candidate passed retrieval and short API checks. A concurrent
+tool roundtrip took 37.9 seconds, and sampled serving free memory fell to
+507/472 MiB. It is not the selected default. See the
+[source-image report](source-image-validation.md).
 
-For each attempt, preserve launch settings, startup memory logs, actual token
-counts, outputs, and elapsed times. Keep first-use compilation and concurrent
-build activity separate from steady-state performance. The cache token count
-printed at startup is context-dependent arithmetic; see
-[the memory explanation](context-memory.md).
+Save each attempt's launch settings, startup logs, actual token counts, outputs
+and timings. Separate first-use compilation and competing builds from warmed
+measurements. Startup's cache-token count is arithmetic; the
+[memory guide](context-memory.md) explains it.
 
 ## Check responsiveness during a long input
 
@@ -278,46 +264,40 @@ python3 mixed_probe.py --label your-profile-tools --prompt-tokens 262000 \
   --output results/raw/mixed-tools.json
 ```
 
-Warm the same protocol before measured repeats and retain the warmup result.
-The long prompt gets a fresh prefix each run; the tool prompt is unchanged and
-may reuse cache blocks, including between its two calls. Record cache-hit deltas
-instead of describing this entire workload as uncached. Record actual prompt and
-completion counts, both tool-call times, long duration and sampled resources.
+Warm this protocol and retain the warmup result before measured repeats. Each
+long prompt has a fresh prefix; the fixed tool prompt can reuse cache blocks,
+even between its two calls. Record hit deltas, actual tokens, both tool-call
+times, long duration and sampled resources.
 
-This prepares the prompt, starts the long completion call, and submits a short
-exact-answer request 30 seconds after that call begins. Each run records a new
-unique prefix near the start of the long prompt. Passing requires both answers
-to be correct and the short response to finish at least one second before the
-long completion call returns. If the long request finishes before the probe,
-the result is inconclusive. The output preserves failures, completion-call
-boundaries, the prefix, and raw synthetic requests. Use server metrics to verify
-admission and prefill activity; client overlap alone does not establish them.
+The first example submits a short exact-answer request 30 seconds after the
+long completion call starts. Every long prompt has a unique prefix. Both answers
+must be correct, and the short response must finish at least one second before
+the long call returns. If the long request finishes before the probe, the result
+is inconclusive. Output retains failures, call boundaries, prefixes and raw
+requests. Use server metrics to confirm admission and prefill activity; client
+overlap alone cannot show them.
 
-The uncapped 97% profile exposed a 180-second short-request timeout.
-`MAX_BATCHED_TOKENS=2560` with `--long-prefill-token-threshold 2304` subsequently
-passed mixed near-1M retrieval and all 19 follow-up API checks. Source-image
-acceptance and controlled benchmarks have since completed; the
-[interactive comparison](interactive-latency.md) records lower-memory alternatives. See
-[the scheduling evidence](performance.md#observed-mixed-request-scheduling-limit).
+An uncapped 97% profile timed out a short request after 180 seconds.
+`MAX_BATCHED_TOKENS=2560` with `--long-prefill-token-threshold 2304` then passed
+mixed near-1M retrieval and 19 API checks. See the
+[later source-image profile comparison](interactive-latency.md) and
+[scheduler explanation](performance.md#observed-mixed-request-scheduling-limit).
 
 For a controlled context/batch comparison with vLLM's benchmark and saved
 latencies, follow [the measurement guide](context-batch.md).
 
 ## Preserved baseline and rollback
 
-Git tag `recipe-1m-k5` preserves this clean recipe's tested source/build/launch
-files. Use it in a separate checkout to recover the recipe without discarding
-newer work. The original `baseline-1m-k5` Git tag is retained in the private
-adaptive archive; [provenance](provenance.md) explains historical references.
-The selected host's exact tested image is also tagged
-`dsv4-nvfp4:baseline-1m-k5`; its identity is recorded in
-[snapshot provenance](provenance.md). This image tag is local to
-that host and is not a registry upload.
+Tag `recipe-1m-k5` preserves the tested source/build/launch files. Use a separate
+checkout for recovery. The original `baseline-1m-k5` Git tag remains in the
+private adaptive archive; see [historical provenance](provenance.md). On the
+original host, image tag `dsv4-nvfp4:baseline-1m-k5` also preserves the tested
+image. Its [identity is recorded](provenance.md); it has not been uploaded to
+a registry.
 
-After an experiment, let active requests finish and stop its container before
-restoring the saved baseline container with `docker start <saved-container>`.
-On the original host, the local image tag above is also available for a new
-container. Keep a distinct name and retain previous logs.
+Let experiment requests finish, stop its container, then restore the saved
+container with `docker start <saved-container>`. On the original host, you can
+also launch the local baseline image under a new name. Retain previous logs.
 
 On another host, build an explicitly named recovery image from a separate
 checkout; the default build does not create the original host's baseline tag:
@@ -333,7 +313,6 @@ MAX_BATCHED_TOKENS=2048 MAX_NUM_SEQS=2 \
   bash serve.sh --long-prefill-token-threshold 1792
 ```
 
-The pinned checkpoint must still be present in the configured `HF_CACHE`.
-Wait for application startup, check `/health` and `/v1/models`, then rerun
-`verify.py` under a new output filename. Recovering code alone does not prove
-the running service was rolled back.
+Keep the pinned checkpoint in `HF_CACHE`. After startup, check `/health` and
+`/v1/models`, then rerun `verify.py` with a new output filename to confirm the
+restored service works.
