@@ -11,10 +11,10 @@ what is required and what is already installed; unsupported platforms and unrun
 checks remain labeled. Existing synthetic feature checks and 1M capacity results
 must not become broad accuracy or clean-machine reproducibility claims.
 
-- [ ] Inspect build/launch, benchmark/client and documentation ownership.
-- [ ] Correct release-impacting findings and remove stale status claims.
-- [ ] Provide a newcomer walkthrough and reproducible local check command.
-- [ ] Rehearse available deployment steps; distinguish simulation, existing-host
+- [x] Inspect build/launch, benchmark/client and documentation ownership.
+- [x] Correct release-impacting findings and remove stale status claims.
+- [x] Provide a newcomer walkthrough and reproducible local check command.
+- [x] Rehearse available deployment steps; distinguish simulation, existing-host
   execution and an independent fresh-machine install.
-- [ ] Verify links, shell/client checks, relevant regressions and review fixes.
+- [x] Verify links, shell/client checks, relevant regressions and review fixes.
 - [ ] Publish reviewed recipe and record remaining limitations.

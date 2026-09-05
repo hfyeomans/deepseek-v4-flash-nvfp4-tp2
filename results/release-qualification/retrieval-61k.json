@@ -1,0 +1,26 @@
+{
+  "recorded_at": "2026-09-05T19:05:18.168989+00:00",
+  "results": [
+    {
+      "check": "long_context",
+      "status": "pass",
+      "detail": {
+        "requested_prompt_tokens": 61440,
+        "measured_prompt_tokens": 61287,
+        "expected": {
+          "first": "IVORY-162",
+          "middle": "COPPER-493",
+          "last": "SILVER-857"
+        },
+        "observed": {
+          "first": "IVORY-162",
+          "middle": "COPPER-493",
+          "last": "SILVER-857"
+        }
+      },
+      "elapsed_seconds": 22.74365324099199
+    }
+  ],
+  "raw_record_sha256": "5ac2cd1251142d2f223d510350839aa0783972feb31f84800b86c7fd322a4048",
+  "note": "Large repeated prompt omitted; reproduce with verify.py --only long_context --long-context-tokens 61440."
+}

@@ -1,0 +1,163 @@
+{
+  "status": "passed",
+  "qualification_commit": "9cedab8225c03fe2500636b8bb32a982008f4c38",
+  "recorded_at": "2026-09-05T19:07:55.939763+00:00",
+  "hardware": {
+    "gpu_count": 2,
+    "gpu": "RTX PRO 6000 Blackwell Max-Q",
+    "gpu_memory_mib_each": 97887,
+    "host_memory_gib": 246,
+    "driver": "610.57.04"
+  },
+  "source_revision": "0f59188db1504b042ce621842bdde6c0fe862df6",
+  "checkpoint_revision": "f1caa71142bd0be02f728c79f75042ac1e461579",
+  "original_image": "sha256:1f0776d3ac4a990186899d122ebee81e5ad0bcdf1dbb95ebccb30d5f94c6908e",
+  "candidate_image": "sha256:ed67a87a0cb1f5e1d337613add7c4255c1c9a5158d6fb026e243344b4fb5f817",
+  "build_inputs_sha256": {
+    "build.sh": "b81dfb925992268fdb584d06ddb0e0c4b4db9afbeb59f887bd65f2b007f076b1",
+    "serve.sh": "2e13f7241cc125252ffbd7cda6b0a9ed01685d6e42caf7c3a2dea41728516a54",
+    "Dockerfile.dspark": "d0ea3a40d65c5fac2d9cd40cade9ac90b53d261ae51d47b875b77524b82df2d8",
+    "Dockerfile.experimental": "748ab72d3030528429ed7cbaea5718cccee09f0f387d7d40cc594d820d68ccfe",
+    "Dockerfile.network": "f7bd241b94f5b33877b976f3080e7c51e057692588c8504060ecd82d574155e0",
+    "patches/0002-match-0731-reasoning-effort.patch": "72bb820b4fed8e85d89132d00fbb2b869cb2ad5fa969dcbdccfd4302fa8f3671",
+    "patches/0003-verify-draft-weight-coverage.patch": "fe33a5ae282ab54edaa2ae00b06772fe6ba4490f313c86d5c29b24ea61e2a3be",
+    "patches/0001-scope-dspark-expert-format.patch": "2a685fc216d931c505fd6fc55685347e7a50ffd5afe613a0a17b20620b36e916",
+    "tests/test_quant_dispatch.py": "c685241bee71f458bedead12af4bdce2a1ce13a517d4577f68650bba16156564",
+    "tests/test_reasoning_encoding.py": "b67e31ed46fdc940dc40d5da6b2b84580c125f84a14f2f6ceb1261da13c1cb4a",
+    "tests/test_weight_coverage.py": "e2c014ff4032363798373f351c481522f148df4c00fb9695c3e7db9436faf253"
+  },
+  "client_sha256": {
+    "benchmark.py": "994c05a8ea2ccedc94e3ed1b01453a1e94e53d530ccee01186aee26cfde08bd5",
+    "verify.py": "721072d7f1b149acadaf932d025843e92dce2e2d60edc38257190c45b4734096"
+  },
+  "image_comparison": {
+    "baseline": {
+      "versions": {
+        "vllm": "20260804",
+        "torch": "2.13.0+cu130",
+        "flashinfer-python": "0.6.16",
+        "apache-tvm-ffi": "0.1.11"
+      },
+      "files": {
+        "vllm/models/deepseek_v4/nvidia/dspark.py": "be6b7e92a4e5ae85f622d7114e1144167af8c244aee0dc69ca8f6d5595f57d5b",
+        "vllm/models/deepseek_v4/quant_config.py": "bdc86764f5a50bea4a1c8f1fe5e79df4876d09cd15f45a4533c9f06d30661918",
+        "vllm/tokenizers/deepseek_v4.py": "a719d3980e8fe95dbc93cfc0f31e8cb9c30aaf9e250c8b8032b7c2b14d6a7ef8",
+        "vllm/tokenizers/deepseek_v4_encoding.py": "a20408f98130fcb73ac807d5f8a8d89c526cef167e5f95067b56f7851c2e88e1"
+      }
+    },
+    "candidate": {
+      "versions": {
+        "vllm": "20260804",
+        "torch": "2.13.0+cu130",
+        "flashinfer-python": "0.6.16",
+        "apache-tvm-ffi": "0.1.11"
+      },
+      "files": {
+        "vllm/models/deepseek_v4/nvidia/dspark.py": "be6b7e92a4e5ae85f622d7114e1144167af8c244aee0dc69ca8f6d5595f57d5b",
+        "vllm/models/deepseek_v4/quant_config.py": "bdc86764f5a50bea4a1c8f1fe5e79df4876d09cd15f45a4533c9f06d30661918",
+        "vllm/tokenizers/deepseek_v4.py": "a719d3980e8fe95dbc93cfc0f31e8cb9c30aaf9e250c8b8032b7c2b14d6a7ef8",
+        "vllm/tokenizers/deepseek_v4_encoding.py": "a20408f98130fcb73ac807d5f8a8d89c526cef167e5f95067b56f7851c2e88e1"
+      }
+    },
+    "identical_checked_versions_and_patched_files": true
+  },
+  "hf_cli_package_version": "1.30.0",
+  "build_exit_code": 0,
+  "local_tests_passed": 28,
+  "image_cpu_tests_passed": 13,
+  "feature_checks": {
+    "candidate-features.json": {
+      "passed": 19,
+      "failed": 0,
+      "stream_records": 4,
+      "stream_states": [
+        "complete",
+        "complete",
+        "complete",
+        "cancelled"
+      ],
+      "all_streams_closed": true
+    },
+    "candidate-restart-features.json": {
+      "passed": 19,
+      "failed": 0,
+      "stream_records": 4,
+      "stream_states": [
+        "complete",
+        "complete",
+        "complete",
+        "cancelled"
+      ],
+      "all_streams_closed": true
+    },
+    "restored-original-features.json": {
+      "passed": 19,
+      "failed": 0,
+      "stream_records": 4,
+      "stream_states": [
+        "complete",
+        "complete",
+        "complete",
+        "cancelled"
+      ],
+      "all_streams_closed": true
+    }
+  },
+  "profile": {
+    "max_model_len": 1000000,
+    "gpu_memory_utilization": 0.96,
+    "max_num_batched_tokens": 2048,
+    "max_num_seqs": 2,
+    "long_prefill_token_threshold": 1792,
+    "tensor_parallel_size": 2,
+    "speculative_tokens": 5,
+    "draft_sample_method": "probabilistic",
+    "target_moe_backend": "flashinfer_cutlass",
+    "draft_moe_backend": "marlin",
+    "kv_cache_dtype": "fp8",
+    "block_size": 256,
+    "cudagraph_mode": "FULL_DECODE_ONLY",
+    "max_cudagraph_capture_size": 16
+  },
+  "fresh_kernel_cache_created_at": "2026-09-05T18:55:33Z",
+  "seconds_from_rehearsal_start_to_first_readiness": 537.7433202266693,
+  "reported_kv_cache_tokens": 1135251,
+  "reported_available_kv_gib": 5.93,
+  "reported_decode_graph_gib": 0.1,
+  "weight_coverage": {
+    "each_startup_both_tp_ranks": true,
+    "expert_tensors_each_rank": 4608,
+    "nonexpert_source_tensors_each_rank": 99,
+    "parameter_bindings_each_rank": 99
+  },
+  "speculation_counters_before": {
+    "vllm:spec_decode_num_drafts_total": 0.0,
+    "vllm:spec_decode_num_draft_tokens_total": 0.0,
+    "vllm:spec_decode_num_accepted_tokens_total": 0.0,
+    "vllm:num_preemptions_total": 0.0
+  },
+  "speculation_counters_after": {
+    "vllm:spec_decode_num_drafts_total": 1036.0,
+    "vllm:spec_decode_num_draft_tokens_total": 5148.0,
+    "vllm:spec_decode_num_accepted_tokens_total": 2326.0,
+    "vllm:num_preemptions_total": 0.0
+  },
+  "speculation_counter_delta": {
+    "vllm:spec_decode_num_drafts_total": 1036.0,
+    "vllm:spec_decode_num_draft_tokens_total": 5148.0,
+    "vllm:spec_decode_num_accepted_tokens_total": 2326.0,
+    "vllm:num_preemptions_total": 0.0
+  },
+  "counter_scope": "Candidate first-launch feature suite + 61K retrieval + complete benchmark, before restart; pooled across workloads.",
+  "candidate_startups_passed": 2,
+  "original_restored": true,
+  "ci_run": "https://github.com/hfyeomans/deepseek-v4-flash-nvfp4-tp2/actions/runs/33985710528",
+  "limits": [
+    "Existing host, drivers, checkpoint cache and reusable Docker layers; not an independent clean-machine installation.",
+    "Fresh kernel volume; first request shapes still triggered additional JIT and latency spikes.",
+    "Single warmed restart and bounded synthetic tests; not a long-duration stability or broad quality evaluation.",
+    "No new 801K/1M retrieval or matched DSpark-off comparison in this qualification.",
+    "Benchmark uses warm-prefix short prompts, C1 warmups and one C2 pair without its own warmup; descriptive rerun only.",
+    "No out-of-memory text appeared in candidate startup logs; shutdown emitted Python resource-tracker warnings."
+  ]
+}

@@ -101,6 +101,6 @@ there. No adaptive speedup is inferred from fixed-K5 results.
 This repository starts from a clean recipe snapshot. Original combined history
 and its rollback reference are retained in the private research archive. The
 clean recipe checkpoint is `recipe-1m-k5`. See [provenance and rollback](docs/provenance.md)
-and [repository boundaries](docs/repository-boundaries.md). The repository
-remains private pending publication checks. Recipe code and vLLM modifications
-use Apache-2.0; model weights retain their own license.
+and [repository boundaries](docs/repository-boundaries.md). The
+[publication record](tasks/publication/state.md) tracks release status.
+Recipe code and vLLM modifications use Apache-2.0; model weights retain their own license.

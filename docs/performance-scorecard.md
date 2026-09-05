@@ -179,6 +179,17 @@ The [full control report](primary-control-screen.md) preserves warmups,
 per-pair ratios, memory cost, startup warnings and the next measurement fixes;
 [unrounded results](../results/primary-dspark-comparison.json) retain every trial.
 
+### Community release qualification rerun
+
+The September 5 source rebuild at the primary 1M/96% settings recorded
+**201.36 tok/s** median short code and **265.95 tok/s** in one concurrent pair.
+The 61,287-token synthetic retrieval check passed in **22.744 seconds**.
+This was a functional qualification with warm-prefix short prompts, C1 warmups
+and no independent C2 warmup or matched DSpark-off arm. It does not replace the
+controlled comparison above or establish a new optimization gain. See
+[all unrounded trials](../results/release-qualification/benchmark.json) and
+[build, startup, feature and recovery evidence](../tasks/release-readiness/verification.md).
+
 ## Adaptive verification boundary
 
 All acceleration in this scorecard comes from the recorded fixed-mode recipe

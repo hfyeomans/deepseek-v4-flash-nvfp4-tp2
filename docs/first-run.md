@@ -48,7 +48,7 @@ cd deepseek-v4-flash-nvfp4-tp2
 mkdir -p results/raw
 python3 -m venv .venv
 . .venv/bin/activate
-python -m pip install --upgrade huggingface_hub
+python -m pip install 'huggingface_hub==1.30.0'
 hf --help
 export MODEL=nvidia/DeepSeek-V4-Flash-0731-NVFP4
 export REVISION=f1caa71142bd0be02f728c79f75042ac1e461579
@@ -58,7 +58,8 @@ hf download "$MODEL" --revision "$REVISION" --cache-dir "$HF_CACHE/hub"
 
 If Ubuntu reports that `venv` is unavailable, install `python3-venv` first.
 The [official HF CLI guide](https://huggingface.co/docs/huggingface_hub/guides/cli)
-describes installation and authentication. An existing complete pinned cache
+describes installation and authentication; 1.30.0 is the CLI package version
+used in this rehearsal. An existing complete pinned cache
 can be reused; no GGUF conversion or second draft download is required.
 `HF_CACHE` names the parent of `hub`, which the launcher mounts into Docker.
 Set it consistently when downloading and serving. Keep these exports in the
@@ -116,6 +117,11 @@ docker logs -f dsv4-first-run
 Use a previously unused kernel-volume name for your first qualification. Keep
 it for subsequent restarts. Wait for **Application startup complete**; weight
 loading alone is insufficient. Ctrl-C leaves the detached server running.
+The fresh-cache rehearsal took about nine minutes to first readiness, and some
+new request shapes compiled afterward. CPU compilers can be busy while GPU
+utilization is low; periodic shared-memory wait messages alone do not prove a
+hang. The [qualification record](../tasks/release-readiness/verification.md)
+retains the exact scope and timings.
 
 ```bash
 curl --fail http://127.0.0.1:8000/health

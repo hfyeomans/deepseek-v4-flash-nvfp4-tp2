@@ -15,9 +15,11 @@ research branch, split inventories and original rollback tag are archived in
 the private adaptive repository. The new `recipe-1m-k5` tag is a distinct recipe
 checkpoint, not a renamed historical experiment. See [provenance](provenance.md).
 
-Both repositories remain private. Clean Git refs and a clean clone do not prove
-that GitHub has removed every cached old commit. Publication requires a separate
-check of that boundary; no public release or live server change is implied here.
+The recipe GitHub repository was replaced under the same name after local
+research preservation. Checks against the replacement report the probed old
+research commit IDs as unavailable; the adaptive archive stays private. The
+[publication record](../tasks/publication/state.md) tracks visibility and
+[release qualification](../tasks/release-readiness/verification.md) tracks live tests.
 
 For use now, follow [build and launch](running.md#recommended-coding-profile),
 then [API validation](validation.md). For measured outcomes, see the
