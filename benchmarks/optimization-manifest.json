@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "status": "fixed_k5_control_screen_complete",
+  "baseline_commit": "e25dba78a68791c4df7a642b44f5eec397d23f6c",
+  "rollback_tag": "baseline-1m-k5",
+  "image_id": "sha256:1f0776d3ac4a990186899d122ebee81e5ad0bcdf1dbb95ebccb30d5f94c6908e",
+  "source_commit": "0f59188db1504b042ce621842bdde6c0fe862df6",
+  "model": "nvidia/DeepSeek-V4-Flash-0731-NVFP4",
+  "model_revision": "f1caa71142bd0be02f728c79f75042ac1e461579",
+  "hardware": {
+    "gpu_count": 2,
+    "name": "NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition",
+    "total_mib_each": 97887,
+    "driver_version": "610.57.04",
+    "architecture": "x86_64",
+    "power_limit_w_each": 300
+  },
+  "versions": {
+    "vllm": "20260804",
+    "torch": "2.13.0+cu130",
+    "flashinfer": "0.6.16"
+  },
+  "common_profile": {
+    "tensor_parallel_size": 2,
+    "max_model_len": 1000000,
+    "gpu_memory_utilization": 0.96,
+    "max_num_seqs": 2,
+    "max_num_batched_tokens": 2048,
+    "long_prefill_token_threshold": 1792,
+    "kv_cache_dtype": "fp8",
+    "block_size": 256,
+    "moe_backend": "flashinfer_cutlass",
+    "cudagraph_mode": "FULL_DECODE_ONLY",
+    "max_cudagraph_capture_size": 16,
+    "enable_prefix_caching": true
+  },
+  "controls": {
+    "on": {
+      "method": "dspark",
+      "num_speculative_tokens": 5,
+      "draft_sample_method": "probabilistic",
+      "moe_backend": "marlin",
+      "enable_adaptive_verification": false,
+      "experimental_draft_forward_graph": false
+    },
+    "off": {
+      "speculative_config": null
+    }
+  },
+  "block_order": [
+    "pair1-on",
+    "pair1-off",
+    "pair2-off",
+    "pair2-on",
+    "pair3-on",
+    "pair3-off"
+  ],
+  "screening": {
+    "measured_blocks_per_mode": 3,
+    "warmup_per_workload_per_block": 1,
+    "measured_c1_per_workload_per_block": 1,
+    "short_c2_pairs_per_block": 1,
+    "mixed_warmups_per_block": 1,
+    "mixed_measured_per_block": 1,
+    "mixed_requested_input_tokens": 262144,
+    "mixed_tool_delay_seconds": 3,
+    "short_output_tokens": 256,
+    "code_client_output_tokens": 512,
+    "benchmark_cache_mode": "uncached",
+    "resource_interval_seconds": 2,
+    "not_finalist_or_p95": true
+  },
+  "input_sha256": {
+    "benchmark.py": "9344ec95778b35f2328fefff41978b97d6b9f2c5760e17c5ca07d2d96b32574f",
+    "mixed_probe.py": "023d8fab42160c4082f90e3f208e02a12f9ccc089e217d8d559a2f0eddc41ea6",
+    "verify.py": "6ee6939888a03127c1216722431bb46cf8b836a24dc27bc262b3652070b109fd",
+    "serve.sh": "2e13f7241cc125252ffbd7cda6b0a9ed01685d6e42caf7c3a2dea41728516a54",
+    "benchmarks/prompts/code-48k.txt": "aeda010d0d3be31901137b5425b130d8ab39e7a45d0c6b64e6a42521234c7c7e"
+  },
+  "limits": [
+    "Actual prompt and completion counts, graph shapes, KV capacity and sampling minima are recorded in results; configured limits do not substitute for those measurements.",
+    "Fixed-output speed tests do not score coding quality. Executable coding and expanded tool-quality controls remain pending.",
+    "C1 warmups did not independently warm C2. Retain onset variability; add separate C2 warmups for finalists.",
+    "Initial preserved-on cache residency and thermal history differ across blocks; no clock/throttling telemetry was collected.",
+    "Profiler timing is perturbed; component kernel sums are not unprofiled critical-path costs."
+  ],
+  "container_comparison": {
+    "environment_variables_identical": true,
+    "image_id_identical": true,
+    "entrypoint_identical": true,
+    "gpu_device_requests_identical": true,
+    "ipc_mode": "host",
+    "kernel_cache_shared": true,
+    "only_engine_command_difference": "--speculative-config and its JSON value absent in off mode"
+  },
+  "results": {
+    "controls": "results/primary-dspark-controls.json",
+    "comparisons": "results/primary-dspark-comparison.json",
+    "profiles": "results/component-profiles/index.json",
+    "restoration": "results/feasibility-primary-restoration.json",
+    "final_runtime": "results/feasibility-final-runtime-check.json"
+  }
+}

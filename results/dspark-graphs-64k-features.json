@@ -1,0 +1,210 @@
+{
+  "recorded_at": "2026-09-05T01:24:28.538122+00:00",
+  "configuration": {
+    "max_model_len": 65536,
+    "max_num_seqs": 2,
+    "tensor_parallel_size": 2,
+    "gpu_memory_utilization": 0.95,
+    "kv_cache_dtype": "fp8",
+    "cudagraph_mode": "FULL_DECODE_ONLY",
+    "max_cudagraph_capture_size": 16,
+    "model_revision": "f1caa71142bd0be02f728c79f75042ac1e461579",
+    "image_config_digest": "sha256:363d84a361356b156b7bd04f895782d4ab9aa7d258a96f6a1ddc9e582c1f6315"
+  },
+  "dspark": {
+    "draft_backend": "marlin",
+    "num_speculative_tokens": 5,
+    "draft_sample_method": "probabilistic"
+  },
+  "results": [
+    {
+      "check": "identity",
+      "status": "pass",
+      "detail": {
+        "object": "list",
+        "data": [
+          {
+            "id": "dsv4-nvfp4",
+            "object": "model",
+            "created": 1788571434,
+            "owned_by": "vllm",
+            "root": "nvidia/DeepSeek-V4-Flash-0731-NVFP4",
+            "parent": null,
+            "max_model_len": 65536,
+            "permission": [
+              {
+                "id": "modelperm-928b48e07992125f",
+                "object": "model_permission",
+                "created": 1788571434,
+                "allow_create_engine": false,
+                "allow_sampling": true,
+                "allow_logprobs": true,
+                "allow_search_indices": false,
+                "allow_view": true,
+                "allow_fine_tuning": false,
+                "organization": "*",
+                "group": null,
+                "is_blocking": false
+              }
+            ]
+          }
+        ]
+      },
+      "elapsed_seconds": 0.006310876000497956
+    },
+    {
+      "check": "chat",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.6292440269990038
+    },
+    {
+      "check": "multi_turn",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.8588624479998543
+    },
+    {
+      "check": "reasoning",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 1.1474023920000036
+    },
+    {
+      "check": "reasoning_high",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.903174917000797
+    },
+    {
+      "check": "reasoning_max",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.19205991299895686
+    },
+    {
+      "check": "stream_reasoning",
+      "status": "pass",
+      "detail": {
+        "content": "323",
+        "reasoning_characters": 39
+      },
+      "elapsed_seconds": 0.17697288199997274
+    },
+    {
+      "check": "reasoning_tools",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 11.13572320700041
+    },
+    {
+      "check": "tools_auto",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.4799909649991605
+    },
+    {
+      "check": "tools_required",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.5507148620017688
+    },
+    {
+      "check": "tools_named",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.3269176409994543
+    },
+    {
+      "check": "json_object",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.7082856699998956
+    },
+    {
+      "check": "json_schema",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.13515978200121026
+    },
+    {
+      "check": "streaming",
+      "status": "pass",
+      "detail": {
+        "content": "STREAM-416",
+        "usage": {
+          "prompt_tokens": 12,
+          "total_tokens": 17,
+          "completion_tokens": 5
+        }
+      },
+      "elapsed_seconds": 0.10532394700021541
+    },
+    {
+      "check": "stream_tools",
+      "status": "pass",
+      "detail": [
+        {
+          "id": "chatcmpl-tool-bf64f45dbfc0e953",
+          "type": "function",
+          "function": {
+            "name": "lookup_code",
+            "arguments": "{\"record\": \"gamma\"}"
+          }
+        }
+      ],
+      "elapsed_seconds": 0.638944527001513
+    },
+    {
+      "check": "multiple_tools",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.5578561629990872
+    },
+    {
+      "check": "concurrency",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.6815988389989798
+    },
+    {
+      "check": "prefix_reuse",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 5.899295318999066
+    },
+    {
+      "check": "cancellation",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.21934772600070573
+    },
+    {
+      "check": "long_context",
+      "status": "pass",
+      "detail": {
+        "requested_prompt_tokens": 61440,
+        "measured_prompt_tokens": 61287,
+        "expected": {
+          "first": "IVORY-162",
+          "middle": "COPPER-493",
+          "last": "SILVER-857"
+        },
+        "observed": {
+          "first": "IVORY-162",
+          "middle": "COPPER-493",
+          "last": "SILVER-857"
+        }
+      },
+      "elapsed_seconds": 9.042035701000714
+    }
+  ],
+  "startup_evidence": [
+    "(Worker_TP0 pid=731) INFO 09-05 01:21:43 [flashinfer_sm120_decode.py:156] DeepSeek V4: using official FlashInfer SM120 packed sparse-MLA decode via the low-level runner (VLLM_DEEPSEEK_V4_FLASHINFER_SM120_DECODE=1).",
+    "(Worker_TP0 pid=731) INFO 09-05 01:22:00 [dspark.py:1168] DSpark weight coverage verified on TP rank 0: 4608 expert tensors, 99 non-expert source tensors and 99 parameter bindings",
+    "(Worker_TP1 pid=732) INFO 09-05 01:22:00 [dspark.py:1168] DSpark weight coverage verified on TP rank 1: 4608 expert tensors, 99 non-expert source tensors and 99 parameter bindings",
+    "(Worker_TP0 pid=731) INFO 09-05 01:22:48 [gpu_worker.py:563] Available KV cache memory: 6.11 GiB",
+    "(EngineCore pid=654) INFO 09-05 01:22:48 [kv_cache_utils.py:2283] GPU KV cache size: 220,485 tokens",
+    "(Worker_TP0 pid=731) INFO 09-05 01:23:08 [gpu_model_runner.py:6945] Graph capturing finished in 1 secs, took 0.08 GiB"
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "status": "rejected_as_server_responsiveness_evidence",
+  "source_revision": "0f59188db1504b042ce621842bdde6c0fe862df6",
+  "observed": {
+    "label": "pilot-1m-b2560-mixed",
+    "duration": 55.187765056998614,
+    "max_concurrency": 1,
+    "completed": 2,
+    "failed": 0,
+    "input_lens": [
+      131072,
+      131072
+    ],
+    "output_lens": [
+      512,
+      512
+    ],
+    "ttfts": [
+      21.960137713998847,
+      21.447164998000517
+    ],
+    "probe_completed": 3,
+    "probe_failed": 0,
+    "probe_median_e2el_ms": 23809.02781400073,
+    "probe_p99_e2el_ms": 24276.92637281878,
+    "probe_max_e2el_ms": 24286.47532299874
+  },
+  "server_metric_deltas": {
+    "prompt_tokens_total": 262147.0,
+    "generation_tokens_total": 1027.0,
+    "request_queue_time_seconds_sum": 6.563900024048053e-05,
+    "e2e_request_latency_seconds_sum": 53.16858267784119,
+    "time_to_first_token_seconds_sum": 43.35688042640686,
+    "request_prefill_time_seconds_sum": 42.72977839600571,
+    "request_decode_time_seconds_sum": 9.812774253998214
+  },
+  "probe_settings": {
+    "prompt": "Hi",
+    "requested_output_tokens": 1,
+    "probe_request_rate": 0.5
+  },
+  "reason": "The timer includes waiting for the shared client connector, limited to one connection. Serial probes sleep two seconds after completion; benchmark duration also includes outstanding probe teardown. No per-probe connection tracing was captured, so no exact waiting-time attribution is claimed.",
+  "replacement": "Independent client with completion-call timestamps and server activity evidence; see docs/benchmark-measurement.md.",
+  "raw_benchmark_sha256": "5414ce3789721f37ad6bf8d1df1f6d39fe603cc8ae2e08cf3c475e9f9e57ed8b"
+}

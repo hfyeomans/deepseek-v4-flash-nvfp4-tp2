@@ -1,0 +1,70 @@
+--- a/vllm/models/deepseek_v4/quant_config.py
++++ b/vllm/models/deepseek_v4/quant_config.py
+@@ -50,6 +50,7 @@
+         super().__init__(*args, **kwargs)
+         self._resolved_expert_dtype: str | None = None
+         self._resolved_moe_quant_algo: str | None = None
++        self._resolved_moe_formats: dict[str, str] | None = None
+         self._nvfp4_config: ModelOptNvFp4Config | None = None
+         # ``is_scale_e8m0`` is a property that resolves on first read,
+         # by which time the current vllm_config has been set.
+@@ -92,8 +93,44 @@
+             return
+         quant_cfg = getattr(hf_config, "quantization_config", None) or {}
+         algo = (quant_cfg.get("moe_quant_algo") or "").upper() or None
++        if algo == "NVFP4" and "quantized_layers" in quant_cfg:
++            scope = quant_cfg["quantized_layers"]
++            target_layers = hf_config.num_hidden_layers
++            expected = {
++                f"layers.{index}.ffn.experts" for index in range(target_layers)
++            }
++            if not isinstance(scope, dict) or set(scope) != expected:
++                raise ValueError(
++                    "DeepSeek V4 NVFP4 scope must cover every main expert layer."
++                )
++            formats = {}
++            for name, declaration in scope.items():
++                if not isinstance(declaration, dict) or (
++                    declaration.get("quant_algo") != "NVFP4"
++                    or declaration.get("group_size") != 16
++                ):
++                    raise ValueError(f"Invalid DeepSeek V4 NVFP4 scope: {name}")
++                formats[name] = "NVFP4"
++            # Folded DSpark layers are numbered after the main model at runtime,
++            # but are stored as mtp.* in the checkpoint. They retain MXFP4.
++            draft_layers = len(getattr(hf_config, "dspark_target_layer_ids", []))
++            if draft_layers and "mtp.*" in quant_cfg.get("ignore", []):
++                for index in range(target_layers, target_layers + draft_layers):
++                    formats[f"layers.{index}.ffn.experts"] = "MXFP4"
++            self._resolved_moe_formats = formats
+         self._resolved_moe_quant_algo = algo or ""
+ 
++    def _moe_format_for_prefix(self, prefix: str) -> str:
++        algo = self.moe_quant_algo
++        if self._resolved_moe_formats is None:
++            return algo
++        checkpoint_prefix = prefix.removeprefix("model.")
++        if checkpoint_prefix not in self._resolved_moe_formats:
++            raise ValueError(
++                f"Expert layer is outside DeepSeek V4 quantization scope: {prefix}"
++            )
++        return self._resolved_moe_formats[checkpoint_prefix]
++
+     @property
+     def moe_quant_algo(self) -> str:
+         self._resolve_moe_overrides()
+@@ -179,7 +216,7 @@
+             ):
+                 return UnquantizedFusedMoEMethod(layer.moe_config)
+             if self.expert_dtype == "fp4":
+-                if self.moe_quant_algo == "NVFP4":
++                if self._moe_format_for_prefix(prefix) == "NVFP4":
+                     from vllm.model_executor.layers.quantization.modelopt import (
+                         ModelOptNvFp4FusedMoE,
+                     )
+@@ -196,4 +233,4 @@
+     def is_mxfp4_quant(self, prefix, layer):
+         if not isinstance(layer, RoutedExperts) or self.expert_dtype != "fp4":
+             return False
+-        return self.moe_quant_algo != "NVFP4"
++        return self._moe_format_for_prefix(prefix) != "NVFP4"

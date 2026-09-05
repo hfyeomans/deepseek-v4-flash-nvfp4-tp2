@@ -1,0 +1,216 @@
+{
+  "recorded_at": "2026-09-05T02:00:04.216137+00:00",
+  "model_revision": "f1caa71142bd0be02f728c79f75042ac1e461579",
+  "image_config_digest": "sha256:363d84a361356b156b7bd04f895782d4ab9aa7d258a96f6a1ddc9e582c1f6315",
+  "configuration": {
+    "tensor_parallel_size": 2,
+    "max_model_len": 1000000,
+    "max_num_seqs": 2,
+    "max_num_batched_tokens": 2048,
+    "gpu_memory_utilization": 0.97,
+    "kv_cache_dtype": "fp8",
+    "block_size": 256,
+    "cudagraph_mode": "FULL_DECODE_ONLY",
+    "max_cudagraph_capture_size": 16,
+    "target_moe_backend": "flashinfer_cutlass",
+    "draft_moe_backend": "marlin",
+    "num_speculative_tokens": 5,
+    "draft_weight_coverage": true
+  },
+  "startup_status": "ready",
+  "startup_memory_samples": {
+    "sample_count": 60,
+    "target_interval_seconds": 2,
+    "ranks": [
+      {
+        "rank": 0,
+        "max_observed_used_MiB": 96942.0,
+        "min_observed_free_MiB": 347.0,
+        "last_observed_free_MiB": 1357.0
+      },
+      {
+        "rank": 1,
+        "max_observed_used_MiB": 96974.0,
+        "min_observed_free_MiB": 312.0,
+        "last_observed_free_MiB": 1322.0
+      }
+    ],
+    "scope": "From shortly after container creation until first successful health response; sampled extrema are not exact allocation peaks."
+  },
+  "startup_evidence": [
+    "(Worker_TP1 pid=731) INFO 09-05 01:58:09 [dspark.py:1168] DSpark weight coverage verified on TP rank 1: 4608 expert tensors, 99 non-expert source tensors and 99 parameter bindings",
+    "(Worker_TP0 pid=730) INFO 09-05 01:58:09 [dspark.py:1168] DSpark weight coverage verified on TP rank 0: 4608 expert tensors, 99 non-expert source tensors and 99 parameter bindings",
+    "(Worker_TP0 pid=730) INFO 09-05 01:58:58 [gpu_worker.py:563] Available KV cache memory: 6.88 GiB",
+    "(EngineCore pid=653) INFO 09-05 01:58:58 [kv_cache_utils.py:2283] GPU KV cache size: 1,316,955 tokens",
+    "(EngineCore pid=653) INFO 09-05 01:58:58 [kv_cache_utils.py:2284] Maximum concurrency for 1,000,000 tokens per request: 1.32x",
+    "(Worker_TP1 pid=731) INFO 09-05 01:59:18 [gpu_worker.py:789] Free memory on device (93.85/95.01 GiB) on startup. Desired GPU memory utilization is (0.97, 92.16 GiB). Actual usage is 84.59 GiB for consumed memory (weights + non-torch), 0.68 GiB for peak activation, and 0.1 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=7120030925` (6.63 GiB) to fit into requested memory, or `--kv-cache-memory=8941666304` (8.33 GiB) to fully utilize gpu memory. Current kv cache memory in use is 6.88 GiB.",
+    "(Worker_TP0 pid=730) INFO 09-05 01:59:18 [gpu_model_runner.py:6945] Graph capturing finished in 1 secs, took 0.10 GiB",
+    "(Worker_TP0 pid=730) INFO 09-05 01:59:18 [gpu_worker.py:789] Free memory on device (93.89/95.01 GiB) on startup. Desired GPU memory utilization is (0.97, 92.16 GiB). Actual usage is 84.59 GiB for consumed memory (weights + non-torch), 0.68 GiB for peak activation, and 0.1 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=7123082281` (6.63 GiB) to fit into requested memory, or `--kv-cache-memory=8978366464` (8.36 GiB) to fully utilize gpu memory. Current kv cache memory in use is 6.88 GiB."
+  ],
+  "results": [
+    {
+      "check": "identity",
+      "status": "pass",
+      "detail": {
+        "object": "list",
+        "data": [
+          {
+            "id": "dsv4-nvfp4",
+            "object": "model",
+            "created": 1788573578,
+            "owned_by": "vllm",
+            "root": "nvidia/DeepSeek-V4-Flash-0731-NVFP4",
+            "parent": null,
+            "max_model_len": 1000000,
+            "permission": [
+              {
+                "id": "modelperm-b641f3b4fd68a9f3",
+                "object": "model_permission",
+                "created": 1788573578,
+                "allow_create_engine": false,
+                "allow_sampling": true,
+                "allow_logprobs": true,
+                "allow_search_indices": false,
+                "allow_view": true,
+                "allow_fine_tuning": false,
+                "organization": "*",
+                "group": null,
+                "is_blocking": false
+              }
+            ]
+          }
+        ]
+      },
+      "elapsed_seconds": 0.0055248780008696485
+    },
+    {
+      "check": "chat",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.6293661839990818
+    },
+    {
+      "check": "multi_turn",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.8128210180002498
+    },
+    {
+      "check": "reasoning",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 1.0991743439990387
+    },
+    {
+      "check": "reasoning_high",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.9738572100013698
+    },
+    {
+      "check": "reasoning_max",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.18433184000059555
+    },
+    {
+      "check": "stream_reasoning",
+      "status": "pass",
+      "detail": {
+        "content": "323",
+        "reasoning_characters": 66
+      },
+      "elapsed_seconds": 0.21566657000039413
+    },
+    {
+      "check": "reasoning_tools",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 11.46958180600086
+    },
+    {
+      "check": "tools_auto",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.4561761290005961
+    },
+    {
+      "check": "tools_required",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.568806671000857
+    },
+    {
+      "check": "tools_named",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.3259627490006096
+    },
+    {
+      "check": "json_object",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.7414080720009224
+    },
+    {
+      "check": "json_schema",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.14095422299942584
+    },
+    {
+      "check": "streaming",
+      "status": "pass",
+      "detail": {
+        "content": "STREAM-416",
+        "usage": {
+          "prompt_tokens": 12,
+          "total_tokens": 17,
+          "completion_tokens": 5
+        }
+      },
+      "elapsed_seconds": 0.10988749699936307
+    },
+    {
+      "check": "stream_tools",
+      "status": "pass",
+      "detail": [
+        {
+          "id": "chatcmpl-tool-95d6e346afe3fa78",
+          "type": "function",
+          "function": {
+            "name": "lookup_code",
+            "arguments": "{\"record\": \"gamma\"}"
+          }
+        }
+      ],
+      "elapsed_seconds": 0.6792926349990012
+    },
+    {
+      "check": "multiple_tools",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.5732990100004827
+    },
+    {
+      "check": "concurrency",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.7329565630006982
+    },
+    {
+      "check": "prefix_reuse",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 5.983832612999322
+    },
+    {
+      "check": "cancellation",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.22735588600153278
+    }
+  ],
+  "limits": "All 19 short API checks passed at 1M/97%. Near-1M retrieval remains in progress. This is not a controlled speed comparison.",
+  "startup_allocation_warning_review": "startup-allocation-review.json"
+}

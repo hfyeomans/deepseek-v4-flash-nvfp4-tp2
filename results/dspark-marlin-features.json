@@ -1,0 +1,197 @@
+{
+  "model_revision": "f1caa71142bd0be02f728c79f75042ac1e461579",
+  "configuration": {
+    "tensor_parallel_size": 2,
+    "max_model_len": 32768,
+    "max_num_seqs": 2,
+    "enforce_eager": true,
+    "target_moe_backend": "flashinfer_cutlass",
+    "draft_moe_backend": "marlin",
+    "num_speculative_tokens": 5
+  },
+  "status": "All 20 synthetic checks passed across two probe invocations.",
+  "limits": "Uses patches 0001 and 0002; source tensor coverage diagnostic not yet in this image. Functional timings overlapped public-image build preparation and are not a controlled performance comparison.",
+  "results": [
+    {
+      "check": "identity",
+      "status": "pass",
+      "detail": {
+        "object": "list",
+        "data": [
+          {
+            "id": "dsv4-nvfp4",
+            "object": "model",
+            "created": 1788570808,
+            "owned_by": "vllm",
+            "root": "nvidia/DeepSeek-V4-Flash-0731-NVFP4",
+            "parent": null,
+            "max_model_len": 32768,
+            "permission": [
+              {
+                "id": "modelperm-b266a5346550bdca",
+                "object": "model_permission",
+                "created": 1788570808,
+                "allow_create_engine": false,
+                "allow_sampling": true,
+                "allow_logprobs": true,
+                "allow_search_indices": false,
+                "allow_view": true,
+                "allow_fine_tuning": false,
+                "organization": "*",
+                "group": null,
+                "is_blocking": false
+              }
+            ]
+          }
+        ]
+      },
+      "elapsed_seconds": 0.0061331319993769284
+    },
+    {
+      "check": "chat",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.9847219759994914
+    },
+    {
+      "check": "reasoning",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 1.6160848189992976
+    },
+    {
+      "check": "reasoning_tools",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 8.193173416000718
+    },
+    {
+      "check": "tools_auto",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 1.7872616450003989
+    },
+    {
+      "check": "json_schema",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 1.1488220139999612
+    },
+    {
+      "check": "multi_turn",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.8079438759996265
+    },
+    {
+      "check": "reasoning_high",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.6898615149984835
+    },
+    {
+      "check": "reasoning_max",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.6957994540007348
+    },
+    {
+      "check": "stream_reasoning",
+      "status": "pass",
+      "detail": {
+        "content": "323",
+        "reasoning_characters": 39
+      },
+      "elapsed_seconds": 0.5175524200003565
+    },
+    {
+      "check": "tools_required",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.9692190749992733
+    },
+    {
+      "check": "tools_named",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 1.0277490650005348
+    },
+    {
+      "check": "json_object",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.45661953600028937
+    },
+    {
+      "check": "streaming",
+      "status": "pass",
+      "detail": {
+        "content": "STREAM-416",
+        "usage": {
+          "prompt_tokens": 12,
+          "total_tokens": 17,
+          "completion_tokens": 5
+        }
+      },
+      "elapsed_seconds": 0.14784937399963383
+    },
+    {
+      "check": "stream_tools",
+      "status": "pass",
+      "detail": [
+        {
+          "id": "chatcmpl-tool-8b73fe086b3e884e",
+          "type": "function",
+          "function": {
+            "name": "lookup_code",
+            "arguments": "{\"record\": \"gamma\"}"
+          }
+        }
+      ],
+      "elapsed_seconds": 1.189551974999631
+    },
+    {
+      "check": "multiple_tools",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 6.506843290000688
+    },
+    {
+      "check": "concurrency",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.9547665110003436
+    },
+    {
+      "check": "prefix_reuse",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 6.250135513999339
+    },
+    {
+      "check": "cancellation",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.4780067259998759
+    },
+    {
+      "check": "long_context",
+      "status": "pass",
+      "detail": {
+        "requested_prompt_tokens": 24576,
+        "measured_prompt_tokens": 24417,
+        "expected": {
+          "first": "IVORY-162",
+          "middle": "COPPER-493",
+          "last": "SILVER-857"
+        },
+        "observed": {
+          "first": "IVORY-162",
+          "middle": "COPPER-493",
+          "last": "SILVER-857"
+        }
+      },
+      "elapsed_seconds": 13.438071692000449
+    }
+  ]
+}

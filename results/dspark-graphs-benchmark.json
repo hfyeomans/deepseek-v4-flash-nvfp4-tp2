@@ -1,0 +1,165 @@
+{
+  "recorded_at": "2026-09-05T01:26:09.081358+00:00",
+  "label": "dspark-marlin-64k-graphs",
+  "settings": {
+    "temperature": 0,
+    "seed": 42,
+    "output_tokens": 256,
+    "repeats": 2,
+    "cache": "one warmup per exact prompt"
+  },
+  "prompts": {
+    "prose": "Explain how photosynthesis works, with clear sections for light absorption, water splitting, carbon fixation, and environmental limits. Use complete paragraphs.",
+    "code": "Write a complete Python module that reads a CSV file, validates required name and age columns, rejects invalid ages, and emits a JSON summary. Include useful error handling and examples.",
+    "reasoning": "Compare merge sort and quicksort for a database sorting one million rows under a strict memory limit. Analyze time, memory, stability, and input distributions. Explain the tradeoffs carefully."
+  },
+  "measured": [
+    {
+      "workload": "prose",
+      "elapsed_seconds": 1.238697595999838,
+      "first_output_seconds": 0.08191563499894983,
+      "usage": {
+        "prompt_tokens": 30,
+        "total_tokens": 286,
+        "completion_tokens": 256
+      },
+      "finish_reason": "length",
+      "output_tokens_per_second": 206.66868235371425,
+      "repeat": 0
+    },
+    {
+      "workload": "code",
+      "elapsed_seconds": 1.4620988329988904,
+      "first_output_seconds": 0.08160790399961115,
+      "usage": {
+        "prompt_tokens": 39,
+        "total_tokens": 295,
+        "completion_tokens": 256
+      },
+      "finish_reason": "length",
+      "output_tokens_per_second": 175.09076282820223,
+      "repeat": 0
+    },
+    {
+      "workload": "reasoning",
+      "elapsed_seconds": 1.5647327139995468,
+      "first_output_seconds": 0.09365880900077173,
+      "usage": {
+        "prompt_tokens": 41,
+        "total_tokens": 297,
+        "completion_tokens": 256
+      },
+      "finish_reason": "length",
+      "output_tokens_per_second": 163.606217029648,
+      "repeat": 0
+    },
+    {
+      "workload": "prose",
+      "elapsed_seconds": 1.2064346819988714,
+      "first_output_seconds": 0.09319814899936318,
+      "usage": {
+        "prompt_tokens": 30,
+        "total_tokens": 286,
+        "completion_tokens": 256
+      },
+      "finish_reason": "length",
+      "output_tokens_per_second": 212.19549124354458,
+      "repeat": 1
+    },
+    {
+      "workload": "code",
+      "elapsed_seconds": 1.2474897650008643,
+      "first_output_seconds": 0.09401116899971385,
+      "usage": {
+        "prompt_tokens": 39,
+        "total_tokens": 295,
+        "completion_tokens": 256
+      },
+      "finish_reason": "length",
+      "output_tokens_per_second": 205.21210448554072,
+      "repeat": 1
+    },
+    {
+      "workload": "reasoning",
+      "elapsed_seconds": 1.3884134330000961,
+      "first_output_seconds": 0.08163759800117987,
+      "usage": {
+        "prompt_tokens": 41,
+        "total_tokens": 297,
+        "completion_tokens": 256
+      },
+      "finish_reason": "length",
+      "output_tokens_per_second": 184.38311954878807,
+      "repeat": 1
+    }
+  ],
+  "concurrent": [
+    {
+      "workload": "prose",
+      "elapsed_seconds": 1.6866900929999247,
+      "first_output_seconds": 0.20217441500062705,
+      "usage": {
+        "prompt_tokens": 30,
+        "total_tokens": 286,
+        "completion_tokens": 256
+      },
+      "finish_reason": "length",
+      "output_tokens_per_second": 151.77654808221573
+    },
+    {
+      "workload": "code",
+      "elapsed_seconds": 1.7465891320007358,
+      "first_output_seconds": 0.20179694800026482,
+      "usage": {
+        "prompt_tokens": 39,
+        "total_tokens": 295,
+        "completion_tokens": 256
+      },
+      "finish_reason": "length",
+      "output_tokens_per_second": 146.57139181139263
+    }
+  ],
+  "concurrent_elapsed_seconds": 1.748031136001373,
+  "aggregate_output_tokens_per_second": 292.9009612329914,
+  "median_output_tokens_per_second": {
+    "prose": 209.43208679862943,
+    "code": 190.15143365687146,
+    "reasoning": 173.99466828921805
+  },
+  "speculation_metrics_before": [
+    "vllm:spec_decode_num_drafts_total{engine=\"0\",model_name=\"dsv4-nvfp4\"} 124.0",
+    "vllm:spec_decode_num_drafts_created{engine=\"0\",model_name=\"dsv4-nvfp4\"} 1.7885713905010326e+09",
+    "vllm:spec_decode_num_draft_tokens_total{engine=\"0\",model_name=\"dsv4-nvfp4\"} 599.0",
+    "vllm:spec_decode_num_draft_tokens_created{engine=\"0\",model_name=\"dsv4-nvfp4\"} 1.7885713905010493e+09",
+    "vllm:spec_decode_num_accepted_tokens_total{engine=\"0\",model_name=\"dsv4-nvfp4\"} 421.0",
+    "vllm:spec_decode_num_accepted_tokens_created{engine=\"0\",model_name=\"dsv4-nvfp4\"} 1.7885713905010588e+09",
+    "vllm:spec_decode_num_accepted_tokens_per_pos_total{engine=\"0\",model_name=\"dsv4-nvfp4\",position=\"0\"} 113.0",
+    "vllm:spec_decode_num_accepted_tokens_per_pos_total{engine=\"0\",model_name=\"dsv4-nvfp4\",position=\"1\"} 102.0",
+    "vllm:spec_decode_num_accepted_tokens_per_pos_total{engine=\"0\",model_name=\"dsv4-nvfp4\",position=\"2\"} 78.0",
+    "vllm:spec_decode_num_accepted_tokens_per_pos_total{engine=\"0\",model_name=\"dsv4-nvfp4\",position=\"3\"} 67.0",
+    "vllm:spec_decode_num_accepted_tokens_per_pos_total{engine=\"0\",model_name=\"dsv4-nvfp4\",position=\"4\"} 61.0",
+    "vllm:spec_decode_num_accepted_tokens_per_pos_created{engine=\"0\",model_name=\"dsv4-nvfp4\",position=\"0\"} 1.7885713905010705e+09",
+    "vllm:spec_decode_num_accepted_tokens_per_pos_created{engine=\"0\",model_name=\"dsv4-nvfp4\",position=\"1\"} 1.788571390501074e+09",
+    "vllm:spec_decode_num_accepted_tokens_per_pos_created{engine=\"0\",model_name=\"dsv4-nvfp4\",position=\"2\"} 1.788571390501077e+09",
+    "vllm:spec_decode_num_accepted_tokens_per_pos_created{engine=\"0\",model_name=\"dsv4-nvfp4\",position=\"3\"} 1.7885713905010796e+09",
+    "vllm:spec_decode_num_accepted_tokens_per_pos_created{engine=\"0\",model_name=\"dsv4-nvfp4\",position=\"4\"} 1.7885713905010834e+09"
+  ],
+  "speculation_metrics_after": [
+    "vllm:spec_decode_num_drafts_total{engine=\"0\",model_name=\"dsv4-nvfp4\"} 1032.0",
+    "vllm:spec_decode_num_drafts_created{engine=\"0\",model_name=\"dsv4-nvfp4\"} 1.7885713905010326e+09",
+    "vllm:spec_decode_num_draft_tokens_total{engine=\"0\",model_name=\"dsv4-nvfp4\"} 5139.0",
+    "vllm:spec_decode_num_draft_tokens_created{engine=\"0\",model_name=\"dsv4-nvfp4\"} 1.7885713905010493e+09",
+    "vllm:spec_decode_num_accepted_tokens_total{engine=\"0\",model_name=\"dsv4-nvfp4\"} 2336.0",
+    "vllm:spec_decode_num_accepted_tokens_created{engine=\"0\",model_name=\"dsv4-nvfp4\"} 1.7885713905010588e+09",
+    "vllm:spec_decode_num_accepted_tokens_per_pos_total{engine=\"0\",model_name=\"dsv4-nvfp4\",position=\"0\"} 829.0",
+    "vllm:spec_decode_num_accepted_tokens_per_pos_total{engine=\"0\",model_name=\"dsv4-nvfp4\",position=\"1\"} 607.0",
+    "vllm:spec_decode_num_accepted_tokens_per_pos_total{engine=\"0\",model_name=\"dsv4-nvfp4\",position=\"2\"} 408.0",
+    "vllm:spec_decode_num_accepted_tokens_per_pos_total{engine=\"0\",model_name=\"dsv4-nvfp4\",position=\"3\"} 290.0",
+    "vllm:spec_decode_num_accepted_tokens_per_pos_total{engine=\"0\",model_name=\"dsv4-nvfp4\",position=\"4\"} 202.0",
+    "vllm:spec_decode_num_accepted_tokens_per_pos_created{engine=\"0\",model_name=\"dsv4-nvfp4\",position=\"0\"} 1.7885713905010705e+09",
+    "vllm:spec_decode_num_accepted_tokens_per_pos_created{engine=\"0\",model_name=\"dsv4-nvfp4\",position=\"1\"} 1.788571390501074e+09",
+    "vllm:spec_decode_num_accepted_tokens_per_pos_created{engine=\"0\",model_name=\"dsv4-nvfp4\",position=\"2\"} 1.788571390501077e+09",
+    "vllm:spec_decode_num_accepted_tokens_per_pos_created{engine=\"0\",model_name=\"dsv4-nvfp4\",position=\"3\"} 1.7885713905010796e+09",
+    "vllm:spec_decode_num_accepted_tokens_per_pos_created{engine=\"0\",model_name=\"dsv4-nvfp4\",position=\"4\"} 1.7885713905010834e+09"
+  ]
+}

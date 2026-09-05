@@ -1,0 +1,106 @@
+--- a/vllm/models/deepseek_v4/nvidia/dspark.py
++++ b/vllm/models/deepseek_v4/nvidia/dspark.py
+@@ -7,6 +7,7 @@
+ draft block plus a circular window of target-model hidden-state KVs.
+ """
+ 
++import os
+ import typing
+ from collections.abc import Callable, Iterable
+ 
+@@ -978,6 +979,9 @@
+         ]
+         params_dict = dict(self.named_parameters())
+         loaded_params: set[str] = set()
++        verify_coverage = os.getenv("DSPARK_VERIFY_WEIGHT_COVERAGE") == "1"
++        loaded_expert_tensors: set[str] = set()
++        loaded_nonexpert_tensors: set[str] = set()
+ 
+         tp_size = get_tensor_model_parallel_world_size()
+         tp_rank = get_tensor_model_parallel_rank()
+@@ -1066,6 +1070,8 @@
+                 param = params_dict[mapped_name]
+                 param.weight_loader(param, loaded_weight, shard_id)
+                 loaded_params.add(mapped_name)
++                if verify_coverage:
++                    loaded_nonexpert_tensors.add(original_name)
+                 break
+             else:
+                 if ".experts." in name:
+@@ -1093,6 +1099,8 @@
+                         )
+                         if success:
+                             loaded_params.add(name_mapped)
++                            if verify_coverage:
++                                loaded_expert_tensors.add(original_name)
+                             break
+                     continue
+                 if "attn_sink" in name:
+@@ -1100,6 +1108,8 @@
+                     n = narrow_weight.shape[0]
+                     params_dict[name][:n].copy_(narrow_weight)
+                     loaded_params.add(name)
++                    if verify_coverage:
++                        loaded_nonexpert_tensors.add(original_name)
+                     continue
+                 if name.endswith(".ffn.gate.bias"):
+                     name = name.replace(
+@@ -1110,6 +1120,8 @@
+                 weight_loader = getattr(param, "weight_loader", default_weight_loader)
+                 weight_loader(param, loaded_weight)
+                 loaded_params.add(name)
++                if verify_coverage:
++                    loaded_nonexpert_tensors.add(original_name)
+ 
+         for layer_idx in range(self.num_dspark_layers):
+             layer_prefix = f"layers.{layer_idx}."
+@@ -1117,6 +1129,49 @@
+                 raise ValueError(
+                     f"DSpark layer mtp.{layer_idx} weights missing from checkpoint."
+                 )
++        if verify_coverage:
++            # Diagnostic for this recipe's TP-only, native-MXFP4 draft layout.
++            # A fused parameter name alone does not prove every expert was loaded.
++            expected_experts = {
++                f"mtp.{layer}.ffn.experts.{expert}.{projection}.{suffix}"
++                for layer in range(self.num_dspark_layers)
++                for expert in range(self.config.n_routed_experts)
++                for projection in ("w1", "w2", "w3")
++                for suffix in ("weight", "scale")
++            }
++            missing_experts = expected_experts - loaded_expert_tensors
++            unexpected_experts = loaded_expert_tensors - expected_experts
++            # Both source halves must load even though they share a parameter.
++            expected_fused_sources = {
++                f"mtp.{layer}.{module}.{projection}.{suffix}"
++                for layer in range(self.num_dspark_layers)
++                for module, projections in (
++                    ("attn", ("wq_a", "wkv")),
++                    ("ffn.shared_experts", ("w1", "w3")),
++                )
++                for projection in projections
++                for suffix in ("weight", "scale")
++            }
++            missing_fused_sources = expected_fused_sources - loaded_nonexpert_tensors
++            missing_params = params_dict.keys() - loaded_params
++            if (
++                missing_experts or unexpected_experts
++                or missing_fused_sources or missing_params
++            ):
++                raise ValueError(
++                    "DSpark weight coverage failed: "
++                    f"missing experts={sorted(missing_experts)[:5]}, "
++                    f"unexpected experts={sorted(unexpected_experts)[:5]}, "
++                    f"missing fused sources={sorted(missing_fused_sources)}, "
++                    f"missing parameters={sorted(missing_params)}"
++                )
++            logger.info(
++                "DSpark weight coverage verified on TP rank %d: "
++                "%d expert tensors, %d non-expert source tensors "
++                "and %d parameter bindings",
++                tp_rank, len(loaded_expert_tensors), len(loaded_nonexpert_tensors),
++                len(loaded_params),
++            )
+         self.finalize_mega_moe_weights()
+         logger.info_once("DSpark draft model loaded: %d params", len(loaded_params))
+         return loaded_params

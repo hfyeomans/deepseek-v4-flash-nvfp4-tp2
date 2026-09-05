@@ -1,0 +1,67 @@
+{
+  "status": "ready",
+  "configuration": {
+    "image_manifest_list_digest": "sha256:1f0776d3ac4a990186899d122ebee81e5ad0bcdf1dbb95ebccb30d5f94c6908e",
+    "model_revision": "f1caa71142bd0be02f728c79f75042ac1e461579",
+    "max_model_len": 1000000,
+    "gpu_memory_utilization": 0.965,
+    "max_num_batched_tokens": 2560,
+    "max_num_seqs": 2,
+    "long_prefill_token_threshold": 2304,
+    "tensor_parallel_size": 2,
+    "dspark_tokens": 5,
+    "draft_moe_backend": "marlin",
+    "main_moe_backend": "flashinfer_cutlass",
+    "target_cudagraph_mode": "FULL_DECODE_ONLY",
+    "client_location": "macOS client over LAN"
+  },
+  "observer_elapsed_seconds": 519.4811169229979,
+  "observer_samples": 255,
+  "new_flashinfer_cache_volume_created_at": "2026-09-04T23:23:09-04:00",
+  "reported_model_loading_gib": 83.23,
+  "reported_available_kv_gib": 6.3,
+  "reported_gpu_cache_tokens": 1122401,
+  "reported_maximum_length_concurrency": 1.12,
+  "target_decode_graph_capture_gib": 0.1,
+  "draft_coverage_per_rank": {
+    "expert_sources": 4608,
+    "nonexpert_sources": 99,
+    "parameter_bindings": 99
+  },
+  "sampled_minimum_free_mib_per_gpu": [
+    7,
+    12
+  ],
+  "allocator_reported_minimum_free_mib_per_gpu": [
+    1,
+    2
+  ],
+  "allocator_warning_phases": [
+    {
+      "phase": "draft preparation before model-load completion",
+      "utc_interval": "2026-09-05T03:24:03.417/2026-09-05T03:24:03.693",
+      "warnings_per_rank": [
+        98,
+        100
+      ]
+    },
+    {
+      "phase": "FlashInfer gemm2 autotuning",
+      "utc_interval": "2026-09-05T03:31:54.465/2026-09-05T03:31:54.530",
+      "warnings_per_rank": [
+        1,
+        1
+      ],
+      "requested_mib": 360
+    }
+  ],
+  "excerpt": "source-image-startup-excerpt.txt",
+  "private_full_startup_log_sha256": "b32ca80e82e098ca70cadd2cc8251ffb6348ed5bbc113ac3fcc3e73ee1e9e864",
+  "limits": [
+    "Fresh FlashInfer cache was tested on the original host; not a clean-machine test.",
+    "Observer duration excludes any launch work before observation started.",
+    "KV timestamp reports availability/configuration, not a timed allocation call.",
+    "Periodic samples miss instantaneous peaks; warning counts do not establish an exact failing operator or recovery mechanism.",
+    "Startup pressure differs from sustained serving headroom. Readiness does not make the profile optimal."
+  ]
+}

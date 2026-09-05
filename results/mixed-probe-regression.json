@@ -1,0 +1,29 @@
+{
+  "recorded_at": "2026-09-05",
+  "code_commit": "f702946",
+  "scope": "Standalone mixed-probe measurement correctness; no GPU runtime changes.",
+  "before": {
+    "methods": 3,
+    "failures": 3,
+    "observed_failure": "A short request could finish during prompt preparation, before the long completion call began, and the original overlap check could report a pass. Repeated runs also reused a deterministic prefix."
+  },
+  "after": {
+    "methods": 3,
+    "failures": 0,
+    "cases": [
+      "Short request starts after the long completion call despite delayed prompt preparation",
+      "Long completion finishing before the delay cannot pass overlap",
+      "Each run gets a fresh prefix that is recorded with its settings"
+    ]
+  },
+  "independent_review": "Read-only review and isolated mocks also rejected preparation, long-answer validation, and short-answer failures; the real prompt builder placed the prefix before padding in tokenization and completion payloads.",
+  "limits": [
+    "This verifies completion-call overlap, not server admission or prefill phase.",
+    "Live mixed tests preserve separate running-request metrics and server logs."
+  ],
+  "files": {
+    "mixed_probe.py": "d93df0990543c3ba9bd60b50c46579132f1a22c7f55b672a164d2456f730c9f8",
+    "tests/test_mixed_probe.py": "8decca524a52915b9909a1e77b55054229ce96bdf5a4e6c40f4bd8c1e6451273",
+    "verify.py": "42464d904feb63b754973f0614908b0d0b9c1572b478643b1c4cd4d78e098825"
+  }
+}

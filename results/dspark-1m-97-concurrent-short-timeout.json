@@ -1,0 +1,66 @@
+{
+  "status": "fail",
+  "check": "short_request_during_near_1m_prefill",
+  "model_revision": "f1caa71142bd0be02f728c79f75042ac1e461579",
+  "image_config_digest": "sha256:363d84a361356b156b7bd04f895782d4ab9aa7d258a96f6a1ddc9e582c1f6315",
+  "configuration": {
+    "tensor_parallel_size": 2,
+    "max_model_len": 1000000,
+    "max_num_seqs": 2,
+    "max_num_batched_tokens": 2048,
+    "gpu_memory_utilization": 0.97,
+    "kv_cache_dtype": "fp8",
+    "block_size": 256,
+    "cudagraph_mode": "FULL_DECODE_ONLY",
+    "max_cudagraph_capture_size": 16,
+    "target_moe_backend": "flashinfer_cutlass",
+    "draft_moe_backend": "marlin",
+    "num_speculative_tokens": 5,
+    "draft_weight_coverage": true,
+    "long_prefill_token_threshold": 0,
+    "max_num_scheduled_tokens": 2040
+  },
+  "request": {
+    "prompt": "Reply with exactly: CONCURRENT-947",
+    "thinking": false,
+    "max_tokens": 64,
+    "temperature": 0
+  },
+  "observed_error": "TimeoutError: timed out waiting for HTTP response headers",
+  "client_timeout_seconds": 180,
+  "server_evidence": [
+    {
+      "snapshot": "1m-97-mixed-progress.txt",
+      "evidence": [
+        "vllm:num_requests_running{engine=\"0\",model_name=\"dsv4-nvfp4\"} 1.0",
+        "vllm:num_requests_waiting{engine=\"0\",model_name=\"dsv4-nvfp4\"} 1.0",
+        "vllm:num_requests_waiting_by_reason{engine=\"0\",model_name=\"dsv4-nvfp4\",reason=\"capacity\"} 1.0",
+        "vllm:num_requests_waiting_by_reason{engine=\"0\",model_name=\"dsv4-nvfp4\",reason=\"deferred\"} 0.0",
+        "vllm:kv_cache_usage_perc{engine=\"0\",model_name=\"dsv4-nvfp4\"} 0.6113975576662144"
+      ]
+    },
+    {
+      "snapshot": "1m-97-mixed-late.metrics",
+      "evidence": [
+        "vllm:num_requests_running{engine=\"0\",model_name=\"dsv4-nvfp4\"} 1.0",
+        "vllm:num_requests_waiting{engine=\"0\",model_name=\"dsv4-nvfp4\"} 1.0",
+        "vllm:num_requests_waiting_by_reason{engine=\"0\",model_name=\"dsv4-nvfp4\",reason=\"capacity\"} 1.0",
+        "vllm:num_requests_waiting_by_reason{engine=\"0\",model_name=\"dsv4-nvfp4\",reason=\"deferred\"} 0.0",
+        "vllm:kv_cache_usage_perc{engine=\"0\",model_name=\"dsv4-nvfp4\"} 0.6762550881953867"
+      ]
+    }
+  ],
+  "diagnosis": "The first running prefill consumes the step token budget before the waiting queue is considered. The capacity reason is not evidence of exhausted KV memory.",
+  "next_experiment": {
+    "max_num_batched_tokens": 2560,
+    "long_prefill_token_threshold": 2304,
+    "max_num_scheduled_tokens": 2552,
+    "remaining_step_tokens_after_long_chunk": 248
+  },
+  "limits": [
+    "This exposes a mixed-length responsiveness failure; it does not invalidate the 19 passing short API checks.",
+    "The long request continues independently. Its final timing must disclose the attempted overlapping short request.",
+    "No GPU out-of-memory error was observed in this probe.",
+    "The proposed threshold configuration has not yet been tested."
+  ]
+}

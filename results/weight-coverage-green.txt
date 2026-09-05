@@ -1,0 +1,18 @@
+INFO 09-05 01:12:09 [importing.py:53] Triton is installed but 0 active driver(s) found (expected 1). Disabling Triton to prevent runtime errors.
+INFO 09-05 01:12:09 [importing.py:88] Triton not installed or not compatible; certain GPU-related functions will not be available.
+WARNING 09-05 01:12:10 [interface.py:368] Failed to import from vllm._C: ModuleNotFoundError("No module named 'vllm._C'")
+W0905 01:12:10.246000 1 torch/utils/cpp_extension.py:178] No CUDA runtime is found, using CUDA_HOME='/usr/local/cuda'
+WARNING 09-05 01:12:10 [interface.py:368] Failed to import from vllm._C: ModuleNotFoundError("No module named 'vllm._C'")
+WARNING 09-05 01:12:10 [interface.py:368] Failed to import from vllm._C: ModuleNotFoundError("No module named 'vllm._C'")
+test_complete_fixture_passes_on_both_tp_ranks (__main__.WeightCoverageTest.test_complete_fixture_passes_on_both_tp_ranks) ... INFO 09-05 01:12:11 [dspark_overlay.py:1168] DSpark weight coverage verified on TP rank 0: 4608 expert tensors, 99 non-expert source tensors and 99 parameter bindings
+INFO 09-05 01:12:11 [dspark_overlay.py:1176] DSpark draft model loaded: 99 params
+INFO 09-05 01:12:11 [dspark_overlay.py:1168] DSpark weight coverage verified on TP rank 1: 4608 expert tensors, 99 non-expert source tensors and 99 parameter bindings
+ok
+test_disabled_diagnostic_preserves_loader_behavior (__main__.WeightCoverageTest.test_disabled_diagnostic_preserves_loader_behavior) ... ok
+test_missing_expert_tensor_is_still_rejected (__main__.WeightCoverageTest.test_missing_expert_tensor_is_still_rejected) ... ok
+test_missing_fused_companion_is_rejected (__main__.WeightCoverageTest.test_missing_fused_companion_is_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.463s
+
+OK

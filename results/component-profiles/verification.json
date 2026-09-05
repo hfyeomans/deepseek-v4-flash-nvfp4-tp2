@@ -1,0 +1,80 @@
+{
+  "status": "PASS",
+  "trace_count": 6,
+  "checks": [
+    {
+      "case": "code-c1",
+      "rank": 0,
+      "kernel_count": 49420,
+      "raw_kernel_sum_ms": 395.10625,
+      "raw_gpu_activity_sum_ms": 396.775717,
+      "table_self_cuda_total_ms": 396.776,
+      "table_rounding_error_ms": -0.00028300000002445813,
+      "source_sha256_matches": true,
+      "checks": "PASS"
+    },
+    {
+      "case": "code-c1",
+      "rank": 1,
+      "kernel_count": 49420,
+      "raw_kernel_sum_ms": 395.317372,
+      "raw_gpu_activity_sum_ms": 396.986359,
+      "table_self_cuda_total_ms": 396.986,
+      "table_rounding_error_ms": 0.00035900000000310683,
+      "source_sha256_matches": true,
+      "checks": "PASS"
+    },
+    {
+      "case": "code48k-c1",
+      "rank": 0,
+      "kernel_count": 49421,
+      "raw_kernel_sum_ms": 425.46452,
+      "raw_gpu_activity_sum_ms": 427.131464,
+      "table_self_cuda_total_ms": 427.131,
+      "table_rounding_error_ms": 0.0004640000000222244,
+      "source_sha256_matches": true,
+      "checks": "PASS"
+    },
+    {
+      "case": "code48k-c1",
+      "rank": 1,
+      "kernel_count": 49421,
+      "raw_kernel_sum_ms": 425.860905,
+      "raw_gpu_activity_sum_ms": 427.524752,
+      "table_self_cuda_total_ms": 427.525,
+      "table_rounding_error_ms": -0.0002479999999991378,
+      "source_sha256_matches": true,
+      "checks": "PASS"
+    },
+    {
+      "case": "prose-code-c2",
+      "rank": 0,
+      "kernel_count": 50403,
+      "raw_kernel_sum_ms": 566.691125,
+      "raw_gpu_activity_sum_ms": 568.892143,
+      "table_self_cuda_total_ms": 568.892,
+      "table_rounding_error_ms": 0.00014299999998002022,
+      "source_sha256_matches": true,
+      "checks": "PASS"
+    },
+    {
+      "case": "prose-code-c2",
+      "rank": 1,
+      "kernel_count": 50403,
+      "raw_kernel_sum_ms": 488.20254100000005,
+      "raw_gpu_activity_sum_ms": 490.410798,
+      "table_self_cuda_total_ms": 490.411,
+      "table_rounding_error_ms": -0.0002020000000015898,
+      "source_sha256_matches": true,
+      "checks": "PASS"
+    }
+  ],
+  "parser_sha256": "ccccb4ca194e41f093ad360e8dbade2e2de8c9815ed6d8cfabf1c9acdad4926c",
+  "regression_sha256": "fc6ee9ef9ce0aa245637278c472b41e342c00630b282cac521d2c31fe8776abd",
+  "publication_reparse": {
+    "status": "PASS",
+    "matching_trace_reports": 6,
+    "source_paths": "basename only",
+    "regression_tests_passed": 6
+  }
+}

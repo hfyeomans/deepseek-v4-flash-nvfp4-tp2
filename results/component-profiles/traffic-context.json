@@ -1,0 +1,86 @@
+[
+  {
+    "case": "code-c1",
+    "source": "code-c1-profile.json",
+    "batch_elapsed_seconds": {
+      "warmup": 2.7842166629998246,
+      "before": 1.389688245995785,
+      "profiled": 6.3021557640022365,
+      "after": 1.496536570994067
+    },
+    "request_usage": [
+      {
+        "prompt_tokens": 39,
+        "total_tokens": 295,
+        "completion_tokens": 256,
+        "prompt_tokens_details": null
+      }
+    ],
+    "whole_profiled_request_metric_deltas": {
+      "vllm:prefix_cache_queries_total{engine=\"0\",model_name=\"dsv4-nvfp4\"}": 39.0,
+      "vllm:prefix_cache_hits_total{engine=\"0\",model_name=\"dsv4-nvfp4\"}": 0.0,
+      "vllm:num_preemptions_total{engine=\"0\",model_name=\"dsv4-nvfp4\"}": 0.0,
+      "vllm:prompt_tokens_total{engine=\"0\",model_name=\"dsv4-nvfp4\"}": 39.0,
+      "vllm:generation_tokens_total{engine=\"0\",model_name=\"dsv4-nvfp4\"}": 256.0
+    },
+    "note": "Metrics span whole profiled requests; trace spans only20workersteps. No accepted-token normalization or clean profiler-overhead ratio."
+  },
+  {
+    "case": "code48k-c1",
+    "source": "code48k-c1-profile.json",
+    "batch_elapsed_seconds": {
+      "warmup": 19.54282288000104,
+      "before": 7.312899994009058,
+      "profiled": 8.971285852996516,
+      "after": 2.639543543002219
+    },
+    "request_usage": [
+      {
+        "prompt_tokens": 48345,
+        "total_tokens": 48857,
+        "completion_tokens": 512,
+        "prompt_tokens_details": null
+      }
+    ],
+    "whole_profiled_request_metric_deltas": {
+      "vllm:prefix_cache_queries_total{engine=\"0\",model_name=\"dsv4-nvfp4\"}": 48345.0,
+      "vllm:prefix_cache_hits_total{engine=\"0\",model_name=\"dsv4-nvfp4\"}": 48128.0,
+      "vllm:num_preemptions_total{engine=\"0\",model_name=\"dsv4-nvfp4\"}": 0.0,
+      "vllm:prompt_tokens_total{engine=\"0\",model_name=\"dsv4-nvfp4\"}": 48345.0,
+      "vllm:generation_tokens_total{engine=\"0\",model_name=\"dsv4-nvfp4\"}": 512.0
+    },
+    "note": "Metrics span whole profiled requests; trace spans only20workersteps. No accepted-token normalization or clean profiler-overhead ratio."
+  },
+  {
+    "case": "prose-code-c2",
+    "source": "prose-code-c2-profile.json",
+    "batch_elapsed_seconds": {
+      "warmup": 2.7725720330054173,
+      "before": 2.3853050820034696,
+      "profiled": 9.063707644992974,
+      "after": 1.76383596600499
+    },
+    "request_usage": [
+      {
+        "prompt_tokens": 30,
+        "total_tokens": 286,
+        "completion_tokens": 256,
+        "prompt_tokens_details": null
+      },
+      {
+        "prompt_tokens": 39,
+        "total_tokens": 295,
+        "completion_tokens": 256,
+        "prompt_tokens_details": null
+      }
+    ],
+    "whole_profiled_request_metric_deltas": {
+      "vllm:prefix_cache_queries_total{engine=\"0\",model_name=\"dsv4-nvfp4\"}": 69.0,
+      "vllm:prefix_cache_hits_total{engine=\"0\",model_name=\"dsv4-nvfp4\"}": 0.0,
+      "vllm:num_preemptions_total{engine=\"0\",model_name=\"dsv4-nvfp4\"}": 0.0,
+      "vllm:prompt_tokens_total{engine=\"0\",model_name=\"dsv4-nvfp4\"}": 69.0,
+      "vllm:generation_tokens_total{engine=\"0\",model_name=\"dsv4-nvfp4\"}": 512.0
+    },
+    "note": "Metrics span whole profiled requests; trace spans only20workersteps. No accepted-token normalization or clean profiler-overhead ratio."
+  }
+]

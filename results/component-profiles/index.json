@@ -1,0 +1,110 @@
+[
+  {
+    "case": "code-c1",
+    "rank": 0,
+    "execute_scope_count": 20,
+    "kernel_sum_ms": 395.10625,
+    "kernel_attribution": {
+      "reasons": {
+        "unique_direct_api": 6420,
+        "unique_graph_launch": 43000
+      },
+      "api_link_count_percent": 100.0,
+      "api_link_duration_percent": 100.0,
+      "component_count_percent": 100.0,
+      "component_duration_percent": 100.0,
+      "ambiguous_api_correlations": 0,
+      "unpaired_step_kernels": 0
+    }
+  },
+  {
+    "case": "code-c1",
+    "rank": 1,
+    "execute_scope_count": 20,
+    "kernel_sum_ms": 395.317372,
+    "kernel_attribution": {
+      "reasons": {
+        "unique_direct_api": 6420,
+        "unique_graph_launch": 43000
+      },
+      "api_link_count_percent": 100.0,
+      "api_link_duration_percent": 100.0,
+      "component_count_percent": 100.0,
+      "component_duration_percent": 100.0,
+      "ambiguous_api_correlations": 0,
+      "unpaired_step_kernels": 0
+    }
+  },
+  {
+    "case": "code48k-c1",
+    "rank": 0,
+    "execute_scope_count": 20,
+    "kernel_sum_ms": 425.46452,
+    "kernel_attribution": {
+      "reasons": {
+        "unique_direct_api": 6421,
+        "unique_graph_launch": 43000
+      },
+      "api_link_count_percent": 100.0,
+      "api_link_duration_percent": 100.0,
+      "component_count_percent": 100.0,
+      "component_duration_percent": 100.0,
+      "ambiguous_api_correlations": 0,
+      "unpaired_step_kernels": 0
+    }
+  },
+  {
+    "case": "code48k-c1",
+    "rank": 1,
+    "execute_scope_count": 20,
+    "kernel_sum_ms": 425.860905,
+    "kernel_attribution": {
+      "reasons": {
+        "unique_graph_launch": 43000,
+        "unique_direct_api": 6421
+      },
+      "api_link_count_percent": 100.0,
+      "api_link_duration_percent": 100.0,
+      "component_count_percent": 100.0,
+      "component_duration_percent": 100.0,
+      "ambiguous_api_correlations": 0,
+      "unpaired_step_kernels": 0
+    }
+  },
+  {
+    "case": "prose-code-c2",
+    "rank": 0,
+    "execute_scope_count": 20,
+    "kernel_sum_ms": 566.691125,
+    "kernel_attribution": {
+      "reasons": {
+        "unique_direct_api": 9154,
+        "unique_graph_launch": 41249
+      },
+      "api_link_count_percent": 100.0,
+      "api_link_duration_percent": 100.0,
+      "component_count_percent": 100.0,
+      "component_duration_percent": 100.0,
+      "ambiguous_api_correlations": 0,
+      "unpaired_step_kernels": 0
+    }
+  },
+  {
+    "case": "prose-code-c2",
+    "rank": 1,
+    "execute_scope_count": 20,
+    "kernel_sum_ms": 488.202541,
+    "kernel_attribution": {
+      "reasons": {
+        "unique_graph_launch": 41249,
+        "unique_direct_api": 9154
+      },
+      "api_link_count_percent": 100.0,
+      "api_link_duration_percent": 100.0,
+      "component_count_percent": 100.0,
+      "component_duration_percent": 100.0,
+      "ambiguous_api_correlations": 0,
+      "unpaired_step_kernels": 0
+    }
+  }
+]

@@ -1,0 +1,20 @@
+{
+  "status": "regression_reproduced_and_fixed",
+  "test": "tests/test_verify_observations.py::RequestObservationTest.test_later_tool_turns_do_not_rewrite_prior_request",
+  "before": {
+    "failed": 1,
+    "reason": "First recorded request no longer equaled the actual serialized HTTP payload after later transcript/tool-definition changes."
+  },
+  "after": {
+    "passed": 1,
+    "reason": "Request snapshot equals its serialized HTTP payload despite subsequent mutations."
+  },
+  "fix": "Deep-copy the assembled request before transmission. Preserve default request semantics.",
+  "historical_handling": "Annotate observations whose recorded request contains the tool-call ID created by their own response. Do not fabricate missing original payloads. Responses, usage and timings remain valid.",
+  "limits": "HTTP-boundary regression compares to serialized outgoing payloads; live checks verify corrected records and functional responses, without network packet capture.",
+  "live_validation": {
+    "evidence": "source-image-restart-api.json",
+    "api_checks_passed": 19,
+    "tool_response_observations_without_future_message_mutation": 5
+  }
+}

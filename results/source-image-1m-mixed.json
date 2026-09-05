@@ -1,0 +1,570 @@
+{
+  "recorded_at": "2026-09-05T03:44:33.347964+00:00",
+  "label": "final-dspark-1m-mixed",
+  "status": "pass",
+  "settings": {
+    "requested_prompt_tokens": 999000,
+    "probe_delay_seconds": 30.0,
+    "unique_prompt_prefix": "Independent probe be90927931274b1c9587a887b72d8b00.\n",
+    "short_timeout_seconds": 180.0,
+    "long_timeout_seconds": 1800.0,
+    "minimum_completion_separation_seconds": 1
+  },
+  "short_finished_before_long_seconds": 479.2917377220001,
+  "long_completion_call": {
+    "started_seconds": 1.7720959660000517,
+    "finished_seconds": 513.1658147980015
+  },
+  "results": [
+    {
+      "check": "long_context",
+      "status": "pass",
+      "detail": {
+        "requested_prompt_tokens": 999000,
+        "measured_prompt_tokens": 998868,
+        "expected": {
+          "first": "IVORY-162",
+          "middle": "COPPER-493",
+          "last": "SILVER-857"
+        },
+        "observed": {
+          "first": "IVORY-162",
+          "middle": "COPPER-493",
+          "last": "SILVER-857"
+        }
+      },
+      "started_seconds": 0.0005911369989917148,
+      "finished_seconds": 513.1658656139989,
+      "elapsed_seconds": 513.1652748670022
+    },
+    {
+      "check": "concurrent_short",
+      "status": "pass",
+      "detail": {
+        "observed": "CONCURRENT-947"
+      },
+      "started_seconds": 31.778729246001603,
+      "finished_seconds": 33.87407707600141,
+      "elapsed_seconds": 2.095348170998477
+    }
+  ],
+  "observations": {
+    "long": [
+      {
+        "elapsed_seconds": 511.3936895079969,
+        "request": {
+          "model": "dsv4-nvfp4",
+          "messages": [
+            {
+              "role": "user",
+              "content_summary": {
+                "characters": 7990605,
+                "utf8_sha256": "257a322674283b0fffbdc554250c1a47203b1a968f6847bebe5add522854fc60",
+                "reproduction": "verify.py long_context generator with recorded prefix and token budget"
+              }
+            }
+          ],
+          "temperature": 0,
+          "max_tokens": 256,
+          "chat_template_kwargs": {
+            "thinking": false
+          },
+          "response_format": {
+            "type": "json_object"
+          }
+        },
+        "response": {
+          "id": "chatcmpl-8fcce878ed2987e6",
+          "object": "chat.completion",
+          "created": 1788579363,
+          "model": "dsv4-nvfp4",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "{\n  \"first\": \"IVORY-162\",\n  \"middle\": \"COPPER-493\",\n  \"last\": \"SILVER-857\"\n}",
+                "refusal": null,
+                "annotations": null,
+                "audio": null,
+                "function_call": null,
+                "reasoning": null,
+                "reasoning_content": null
+              },
+              "logprobs": null,
+              "finish_reason": "stop",
+              "stop_reason": null,
+              "token_ids": null,
+              "routed_experts": null
+            }
+          ],
+          "service_tier": null,
+          "system_fingerprint": "vllm-20260804-tp2-bcf53d9b",
+          "usage": {
+            "prompt_tokens": 998868,
+            "total_tokens": 998903,
+            "completion_tokens": 35,
+            "prompt_tokens_details": null
+          },
+          "prompt_logprobs": null,
+          "prompt_token_ids": null,
+          "prompt_text": null,
+          "kv_transfer_params": null,
+          "ec_transfer_params": null,
+          "metrics": null
+        }
+      }
+    ],
+    "short": [
+      {
+        "elapsed_seconds": 2.0953191480002715,
+        "request": {
+          "model": "dsv4-nvfp4",
+          "messages": [
+            {
+              "role": "user",
+              "content": "Reply with exactly: CONCURRENT-947"
+            }
+          ],
+          "temperature": 0,
+          "max_tokens": 64,
+          "chat_template_kwargs": {
+            "thinking": false
+          }
+        },
+        "response": {
+          "id": "chatcmpl-b32d8c46f5d069b1",
+          "object": "chat.completion",
+          "created": 1788579391,
+          "model": "dsv4-nvfp4",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "CONCURRENT-947",
+                "refusal": null,
+                "annotations": null,
+                "audio": null,
+                "function_call": null,
+                "reasoning": null,
+                "reasoning_content": null
+              },
+              "logprobs": null,
+              "finish_reason": "stop",
+              "stop_reason": null,
+              "token_ids": null,
+              "routed_experts": null
+            }
+          ],
+          "service_tier": null,
+          "system_fingerprint": "vllm-20260804-tp2-bcf53d9b",
+          "usage": {
+            "prompt_tokens": 13,
+            "total_tokens": 19,
+            "completion_tokens": 6,
+            "prompt_tokens_details": null
+          },
+          "prompt_logprobs": null,
+          "prompt_token_ids": null,
+          "prompt_text": null,
+          "kv_transfer_params": null,
+          "ec_transfer_params": null,
+          "metrics": null
+        }
+      }
+    ]
+  },
+  "limits": [
+    "Synthetic completion-call overlap check with a unique prefix near the start of the user prompt. Server admission and prefill phase require separate metrics; this is not a controlled throughput benchmark.",
+    "The run includes the extra tool round trip; global counters are not only the long request and tiny short reply.",
+    "Synthetic retrieval and responsiveness check, not matched long-context throughput or broad accuracy.",
+    "Large synthetic prompt replaced by character count and SHA256; generator and unique prefix retained."
+  ],
+  "configuration": {
+    "image_manifest_list_digest": "sha256:1f0776d3ac4a990186899d122ebee81e5ad0bcdf1dbb95ebccb30d5f94c6908e",
+    "model_revision": "f1caa71142bd0be02f728c79f75042ac1e461579",
+    "max_model_len": 1000000,
+    "gpu_memory_utilization": 0.965,
+    "max_num_batched_tokens": 2560,
+    "max_num_seqs": 2,
+    "long_prefill_token_threshold": 2304,
+    "tensor_parallel_size": 2,
+    "dspark_tokens": 5,
+    "draft_moe_backend": "marlin",
+    "main_moe_backend": "flashinfer_cutlass",
+    "target_cudagraph_mode": "FULL_DECODE_ONLY",
+    "client_location": "macOS client over LAN"
+  },
+  "workload_metric_delta": {
+    "prompt_tokens_total": 999555.0,
+    "generation_tokens_total": 101.0,
+    "prefix_cache_hits_total": 0.0,
+    "num_preemptions_total": 0.0,
+    "request_prefill_time_seconds_sum": 519.5160400529967,
+    "request_decode_time_seconds_sum": 27.935296270992694,
+    "request_queue_time_seconds_sum": 2.3447006242349744e-05,
+    "spec_decode_num_drafts_total": 25.0,
+    "spec_decode_num_draft_tokens_total": 125.0,
+    "spec_decode_num_accepted_tokens_total": 73.0
+  },
+  "sampled_resources": {
+    "interval_seconds": 2,
+    "sample_count": 253,
+    "minimum_free_mib_per_gpu": [
+      507.0,
+      472.0
+    ],
+    "maximum_temperature_c_per_gpu": [
+      89.0,
+      88.0
+    ],
+    "maximum_power_w_per_gpu": [
+      300.48,
+      305.56
+    ],
+    "limits": "Samples span preparation, concurrent work and inference; not instantaneous peaks."
+  },
+  "additional_workload": {
+    "evidence": "source-image-concurrent-tool.json",
+    "description": "One automatic tool round trip over LAN, comprising two API calls, during long prefill. Included in outer counters and long elapsed time."
+  },
+  "post_long_recovery": {
+    "recorded_at": "2026-09-05T03:45:39.584954+00:00",
+    "results": [
+      {
+        "check": "identity",
+        "status": "pass",
+        "detail": {
+          "object": "list",
+          "data": [
+            {
+              "id": "dsv4-nvfp4",
+              "object": "model",
+              "created": 1788579939,
+              "owned_by": "vllm",
+              "root": "nvidia/DeepSeek-V4-Flash-0731-NVFP4",
+              "parent": null,
+              "max_model_len": 1000000,
+              "permission": [
+                {
+                  "id": "modelperm-9494acd1d2b5b7d0",
+                  "object": "model_permission",
+                  "created": 1788579939,
+                  "allow_create_engine": false,
+                  "allow_sampling": true,
+                  "allow_logprobs": true,
+                  "allow_search_indices": false,
+                  "allow_view": true,
+                  "allow_fine_tuning": false,
+                  "organization": "*",
+                  "group": null,
+                  "is_blocking": false
+                }
+              ]
+            }
+          ]
+        },
+        "elapsed_seconds": 0.013828957977239043
+      },
+      {
+        "check": "chat",
+        "status": "pass",
+        "detail": null,
+        "elapsed_seconds": 0.12938283395487815
+      },
+      {
+        "check": "tools_auto",
+        "status": "pass",
+        "detail": null,
+        "elapsed_seconds": 0.41552533401409164
+      }
+    ],
+    "observations": [
+      {
+        "elapsed_seconds": 0.12937229103408754,
+        "request": {
+          "model": "dsv4-nvfp4",
+          "messages": [
+            {
+              "role": "user",
+              "content": "Reply with exactly: ORBIT-629"
+            }
+          ],
+          "temperature": 0,
+          "max_tokens": 256,
+          "chat_template_kwargs": {
+            "thinking": false
+          }
+        },
+        "response": {
+          "id": "chatcmpl-883da823f6242ab6",
+          "object": "chat.completion",
+          "created": 1788579939,
+          "model": "dsv4-nvfp4",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "ORBIT-629",
+                "refusal": null,
+                "annotations": null,
+                "audio": null,
+                "function_call": null,
+                "reasoning": null,
+                "reasoning_content": null
+              },
+              "logprobs": null,
+              "finish_reason": "stop",
+              "stop_reason": null,
+              "token_ids": null,
+              "routed_experts": null
+            }
+          ],
+          "service_tier": null,
+          "system_fingerprint": "vllm-20260804-tp2-bcf53d9b",
+          "usage": {
+            "prompt_tokens": 12,
+            "total_tokens": 17,
+            "completion_tokens": 5,
+            "prompt_tokens_details": null
+          },
+          "prompt_logprobs": null,
+          "prompt_token_ids": null,
+          "prompt_text": null,
+          "kv_transfer_params": null,
+          "ec_transfer_params": null,
+          "metrics": null
+        }
+      },
+      {
+        "elapsed_seconds": 0.30173120903782547,
+        "request": {
+          "model": "dsv4-nvfp4",
+          "messages": [
+            {
+              "role": "user",
+              "content": "Use lookup_code to read record alpha. Do not guess its code."
+            },
+            {
+              "role": "assistant",
+              "content": "I'll look up the code for record alpha.\n\n",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": [
+                {
+                  "id": "chatcmpl-tool-bec22b3ce08ecb2d",
+                  "type": "function",
+                  "function": {
+                    "name": "lookup_code",
+                    "arguments": "{\"record\": \"alpha\"}"
+                  }
+                }
+              ],
+              "reasoning": null,
+              "reasoning_content": null
+            },
+            {
+              "role": "tool",
+              "tool_call_id": "chatcmpl-tool-bec22b3ce08ecb2d",
+              "content": "{\"code\":\"VIOLET-937\"}"
+            },
+            {
+              "role": "user",
+              "content": "Reply with exactly the code returned by the tool."
+            }
+          ],
+          "temperature": 0,
+          "max_tokens": 256,
+          "chat_template_kwargs": {
+            "thinking": false
+          },
+          "tools": [
+            {
+              "type": "function",
+              "function": {
+                "name": "lookup_code",
+                "description": "Read the code for a named synthetic record.",
+                "parameters": {
+                  "type": "object",
+                  "properties": {
+                    "record": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "record"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ],
+          "tool_choice": "auto"
+        },
+        "response": {
+          "id": "chatcmpl-8483cdf1a7c9cdb4",
+          "object": "chat.completion",
+          "created": 1788579939,
+          "model": "dsv4-nvfp4",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "I'll look up the code for record alpha.\n\n",
+                "refusal": null,
+                "annotations": null,
+                "audio": null,
+                "function_call": null,
+                "tool_calls": [
+                  {
+                    "id": "chatcmpl-tool-bec22b3ce08ecb2d",
+                    "type": "function",
+                    "function": {
+                      "name": "lookup_code",
+                      "arguments": "{\"record\": \"alpha\"}"
+                    }
+                  }
+                ],
+                "reasoning": null,
+                "reasoning_content": null
+              },
+              "logprobs": null,
+              "finish_reason": "tool_calls",
+              "stop_reason": null,
+              "token_ids": null,
+              "routed_experts": null
+            }
+          ],
+          "service_tier": null,
+          "system_fingerprint": "vllm-20260804-tp2-bcf53d9b",
+          "usage": {
+            "prompt_tokens": 295,
+            "total_tokens": 349,
+            "completion_tokens": 54,
+            "prompt_tokens_details": null
+          },
+          "prompt_logprobs": null,
+          "prompt_token_ids": null,
+          "prompt_text": null,
+          "kv_transfer_params": null,
+          "ec_transfer_params": null,
+          "metrics": null
+        },
+        "request_recording_notice": "The pre-fix verifier retained a mutable request object; this recorded payload contains later tool-turn messages. It is not an exact copy of the original HTTP request. Response, server token usage and elapsed time were recorded separately and remain valid."
+      },
+      {
+        "elapsed_seconds": 0.11370266700396314,
+        "request": {
+          "model": "dsv4-nvfp4",
+          "messages": [
+            {
+              "role": "user",
+              "content": "Use lookup_code to read record alpha. Do not guess its code."
+            },
+            {
+              "role": "assistant",
+              "content": "I'll look up the code for record alpha.\n\n",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": [
+                {
+                  "id": "chatcmpl-tool-bec22b3ce08ecb2d",
+                  "type": "function",
+                  "function": {
+                    "name": "lookup_code",
+                    "arguments": "{\"record\": \"alpha\"}"
+                  }
+                }
+              ],
+              "reasoning": null,
+              "reasoning_content": null
+            },
+            {
+              "role": "tool",
+              "tool_call_id": "chatcmpl-tool-bec22b3ce08ecb2d",
+              "content": "{\"code\":\"VIOLET-937\"}"
+            },
+            {
+              "role": "user",
+              "content": "Reply with exactly the code returned by the tool."
+            }
+          ],
+          "temperature": 0,
+          "max_tokens": 256,
+          "chat_template_kwargs": {
+            "thinking": false
+          },
+          "tools": [
+            {
+              "type": "function",
+              "function": {
+                "name": "lookup_code",
+                "description": "Read the code for a named synthetic record.",
+                "parameters": {
+                  "type": "object",
+                  "properties": {
+                    "record": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "record"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ],
+          "tool_choice": "none"
+        },
+        "response": {
+          "id": "chatcmpl-8d0c069e7148a4b0",
+          "object": "chat.completion",
+          "created": 1788579939,
+          "model": "dsv4-nvfp4",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "VIOLET-937",
+                "refusal": null,
+                "annotations": null,
+                "audio": null,
+                "function_call": null,
+                "reasoning": null,
+                "reasoning_content": null
+              },
+              "logprobs": null,
+              "finish_reason": "stop",
+              "stop_reason": null,
+              "token_ids": null,
+              "routed_experts": null
+            }
+          ],
+          "service_tier": null,
+          "system_fingerprint": "vllm-20260804-tp2-bcf53d9b",
+          "usage": {
+            "prompt_tokens": 379,
+            "total_tokens": 385,
+            "completion_tokens": 6,
+            "prompt_tokens_details": null
+          },
+          "prompt_logprobs": null,
+          "prompt_token_ids": null,
+          "prompt_text": null,
+          "kv_transfer_params": null,
+          "ec_transfer_params": null,
+          "metrics": null
+        }
+      }
+    ]
+  }
+}

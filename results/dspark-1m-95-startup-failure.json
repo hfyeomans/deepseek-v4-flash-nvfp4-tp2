@@ -1,0 +1,25 @@
+{
+  "status": "startup_failed",
+  "stage": "conservative_KV_memory_admission",
+  "model_revision": "f1caa71142bd0be02f728c79f75042ac1e461579",
+  "image_config_digest": "sha256:363d84a361356b156b7bd04f895782d4ab9aa7d258a96f6a1ddc9e582c1f6315",
+  "configuration": {
+    "max_model_len": 1000000,
+    "gpu_memory_utilization": 0.95,
+    "tensor_parallel_size": 2,
+    "dspark": true,
+    "draft_moe_backend": "marlin",
+    "cudagraph_mode": "FULL_DECODE_ONLY",
+    "max_num_seqs": 2,
+    "max_num_batched_tokens": 2048
+  },
+  "evidence": [
+    "(Worker_TP0 pid=732) INFO 09-05 01:43:35 [gpu_worker.py:563] Available KV cache memory: 4.98 GiB",
+    "(EngineCore pid=655) ERROR 09-05 01:43:35 [core.py:1349] ValueError: To serve at least one request with the model's max seq len (1000000), (5.73 GiB KV cache is needed, which is larger than the available KV cache memory (4.98 GiB). Based on the available memory, the estimated maximum model length is 813056. Try increasing `gpu_memory_utilization` (which also controls CPU memory on the CPU backend) or decreasing `max_model_len` when initializing the engine. See https://docs.vllm.ai/en/latest/configuration/conserving_memory/ for more details."
+  ],
+  "needed_KV_GiB_rounded": 5.73,
+  "available_KV_GiB_rounded": 4.98,
+  "estimated_max_model_len": 813056,
+  "next_experiment": "Retry at 0.96 GPU memory utilization; no model or runtime patch change.",
+  "limits": "Startup admission failed before any 1M inference request. The estimated maximum length is a profiler result, not a separately tested context."
+}

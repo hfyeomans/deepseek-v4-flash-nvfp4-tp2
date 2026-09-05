@@ -1,0 +1,199 @@
+{
+  "status": "three_profile_benchmark_comparison_complete",
+  "short_input_tokens": {
+    "prose": 30,
+    "code": 39,
+    "reasoning": 41
+  },
+  "short_output_tokens": 256,
+  "short_measured_requests_per_workload_per_profile": 9,
+  "short_paired_trials_per_profile": 3,
+  "long_code_input_tokens": 48345,
+  "long_code_output_tokens": 512,
+  "long_code_measured_requests_per_profile": 3,
+  "long_code_fixture": "../benchmarks/prompts/code-48k.txt",
+  "profiles": {
+    "batch2560_cap2304": {
+      "profile": {
+        "image_manifest_list_digest": "sha256:1f0776d3ac4a990186899d122ebee81e5ad0bcdf1dbb95ebccb30d5f94c6908e",
+        "model_revision": "f1caa71142bd0be02f728c79f75042ac1e461579",
+        "tensor_parallel_size": 2,
+        "max_model_len": 1000000,
+        "gpu_memory_utilization": 0.965,
+        "max_num_batched_tokens": 2560,
+        "max_num_seqs": 2,
+        "long_prefill_token_threshold": 2304,
+        "dspark_tokens": 5,
+        "main_moe_backend": "flashinfer_cutlass",
+        "draft_moe_backend": "marlin",
+        "kv_cache_dtype": "fp8",
+        "block_size": 256,
+        "target_cudagraph_mode": "FULL_DECODE_ONLY",
+        "max_cudagraph_capture_size": 16,
+        "experimental_draft_forward_graph": false,
+        "competing_source_build": false
+      },
+      "single_request_medians": {
+        "prose": 192.3155110488499,
+        "code": 187.41959772478592,
+        "reasoning": 189.57822135244322
+      },
+      "aggregate_trials": [
+        203.38163373294688,
+        302.91647718013974,
+        263.3112264291795
+      ],
+      "long_code": {
+        "median_output_tokens_per_second": 61.49828041735262,
+        "median_elapsed_seconds": 8.325436036997417,
+        "elapsed_seconds": [
+          8.240482138000516,
+          8.373018381000293,
+          8.325436036997417
+        ],
+        "first_output_seconds": [
+          6.239172238998435,
+          6.298367519000749,
+          6.364082306998171
+        ],
+        "after_first_output_seconds": [
+          2.001309899002081,
+          2.074650861999544,
+          1.9613537299992458
+        ],
+        "paired_prose_and_code_aggregate": 102.26307567292469
+      },
+      "evidence": [
+        "final-dspark-short.json",
+        "final-dspark-short-repeat2.json",
+        "final-dspark-short-repeat3.json",
+        "final-dspark-long-code.json"
+      ],
+      "aggregate_median": 263.3112264291795
+    },
+    "batch2048_cap1792": {
+      "profile": {
+        "image_manifest_list_digest": "sha256:1f0776d3ac4a990186899d122ebee81e5ad0bcdf1dbb95ebccb30d5f94c6908e",
+        "model_revision": "f1caa71142bd0be02f728c79f75042ac1e461579",
+        "tensor_parallel_size": 2,
+        "max_model_len": 1000000,
+        "gpu_memory_utilization": 0.96,
+        "max_num_batched_tokens": 2048,
+        "max_num_seqs": 2,
+        "long_prefill_token_threshold": 1792,
+        "dspark_tokens": 5,
+        "main_moe_backend": "flashinfer_cutlass",
+        "draft_moe_backend": "marlin",
+        "kv_cache_dtype": "fp8",
+        "block_size": 256,
+        "target_cudagraph_mode": "FULL_DECODE_ONLY",
+        "max_cudagraph_capture_size": 16,
+        "experimental_draft_forward_graph": false,
+        "competing_source_build": false
+      },
+      "single_request_medians": {
+        "prose": 191.46137435209997,
+        "code": 194.4734650723275,
+        "reasoning": 182.18824470275942
+      },
+      "aggregate_trials": [
+        231.67371219556028,
+        279.8571745850193,
+        269.87737502675736
+      ],
+      "long_code": {
+        "median_output_tokens_per_second": 57.48739270206485,
+        "median_elapsed_seconds": 8.906300598002417,
+        "elapsed_seconds": [
+          8.624872962001973,
+          8.92502280899862,
+          8.906300598002417
+        ],
+        "first_output_seconds": [
+          6.650180160002492,
+          6.698464338998747,
+          6.730182080002123
+        ],
+        "after_first_output_seconds": [
+          1.9746928019994812,
+          2.2265584699998726,
+          2.176118518000294
+        ],
+        "paired_prose_and_code_aggregate": 103.13499188060621
+      },
+      "evidence": [
+        "final-dspark-t1792-short.json",
+        "final-dspark-t1792-short-repeat2.json",
+        "final-dspark-t1792-short-repeat3.json",
+        "final-dspark-t1792-long-code.json"
+      ],
+      "aggregate_median": 269.87737502675736
+    },
+    "batch2048_cap512": {
+      "profile": {
+        "image_manifest_list_digest": "sha256:1f0776d3ac4a990186899d122ebee81e5ad0bcdf1dbb95ebccb30d5f94c6908e",
+        "model_revision": "f1caa71142bd0be02f728c79f75042ac1e461579",
+        "tensor_parallel_size": 2,
+        "max_model_len": 1000000,
+        "gpu_memory_utilization": 0.96,
+        "max_num_batched_tokens": 2048,
+        "max_num_seqs": 2,
+        "long_prefill_token_threshold": 512,
+        "dspark_tokens": 5,
+        "main_moe_backend": "flashinfer_cutlass",
+        "draft_moe_backend": "marlin",
+        "kv_cache_dtype": "fp8",
+        "block_size": 256,
+        "target_cudagraph_mode": "FULL_DECODE_ONLY",
+        "max_cudagraph_capture_size": 16,
+        "experimental_draft_forward_graph": false,
+        "competing_source_build": false
+      },
+      "single_request_medians": {
+        "prose": 198.84566379340697,
+        "code": 183.15625075113093,
+        "reasoning": 180.29485471274234
+      },
+      "aggregate_trials": [
+        236.16791668982313,
+        294.1301979427593,
+        260.02818911757976
+      ],
+      "long_code": {
+        "median_output_tokens_per_second": 41.94942619356813,
+        "median_elapsed_seconds": 12.20517290600037,
+        "elapsed_seconds": [
+          12.23035522599821,
+          12.20517290600037,
+          12.022099945999798
+        ],
+        "first_output_seconds": [
+          9.43969825000022,
+          9.538119605000247,
+          9.600624462000269
+        ],
+        "after_first_output_seconds": [
+          2.7906569759979902,
+          2.6670533010001236,
+          2.4214754839995294
+        ],
+        "paired_prose_and_code_aggregate": 79.12914087097457
+      },
+      "evidence": [
+        "final-dspark-interactive-short.json",
+        "final-dspark-interactive-short-repeat2.json",
+        "final-dspark-interactive-short-repeat3.json",
+        "final-dspark-interactive-long-code.json"
+      ],
+      "aggregate_median": 260.02818911757976
+    }
+  },
+  "limits": [
+    "Every profile retains DSpark. This is a configuration comparison, not a DSpark-on/off experiment.",
+    "All three paired trials are retained; small samples do not establish tail latency or statistical significance.",
+    "All profiles use the same image, model, input bytes, sampling and benchmark settings. Batch, prefill cap and memory budget differences are explicit.",
+    "The code override makes the paired workload short prose plus long code. The fixed-length outputs are not coding-quality checks.",
+    "Each profile follows short run, long code, short run, short run, with warmups in every run. Prior mixed tests and cache histories differ.",
+    "Server counters verified zero prefix hits and preemptions. Resource and speculative counters cover all workloads and warmups in each run."
+  ]
+}

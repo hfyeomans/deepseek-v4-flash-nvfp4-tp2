@@ -1,0 +1,31 @@
+{
+  "containers": {
+    "primary": {
+      "running": true,
+      "image_id": "sha256:1f0776d3ac4a990186899d122ebee81e5ad0bcdf1dbb95ebccb30d5f94c6908e"
+    },
+    "off": {
+      "running": false,
+      "image_id": "sha256:1f0776d3ac4a990186899d122ebee81e5ad0bcdf1dbb95ebccb30d5f94c6908e"
+    },
+    "profile": {
+      "running": false,
+      "image_id": "sha256:1f0776d3ac4a990186899d122ebee81e5ad0bcdf1dbb95ebccb30d5f94c6908e"
+    }
+  },
+  "off_command_matches": true,
+  "off_env_values_match": true,
+  "off_gpu_requests_match": true,
+  "remote_client_sha256": {
+    "benchmark.py": "9344ec95778b35f2328fefff41978b97d6b9f2c5760e17c5ca07d2d96b32574f",
+    "mixed_probe.py": "023d8fab42160c4082f90e3f208e02a12f9ccc089e217d8d559a2f0eddc41ea6",
+    "verify.py": "6ee6939888a03127c1216722431bb46cf8b836a24dc27bc262b3652070b109fd",
+    "serve.sh": "2e13f7241cc125252ffbd7cda6b0a9ed01685d6e42caf7c3a2dea41728516a54",
+    "code-48k.txt": "aeda010d0d3be31901137b5425b130d8ab39e7a45d0c6b64e6a42521234c7c7e",
+    "sm120_device_lengths.py": "f63179b72b309b57551e6cb0581e79a016d10b53b9c9dadf777c900ad967690c"
+  },
+  "activity": [
+    "vllm:num_requests_running{engine=\"0\",model_name=\"dsv4-nvfp4\"} 0.0",
+    "vllm:num_requests_waiting{engine=\"0\",model_name=\"dsv4-nvfp4\"} 0.0"
+  ]
+}

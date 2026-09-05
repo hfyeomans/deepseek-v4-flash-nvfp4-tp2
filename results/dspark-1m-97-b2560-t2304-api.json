@@ -1,0 +1,2123 @@
+{
+  "recorded_at": "2026-09-05T02:22:58.587596+00:00",
+  "results": [
+    {
+      "check": "identity",
+      "status": "pass",
+      "detail": {
+        "object": "list",
+        "data": [
+          {
+            "id": "dsv4-nvfp4",
+            "object": "model",
+            "created": 1788574954,
+            "owned_by": "vllm",
+            "root": "nvidia/DeepSeek-V4-Flash-0731-NVFP4",
+            "parent": null,
+            "max_model_len": 1000000,
+            "permission": [
+              {
+                "id": "modelperm-85862f61dbbcfc95",
+                "object": "model_permission",
+                "created": 1788574954,
+                "allow_create_engine": false,
+                "allow_sampling": true,
+                "allow_logprobs": true,
+                "allow_search_indices": false,
+                "allow_view": true,
+                "allow_fine_tuning": false,
+                "organization": "*",
+                "group": null,
+                "is_blocking": false
+              }
+            ]
+          }
+        ]
+      },
+      "elapsed_seconds": 0.005777387003035983
+    },
+    {
+      "check": "chat",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.10970047100272495
+    },
+    {
+      "check": "multi_turn",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.8308941460018104
+    },
+    {
+      "check": "reasoning",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 1.1347242939991702
+    },
+    {
+      "check": "reasoning_high",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 1.0036282149994804
+    },
+    {
+      "check": "reasoning_max",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.17144348100191564
+    },
+    {
+      "check": "stream_reasoning",
+      "status": "pass",
+      "detail": {
+        "content": "323",
+        "reasoning_characters": 59
+      },
+      "elapsed_seconds": 0.19233346200053347
+    },
+    {
+      "check": "reasoning_tools",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 6.073846527000569
+    },
+    {
+      "check": "tools_auto",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.47004142999867327
+    },
+    {
+      "check": "tools_required",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.33949860999928205
+    },
+    {
+      "check": "tools_named",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.34355087900257786
+    },
+    {
+      "check": "json_object",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.751655486998061
+    },
+    {
+      "check": "json_schema",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.1424216610030271
+    },
+    {
+      "check": "streaming",
+      "status": "pass",
+      "detail": {
+        "content": "STREAM-416",
+        "usage": {
+          "prompt_tokens": 12,
+          "total_tokens": 17,
+          "completion_tokens": 5
+        }
+      },
+      "elapsed_seconds": 0.11154869399979361
+    },
+    {
+      "check": "stream_tools",
+      "status": "pass",
+      "detail": [
+        {
+          "id": "chatcmpl-tool-91d7b6944ddbb34e",
+          "type": "function",
+          "function": {
+            "name": "lookup_code",
+            "arguments": "{\"record\": \"gamma\"}"
+          }
+        }
+      ],
+      "elapsed_seconds": 0.6885513739980524
+    },
+    {
+      "check": "multiple_tools",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 5.605538007002906
+    },
+    {
+      "check": "concurrency",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.13404048699885607
+    },
+    {
+      "check": "prefix_reuse",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 5.683812549999857
+    },
+    {
+      "check": "cancellation",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.22803150900290348
+    }
+  ],
+  "observations": [
+    {
+      "elapsed_seconds": 0.10968408600092516,
+      "request": {
+        "model": "dsv4-nvfp4",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Reply with exactly: ORBIT-629"
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 256,
+        "chat_template_kwargs": {
+          "thinking": false
+        }
+      },
+      "response": {
+        "id": "chatcmpl-b4076e85c54a22e7",
+        "object": "chat.completion",
+        "created": 1788574954,
+        "model": "dsv4-nvfp4",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "ORBIT-629",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "reasoning": null,
+              "reasoning_content": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null,
+            "routed_experts": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": "vllm-20260804-tp2-bcf53d9b",
+        "usage": {
+          "prompt_tokens": 12,
+          "total_tokens": 17,
+          "completion_tokens": 5,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "prompt_text": null,
+        "kv_transfer_params": null,
+        "ec_transfer_params": null,
+        "metrics": null
+      }
+    },
+    {
+      "elapsed_seconds": 0.8308675070002209,
+      "request": {
+        "model": "dsv4-nvfp4",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Remember this synthetic code: MAPLE-814."
+          },
+          {
+            "role": "assistant",
+            "content": "I will remember it."
+          },
+          {
+            "role": "user",
+            "content": "Reply with only the code I gave you."
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 256,
+        "chat_template_kwargs": {
+          "thinking": false
+        }
+      },
+      "response": {
+        "id": "chatcmpl-be95688d13f207db",
+        "object": "chat.completion",
+        "created": 1788574954,
+        "model": "dsv4-nvfp4",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "MAPLE-814",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "reasoning": null,
+              "reasoning_content": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null,
+            "routed_experts": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": "vllm-20260804-tp2-bcf53d9b",
+        "usage": {
+          "prompt_tokens": 32,
+          "total_tokens": 37,
+          "completion_tokens": 5,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "prompt_text": null,
+        "kv_transfer_params": null,
+        "ec_transfer_params": null,
+        "metrics": null
+      }
+    },
+    {
+      "elapsed_seconds": 1.134704033996968,
+      "request": {
+        "model": "dsv4-nvfp4",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Calculate 17 * 19. Final answer must be only the integer."
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 1024,
+        "chat_template_kwargs": {
+          "thinking": true
+        },
+        "reasoning_effort": "low"
+      },
+      "response": {
+        "id": "chatcmpl-85014d7e1bdde2a2",
+        "object": "chat.completion",
+        "created": 1788574955,
+        "model": "dsv4-nvfp4",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "323",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "reasoning": "We need answer only integer. 17*19=323. Final must be only integer.",
+              "reasoning_content": "We need answer only integer. 17*19=323. Final must be only integer."
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null,
+            "routed_experts": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": "vllm-20260804-tp2-bcf53d9b",
+        "usage": {
+          "prompt_tokens": 19,
+          "total_tokens": 41,
+          "completion_tokens": 22,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "prompt_text": null,
+        "kv_transfer_params": null,
+        "ec_transfer_params": null,
+        "metrics": null
+      }
+    },
+    {
+      "elapsed_seconds": 1.0036078230004932,
+      "request": {
+        "model": "dsv4-nvfp4",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Calculate 17 * 19. Final answer must be only the integer."
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 1024,
+        "chat_template_kwargs": {
+          "thinking": true
+        },
+        "reasoning_effort": "high"
+      },
+      "response": {
+        "id": "chatcmpl-a92691f1ed3c79b1",
+        "object": "chat.completion",
+        "created": 1788574956,
+        "model": "dsv4-nvfp4",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "323",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "reasoning": "We need answer only integer. 17*19=323. Final only integer.",
+              "reasoning_content": "We need answer only integer. 17*19=323. Final only integer."
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null,
+            "routed_experts": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": "vllm-20260804-tp2-bcf53d9b",
+        "usage": {
+          "prompt_tokens": 98,
+          "total_tokens": 118,
+          "completion_tokens": 20,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "prompt_text": null,
+        "kv_transfer_params": null,
+        "ec_transfer_params": null,
+        "metrics": null
+      }
+    },
+    {
+      "elapsed_seconds": 0.17142517499814858,
+      "request": {
+        "model": "dsv4-nvfp4",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Calculate 17 * 19. Final answer must be only the integer."
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 1024,
+        "chat_template_kwargs": {
+          "thinking": true
+        },
+        "reasoning_effort": "max"
+      },
+      "response": {
+        "id": "chatcmpl-b08300b9bc7aba2e",
+        "object": "chat.completion",
+        "created": 1788574957,
+        "model": "dsv4-nvfp4",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "323",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "reasoning": "We need answer calculate 17*19=323. Must be only integer. final.",
+              "reasoning_content": "We need answer calculate 17*19=323. Must be only integer. final."
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null,
+            "routed_experts": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": "vllm-20260804-tp2-bcf53d9b",
+        "usage": {
+          "prompt_tokens": 111,
+          "total_tokens": 132,
+          "completion_tokens": 21,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "prompt_text": null,
+        "kv_transfer_params": null,
+        "ec_transfer_params": null,
+        "metrics": null
+      }
+    },
+    {
+      "elapsed_seconds": 5.9421238170034485,
+      "request": {
+        "model": "dsv4-nvfp4",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Use lookup_code for record delta, then reply with only its returned code."
+          },
+          {
+            "role": "assistant",
+            "content": null,
+            "refusal": null,
+            "annotations": null,
+            "audio": null,
+            "function_call": null,
+            "tool_calls": [
+              {
+                "id": "chatcmpl-tool-a6a424852d91d239",
+                "type": "function",
+                "function": {
+                  "name": "lookup_code",
+                  "arguments": "{\"record\": \"delta\"}"
+                }
+              }
+            ],
+            "reasoning": "The user wants me to lookup the code for record \"delta\" and reply with only its returned code.",
+            "reasoning_content": "The user wants me to lookup the code for record \"delta\" and reply with only its returned code."
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "chatcmpl-tool-a6a424852d91d239",
+            "content": "{\"code\":\"LILAC-286\"}"
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 1024,
+        "chat_template_kwargs": {
+          "thinking": true
+        },
+        "tool_choice": "auto",
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "lookup_code",
+              "description": "Read the code for a named synthetic record.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "record"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        ],
+        "reasoning_effort": "low"
+      },
+      "response": {
+        "id": "chatcmpl-b837ab10b8e1a0b1",
+        "object": "chat.completion",
+        "created": 1788574958,
+        "model": "dsv4-nvfp4",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": null,
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": [
+                {
+                  "id": "chatcmpl-tool-a6a424852d91d239",
+                  "type": "function",
+                  "function": {
+                    "name": "lookup_code",
+                    "arguments": "{\"record\": \"delta\"}"
+                  }
+                }
+              ],
+              "reasoning": "The user wants me to lookup the code for record \"delta\" and reply with only its returned code.",
+              "reasoning_content": "The user wants me to lookup the code for record \"delta\" and reply with only its returned code."
+            },
+            "logprobs": null,
+            "finish_reason": "tool_calls",
+            "stop_reason": null,
+            "token_ids": null,
+            "routed_experts": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": "vllm-20260804-tp2-bcf53d9b",
+        "usage": {
+          "prompt_tokens": 296,
+          "total_tokens": 363,
+          "completion_tokens": 67,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "prompt_text": null,
+        "kv_transfer_params": null,
+        "ec_transfer_params": null,
+        "metrics": null
+      },
+      "request_recording_notice": "The pre-fix verifier retained a mutable request object; this recorded payload contains later tool-turn messages. It is not an exact copy of the original HTTP request. Response, server token usage and elapsed time were recorded separately and remain valid."
+    },
+    {
+      "elapsed_seconds": 0.1316788340009225,
+      "request": {
+        "model": "dsv4-nvfp4",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Use lookup_code for record delta, then reply with only its returned code."
+          },
+          {
+            "role": "assistant",
+            "content": null,
+            "refusal": null,
+            "annotations": null,
+            "audio": null,
+            "function_call": null,
+            "tool_calls": [
+              {
+                "id": "chatcmpl-tool-a6a424852d91d239",
+                "type": "function",
+                "function": {
+                  "name": "lookup_code",
+                  "arguments": "{\"record\": \"delta\"}"
+                }
+              }
+            ],
+            "reasoning": "The user wants me to lookup the code for record \"delta\" and reply with only its returned code.",
+            "reasoning_content": "The user wants me to lookup the code for record \"delta\" and reply with only its returned code."
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "chatcmpl-tool-a6a424852d91d239",
+            "content": "{\"code\":\"LILAC-286\"}"
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 1024,
+        "chat_template_kwargs": {
+          "thinking": true
+        },
+        "tool_choice": "none",
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "lookup_code",
+              "description": "Read the code for a named synthetic record.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "record"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        ],
+        "reasoning_effort": "low"
+      },
+      "response": {
+        "id": "chatcmpl-b7308d4e718094e8",
+        "object": "chat.completion",
+        "created": 1788574963,
+        "model": "dsv4-nvfp4",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "LILAC-286",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "reasoning": "",
+              "reasoning_content": ""
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null,
+            "routed_experts": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": "vllm-20260804-tp2-bcf53d9b",
+        "usage": {
+          "prompt_tokens": 383,
+          "total_tokens": 390,
+          "completion_tokens": 7,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "prompt_text": null,
+        "kv_transfer_params": null,
+        "ec_transfer_params": null,
+        "metrics": null
+      }
+    },
+    {
+      "elapsed_seconds": 0.35595151400048053,
+      "request": {
+        "model": "dsv4-nvfp4",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Use lookup_code to read record alpha. Do not guess its code."
+          },
+          {
+            "role": "assistant",
+            "content": null,
+            "refusal": null,
+            "annotations": null,
+            "audio": null,
+            "function_call": null,
+            "tool_calls": [
+              {
+                "id": "chatcmpl-tool-aae3f463e0b125f8",
+                "type": "function",
+                "function": {
+                  "name": "lookup_code",
+                  "arguments": "{\"record\": \"alpha\"}"
+                }
+              }
+            ],
+            "reasoning": null,
+            "reasoning_content": null
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "chatcmpl-tool-aae3f463e0b125f8",
+            "content": "{\"code\":\"VIOLET-937\"}"
+          },
+          {
+            "role": "user",
+            "content": "Reply with exactly the code returned by the tool."
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 256,
+        "chat_template_kwargs": {
+          "thinking": false
+        },
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "lookup_code",
+              "description": "Read the code for a named synthetic record.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "record"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        ],
+        "tool_choice": "auto"
+      },
+      "response": {
+        "id": "chatcmpl-9c7ca6d160dfb4f5",
+        "object": "chat.completion",
+        "created": 1788574964,
+        "model": "dsv4-nvfp4",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": null,
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": [
+                {
+                  "id": "chatcmpl-tool-aae3f463e0b125f8",
+                  "type": "function",
+                  "function": {
+                    "name": "lookup_code",
+                    "arguments": "{\"record\": \"alpha\"}"
+                  }
+                }
+              ],
+              "reasoning": null,
+              "reasoning_content": null
+            },
+            "logprobs": null,
+            "finish_reason": "tool_calls",
+            "stop_reason": null,
+            "token_ids": null,
+            "routed_experts": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": "vllm-20260804-tp2-bcf53d9b",
+        "usage": {
+          "prompt_tokens": 295,
+          "total_tokens": 340,
+          "completion_tokens": 45,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "prompt_text": null,
+        "kv_transfer_params": null,
+        "ec_transfer_params": null,
+        "metrics": null
+      },
+      "request_recording_notice": "The pre-fix verifier retained a mutable request object; this recorded payload contains later tool-turn messages. It is not an exact copy of the original HTTP request. Response, server token usage and elapsed time were recorded separately and remain valid."
+    },
+    {
+      "elapsed_seconds": 0.11405212899990147,
+      "request": {
+        "model": "dsv4-nvfp4",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Use lookup_code to read record alpha. Do not guess its code."
+          },
+          {
+            "role": "assistant",
+            "content": null,
+            "refusal": null,
+            "annotations": null,
+            "audio": null,
+            "function_call": null,
+            "tool_calls": [
+              {
+                "id": "chatcmpl-tool-aae3f463e0b125f8",
+                "type": "function",
+                "function": {
+                  "name": "lookup_code",
+                  "arguments": "{\"record\": \"alpha\"}"
+                }
+              }
+            ],
+            "reasoning": null,
+            "reasoning_content": null
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "chatcmpl-tool-aae3f463e0b125f8",
+            "content": "{\"code\":\"VIOLET-937\"}"
+          },
+          {
+            "role": "user",
+            "content": "Reply with exactly the code returned by the tool."
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 256,
+        "chat_template_kwargs": {
+          "thinking": false
+        },
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "lookup_code",
+              "description": "Read the code for a named synthetic record.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "record"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        ],
+        "tool_choice": "none"
+      },
+      "response": {
+        "id": "chatcmpl-9aa57b74872dcc2f",
+        "object": "chat.completion",
+        "created": 1788574964,
+        "model": "dsv4-nvfp4",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "VIOLET-937",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "reasoning": null,
+              "reasoning_content": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null,
+            "routed_experts": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": "vllm-20260804-tp2-bcf53d9b",
+        "usage": {
+          "prompt_tokens": 370,
+          "total_tokens": 376,
+          "completion_tokens": 6,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "prompt_text": null,
+        "kv_transfer_params": null,
+        "ec_transfer_params": null,
+        "metrics": null
+      }
+    },
+    {
+      "elapsed_seconds": 0.2303377990028821,
+      "request": {
+        "model": "dsv4-nvfp4",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Use lookup_code to read record alpha. Do not guess its code."
+          },
+          {
+            "role": "assistant",
+            "content": "",
+            "refusal": null,
+            "annotations": null,
+            "audio": null,
+            "function_call": null,
+            "tool_calls": [
+              {
+                "id": "chatcmpl-tool-ad9f8caa2642d14d",
+                "type": "function",
+                "function": {
+                  "name": "lookup_code",
+                  "arguments": "{\"record\": \"alpha\"}"
+                }
+              }
+            ],
+            "reasoning": null,
+            "reasoning_content": null
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "chatcmpl-tool-ad9f8caa2642d14d",
+            "content": "{\"code\":\"VIOLET-937\"}"
+          },
+          {
+            "role": "user",
+            "content": "Reply with exactly the code returned by the tool."
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 256,
+        "chat_template_kwargs": {
+          "thinking": false
+        },
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "lookup_code",
+              "description": "Read the code for a named synthetic record.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "record"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        ],
+        "tool_choice": "required"
+      },
+      "response": {
+        "id": "chatcmpl-882c071e532994c1",
+        "object": "chat.completion",
+        "created": 1788574964,
+        "model": "dsv4-nvfp4",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": [
+                {
+                  "id": "chatcmpl-tool-ad9f8caa2642d14d",
+                  "type": "function",
+                  "function": {
+                    "name": "lookup_code",
+                    "arguments": "{\"record\": \"alpha\"}"
+                  }
+                }
+              ],
+              "reasoning": null,
+              "reasoning_content": null
+            },
+            "logprobs": null,
+            "finish_reason": "tool_calls",
+            "stop_reason": null,
+            "token_ids": null,
+            "routed_experts": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": "vllm-20260804-tp2-bcf53d9b",
+        "usage": {
+          "prompt_tokens": 295,
+          "total_tokens": 340,
+          "completion_tokens": 45,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "prompt_text": null,
+        "kv_transfer_params": null,
+        "ec_transfer_params": null,
+        "metrics": null
+      },
+      "request_recording_notice": "The pre-fix verifier retained a mutable request object; this recorded payload contains later tool-turn messages. It is not an exact copy of the original HTTP request. Response, server token usage and elapsed time were recorded separately and remain valid."
+    },
+    {
+      "elapsed_seconds": 0.10912584800098557,
+      "request": {
+        "model": "dsv4-nvfp4",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Use lookup_code to read record alpha. Do not guess its code."
+          },
+          {
+            "role": "assistant",
+            "content": "",
+            "refusal": null,
+            "annotations": null,
+            "audio": null,
+            "function_call": null,
+            "tool_calls": [
+              {
+                "id": "chatcmpl-tool-ad9f8caa2642d14d",
+                "type": "function",
+                "function": {
+                  "name": "lookup_code",
+                  "arguments": "{\"record\": \"alpha\"}"
+                }
+              }
+            ],
+            "reasoning": null,
+            "reasoning_content": null
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "chatcmpl-tool-ad9f8caa2642d14d",
+            "content": "{\"code\":\"VIOLET-937\"}"
+          },
+          {
+            "role": "user",
+            "content": "Reply with exactly the code returned by the tool."
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 256,
+        "chat_template_kwargs": {
+          "thinking": false
+        },
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "lookup_code",
+              "description": "Read the code for a named synthetic record.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "record"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        ],
+        "tool_choice": "none"
+      },
+      "response": {
+        "id": "chatcmpl-a12074b57e2a1d97",
+        "object": "chat.completion",
+        "created": 1788574964,
+        "model": "dsv4-nvfp4",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "VIOLET-937",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "reasoning": null,
+              "reasoning_content": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null,
+            "routed_experts": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": "vllm-20260804-tp2-bcf53d9b",
+        "usage": {
+          "prompt_tokens": 370,
+          "total_tokens": 376,
+          "completion_tokens": 6,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "prompt_text": null,
+        "kv_transfer_params": null,
+        "ec_transfer_params": null,
+        "metrics": null
+      }
+    },
+    {
+      "elapsed_seconds": 0.23398135599927627,
+      "request": {
+        "model": "dsv4-nvfp4",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Use lookup_code to read record alpha. Do not guess its code."
+          },
+          {
+            "role": "assistant",
+            "content": "",
+            "refusal": null,
+            "annotations": null,
+            "audio": null,
+            "function_call": null,
+            "tool_calls": [
+              {
+                "id": "chatcmpl-tool-91e4a1d3cf06d1cd",
+                "type": "function",
+                "function": {
+                  "name": "lookup_code",
+                  "arguments": "{\"record\": \"alpha\"}"
+                }
+              }
+            ],
+            "reasoning": null,
+            "reasoning_content": null
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "chatcmpl-tool-91e4a1d3cf06d1cd",
+            "content": "{\"code\":\"VIOLET-937\"}"
+          },
+          {
+            "role": "user",
+            "content": "Reply with exactly the code returned by the tool."
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 256,
+        "chat_template_kwargs": {
+          "thinking": false
+        },
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "lookup_code",
+              "description": "Read the code for a named synthetic record.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "record"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        ],
+        "tool_choice": {
+          "type": "function",
+          "function": {
+            "name": "lookup_code"
+          }
+        }
+      },
+      "response": {
+        "id": "chatcmpl-8932e663399d9930",
+        "object": "chat.completion",
+        "created": 1788574964,
+        "model": "dsv4-nvfp4",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": [
+                {
+                  "id": "chatcmpl-tool-91e4a1d3cf06d1cd",
+                  "type": "function",
+                  "function": {
+                    "name": "lookup_code",
+                    "arguments": "{\"record\": \"alpha\"}"
+                  }
+                }
+              ],
+              "reasoning": null,
+              "reasoning_content": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null,
+            "routed_experts": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": "vllm-20260804-tp2-bcf53d9b",
+        "usage": {
+          "prompt_tokens": 295,
+          "total_tokens": 340,
+          "completion_tokens": 45,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "prompt_text": null,
+        "kv_transfer_params": null,
+        "ec_transfer_params": null,
+        "metrics": null
+      },
+      "request_recording_notice": "The pre-fix verifier retained a mutable request object; this recorded payload contains later tool-turn messages. It is not an exact copy of the original HTTP request. Response, server token usage and elapsed time were recorded separately and remain valid."
+    },
+    {
+      "elapsed_seconds": 0.10953720500037889,
+      "request": {
+        "model": "dsv4-nvfp4",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Use lookup_code to read record alpha. Do not guess its code."
+          },
+          {
+            "role": "assistant",
+            "content": "",
+            "refusal": null,
+            "annotations": null,
+            "audio": null,
+            "function_call": null,
+            "tool_calls": [
+              {
+                "id": "chatcmpl-tool-91e4a1d3cf06d1cd",
+                "type": "function",
+                "function": {
+                  "name": "lookup_code",
+                  "arguments": "{\"record\": \"alpha\"}"
+                }
+              }
+            ],
+            "reasoning": null,
+            "reasoning_content": null
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "chatcmpl-tool-91e4a1d3cf06d1cd",
+            "content": "{\"code\":\"VIOLET-937\"}"
+          },
+          {
+            "role": "user",
+            "content": "Reply with exactly the code returned by the tool."
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 256,
+        "chat_template_kwargs": {
+          "thinking": false
+        },
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "lookup_code",
+              "description": "Read the code for a named synthetic record.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "record"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        ],
+        "tool_choice": "none"
+      },
+      "response": {
+        "id": "chatcmpl-beaea7a4d3a64fc1",
+        "object": "chat.completion",
+        "created": 1788574965,
+        "model": "dsv4-nvfp4",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "VIOLET-937",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "reasoning": null,
+              "reasoning_content": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null,
+            "routed_experts": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": "vllm-20260804-tp2-bcf53d9b",
+        "usage": {
+          "prompt_tokens": 370,
+          "total_tokens": 376,
+          "completion_tokens": 6,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "prompt_text": null,
+        "kv_transfer_params": null,
+        "ec_transfer_params": null,
+        "metrics": null
+      }
+    },
+    {
+      "elapsed_seconds": 0.7516349959987565,
+      "request": {
+        "model": "dsv4-nvfp4",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Return exactly this JSON object, preserving both key names and values: {\"code\":\"BIRCH-528\",\"count\":7}. No other fields."
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 256,
+        "chat_template_kwargs": {
+          "thinking": false
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      },
+      "response": {
+        "id": "chatcmpl-b93abfb50ed3363b",
+        "object": "chat.completion",
+        "created": 1788574965,
+        "model": "dsv4-nvfp4",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "{\"code\":\"BIRCH-528\",\"count\":7}",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "reasoning": null,
+              "reasoning_content": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null,
+            "routed_experts": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": "vllm-20260804-tp2-bcf53d9b",
+        "usage": {
+          "prompt_tokens": 34,
+          "total_tokens": 48,
+          "completion_tokens": 14,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "prompt_text": null,
+        "kv_transfer_params": null,
+        "ec_transfer_params": null,
+        "metrics": null
+      }
+    },
+    {
+      "elapsed_seconds": 0.14240027900086716,
+      "request": {
+        "model": "dsv4-nvfp4",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Return exactly this JSON object, preserving both key names and values: {\"code\":\"BIRCH-528\",\"count\":7}. No other fields."
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 256,
+        "chat_template_kwargs": {
+          "thinking": false
+        },
+        "response_format": {
+          "type": "json_schema",
+          "json_schema": {
+            "name": "synthetic_record",
+            "strict": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "enum": [
+                    "BIRCH-528"
+                  ]
+                },
+                "count": {
+                  "type": "integer",
+                  "enum": [
+                    7
+                  ]
+                }
+              },
+              "required": [
+                "code",
+                "count"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      },
+      "response": {
+        "id": "chatcmpl-94e548a3e80cb856",
+        "object": "chat.completion",
+        "created": 1788574965,
+        "model": "dsv4-nvfp4",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "{\"code\":\"BIRCH-528\",\"count\":7}",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "reasoning": null,
+              "reasoning_content": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null,
+            "routed_experts": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": "vllm-20260804-tp2-bcf53d9b",
+        "usage": {
+          "prompt_tokens": 34,
+          "total_tokens": 48,
+          "completion_tokens": 14,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "prompt_text": null,
+        "kv_transfer_params": null,
+        "ec_transfer_params": null,
+        "metrics": null
+      }
+    },
+    {
+      "elapsed_seconds": 0.31395466799949645,
+      "request": {
+        "model": "dsv4-nvfp4",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Call lookup_code twice: once for alpha, once for beta. Both are required."
+          },
+          {
+            "role": "assistant",
+            "content": "",
+            "refusal": null,
+            "annotations": null,
+            "audio": null,
+            "function_call": null,
+            "tool_calls": [
+              {
+                "id": "chatcmpl-tool-adfef253be211091",
+                "type": "function",
+                "function": {
+                  "name": "lookup_code",
+                  "arguments": "{\"record\": \"alpha\"}"
+                }
+              },
+              {
+                "id": "chatcmpl-tool-bf82b6a0699eece9",
+                "type": "function",
+                "function": {
+                  "name": "lookup_code",
+                  "arguments": "{\"record\": \"beta\"}"
+                }
+              }
+            ],
+            "reasoning": null,
+            "reasoning_content": null
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "chatcmpl-tool-adfef253be211091",
+            "content": "{\"code\": \"AMBER-614\"}"
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "chatcmpl-tool-bf82b6a0699eece9",
+            "content": "{\"code\": \"TEAL-927\"}"
+          },
+          {
+            "role": "user",
+            "content": "Reply only with alpha code, then beta code, separated by one space."
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 512,
+        "chat_template_kwargs": {
+          "thinking": false
+        },
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "lookup_code",
+              "description": "Read the code for a named synthetic record.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "record"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        ],
+        "tool_choice": "required"
+      },
+      "response": {
+        "id": "chatcmpl-9b91c7acc0b20e99",
+        "object": "chat.completion",
+        "created": 1788574966,
+        "model": "dsv4-nvfp4",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": [
+                {
+                  "id": "chatcmpl-tool-adfef253be211091",
+                  "type": "function",
+                  "function": {
+                    "name": "lookup_code",
+                    "arguments": "{\"record\": \"alpha\"}"
+                  }
+                },
+                {
+                  "id": "chatcmpl-tool-bf82b6a0699eece9",
+                  "type": "function",
+                  "function": {
+                    "name": "lookup_code",
+                    "arguments": "{\"record\": \"beta\"}"
+                  }
+                }
+              ],
+              "reasoning": null,
+              "reasoning_content": null
+            },
+            "logprobs": null,
+            "finish_reason": "tool_calls",
+            "stop_reason": null,
+            "token_ids": null,
+            "routed_experts": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": "vllm-20260804-tp2-bcf53d9b",
+        "usage": {
+          "prompt_tokens": 298,
+          "total_tokens": 374,
+          "completion_tokens": 76,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "prompt_text": null,
+        "kv_transfer_params": null,
+        "ec_transfer_params": null,
+        "metrics": null
+      },
+      "request_recording_notice": "The pre-fix verifier retained a mutable request object; this recorded payload contains later tool-turn messages. It is not an exact copy of the original HTTP request. Response, server token usage and elapsed time were recorded separately and remain valid."
+    },
+    {
+      "elapsed_seconds": 5.291523479998432,
+      "request": {
+        "model": "dsv4-nvfp4",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Call lookup_code twice: once for alpha, once for beta. Both are required."
+          },
+          {
+            "role": "assistant",
+            "content": "",
+            "refusal": null,
+            "annotations": null,
+            "audio": null,
+            "function_call": null,
+            "tool_calls": [
+              {
+                "id": "chatcmpl-tool-adfef253be211091",
+                "type": "function",
+                "function": {
+                  "name": "lookup_code",
+                  "arguments": "{\"record\": \"alpha\"}"
+                }
+              },
+              {
+                "id": "chatcmpl-tool-bf82b6a0699eece9",
+                "type": "function",
+                "function": {
+                  "name": "lookup_code",
+                  "arguments": "{\"record\": \"beta\"}"
+                }
+              }
+            ],
+            "reasoning": null,
+            "reasoning_content": null
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "chatcmpl-tool-adfef253be211091",
+            "content": "{\"code\": \"AMBER-614\"}"
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "chatcmpl-tool-bf82b6a0699eece9",
+            "content": "{\"code\": \"TEAL-927\"}"
+          },
+          {
+            "role": "user",
+            "content": "Reply only with alpha code, then beta code, separated by one space."
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 256,
+        "chat_template_kwargs": {
+          "thinking": false
+        },
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "lookup_code",
+              "description": "Read the code for a named synthetic record.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "record"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        ],
+        "tool_choice": "none"
+      },
+      "response": {
+        "id": "chatcmpl-be57caaed4d1b762",
+        "object": "chat.completion",
+        "created": 1788574967,
+        "model": "dsv4-nvfp4",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "AMBER-614 TEAL-927",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "reasoning": null,
+              "reasoning_content": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null,
+            "routed_experts": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": "vllm-20260804-tp2-bcf53d9b",
+        "usage": {
+          "prompt_tokens": 426,
+          "total_tokens": 435,
+          "completion_tokens": 9,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "prompt_text": null,
+        "kv_transfer_params": null,
+        "ec_transfer_params": null,
+        "metrics": null
+      }
+    },
+    {
+      "elapsed_seconds": 0.11322733200358925,
+      "request": {
+        "model": "dsv4-nvfp4",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Reply with exactly: CEDAR-319"
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 256,
+        "chat_template_kwargs": {
+          "thinking": false
+        }
+      },
+      "response": {
+        "id": "chatcmpl-a0593cf5626c7423",
+        "object": "chat.completion",
+        "created": 1788574972,
+        "model": "dsv4-nvfp4",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "CEDAR-319",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "reasoning": null,
+              "reasoning_content": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null,
+            "routed_experts": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": "vllm-20260804-tp2-bcf53d9b",
+        "usage": {
+          "prompt_tokens": 13,
+          "total_tokens": 18,
+          "completion_tokens": 5,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "prompt_text": null,
+        "kv_transfer_params": null,
+        "ec_transfer_params": null,
+        "metrics": null
+      }
+    },
+    {
+      "elapsed_seconds": 0.13142476199936937,
+      "request": {
+        "model": "dsv4-nvfp4",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Reply with exactly: ELM-742"
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 256,
+        "chat_template_kwargs": {
+          "thinking": false
+        }
+      },
+      "response": {
+        "id": "chatcmpl-bb38cd6e5cb6508e",
+        "object": "chat.completion",
+        "created": 1788574972,
+        "model": "dsv4-nvfp4",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "ELM-742",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "reasoning": null,
+              "reasoning_content": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null,
+            "routed_experts": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": "vllm-20260804-tp2-bcf53d9b",
+        "usage": {
+          "prompt_tokens": 12,
+          "total_tokens": 17,
+          "completion_tokens": 5,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "prompt_text": null,
+        "kv_transfer_params": null,
+        "ec_transfer_params": null,
+        "metrics": null
+      }
+    },
+    {
+      "elapsed_seconds": 5.43684913800098,
+      "request": {
+        "model": "dsv4-nvfp4",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Reply with exactly: PREFIX-158"
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 256,
+        "chat_template_kwargs": {
+          "thinking": false
+        }
+      },
+      "response": {
+        "id": "chatcmpl-b1cfb751893a27c0",
+        "object": "chat.completion",
+        "created": 1788574972,
+        "model": "dsv4-nvfp4",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "PREFIX-158",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "reasoning": null,
+              "reasoning_content": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null,
+            "routed_experts": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": "vllm-20260804-tp2-bcf53d9b",
+        "usage": {
+          "prompt_tokens": 612,
+          "total_tokens": 617,
+          "completion_tokens": 5,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "prompt_text": null,
+        "kv_transfer_params": null,
+        "ec_transfer_params": null,
+        "metrics": null
+      }
+    },
+    {
+      "elapsed_seconds": 0.1247149660011928,
+      "request": {
+        "model": "dsv4-nvfp4",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Reply with exactly: PREFIX-963"
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 256,
+        "chat_template_kwargs": {
+          "thinking": false
+        }
+      },
+      "response": {
+        "id": "chatcmpl-9ecb65aaed73c484",
+        "object": "chat.completion",
+        "created": 1788574978,
+        "model": "dsv4-nvfp4",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "PREFIX-963",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "reasoning": null,
+              "reasoning_content": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null,
+            "routed_experts": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": "vllm-20260804-tp2-bcf53d9b",
+        "usage": {
+          "prompt_tokens": 612,
+          "total_tokens": 617,
+          "completion_tokens": 5,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "prompt_text": null,
+        "kv_transfer_params": null,
+        "ec_transfer_params": null,
+        "metrics": null
+      }
+    },
+    {
+      "elapsed_seconds": 0.12220687299850397,
+      "request": {
+        "model": "dsv4-nvfp4",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Read the final instruction carefully. Reply with exactly: PREFIX-158"
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 256,
+        "chat_template_kwargs": {
+          "thinking": false
+        }
+      },
+      "response": {
+        "id": "chatcmpl-96b7918c51df7515",
+        "object": "chat.completion",
+        "created": 1788574978,
+        "model": "dsv4-nvfp4",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "PREFIX-158",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "reasoning": null,
+              "reasoning_content": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null,
+            "routed_experts": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": "vllm-20260804-tp2-bcf53d9b",
+        "usage": {
+          "prompt_tokens": 612,
+          "total_tokens": 617,
+          "completion_tokens": 5,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "prompt_text": null,
+        "kv_transfer_params": null,
+        "ec_transfer_params": null,
+        "metrics": null
+      }
+    },
+    {
+      "elapsed_seconds": 0.13313734199982719,
+      "request": {
+        "model": "dsv4-nvfp4",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Reply with exactly: RECOVERED-832"
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 256,
+        "chat_template_kwargs": {
+          "thinking": false
+        }
+      },
+      "response": {
+        "id": "chatcmpl-8c46e62ac610cb6a",
+        "object": "chat.completion",
+        "created": 1788574978,
+        "model": "dsv4-nvfp4",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "RECOVERED-832",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "reasoning": null,
+              "reasoning_content": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null,
+            "routed_experts": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": "vllm-20260804-tp2-bcf53d9b",
+        "usage": {
+          "prompt_tokens": 13,
+          "total_tokens": 19,
+          "completion_tokens": 6,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "prompt_text": null,
+        "kv_transfer_params": null,
+        "ec_transfer_params": null,
+        "metrics": null
+      }
+    }
+  ],
+  "configuration_evidence": "dspark-1m-97-b2560-t2304-mixed.json",
+  "limits": "Synthetic API feature checks on the patched preview image after a successful mixed near-1M test. Broad quality and final source-image acceptance remain separate."
+}

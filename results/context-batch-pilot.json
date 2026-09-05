@@ -1,0 +1,861 @@
+{
+  "status": "pilot_only",
+  "model": "nvidia/DeepSeek-V4-Flash-0731-NVFP4",
+  "model_revision": "f1caa71142bd0be02f728c79f75042ac1e461579",
+  "source_revision": "0f59188db1504b042ce621842bdde6c0fe862df6",
+  "patched_test_image_config_digest": "sha256:363d84a361356b156b7bd04f895782d4ab9aa7d258a96f6a1ddc9e582c1f6315",
+  "shared_settings": {
+    "tensor_parallel_size": 2,
+    "max_num_seqs": 2,
+    "kv_cache_dtype": "fp8",
+    "block_size": 256,
+    "cudagraph_mode": "FULL_DECODE_ONLY",
+    "draft_tokens": 5,
+    "draft_moe_backend": "marlin",
+    "main_moe_backend": "flashinfer_cutlass",
+    "temperature": 0,
+    "dataset_seed": 101,
+    "ready_check_timeout_seconds": 0,
+    "benchmark_internal_warmups": 0,
+    "separate_warmup_seed": 100
+  },
+  "limits": [
+    "A public-source build ran concurrently; final-image controlled timing remains required.",
+    "Separate C2 warmups do not prove every C1 kernel shape is warm. An uneven first C1 pair at batch4096 prompted a separately preserved repeat; logs did not identify compilation as its cause.",
+    "Each C1/C2 case has only two requests, with identical seed101 and a fresh recorded cache salt.",
+    "Random-token inputs measure scheduling/memory behavior, not coding accuracy or representative DSpark acceptance.",
+    "C2 per-request server time sums include overlapping intervals; their sum is not GPU compute time.",
+    "Output throughput includes prefill; it is not decode-only generation speed.",
+    "Two observations cannot establish stable p95 latency. Saved p95 values are descriptive only."
+  ],
+  "cases": [
+    {
+      "configuration": {
+        "max_model_len": 1000000,
+        "max_num_batched_tokens": 2048,
+        "long_prefill_token_threshold": 1792,
+        "gpu_memory_utilization": 0.965
+      },
+      "repeat": 1,
+      "benchmark": {
+        "label": "pilot-1m-b2048-salted-c1",
+        "date": "20260905-031336",
+        "cache_salt": "f5bd34ce-8211-4379-b67e-6cc405d5b01d",
+        "dataset_seed": "101",
+        "max_concurrency": 1,
+        "num_prompts": 2,
+        "completed": 2,
+        "failed": 0,
+        "errors": [
+          "",
+          ""
+        ],
+        "duration": 54.455626316001144,
+        "input_lens": [
+          131072,
+          131072
+        ],
+        "output_lens": [
+          512,
+          512
+        ],
+        "ttfts": [
+          21.90440299799957,
+          22.154249664999952
+        ],
+        "mean_tpot_ms": 10.172744443245104,
+        "median_tpot_ms": 10.172744443245104,
+        "p95_tpot_ms": 10.598548745497682,
+        "median_e2el_ms": 27227.59874199801,
+        "output_throughput": 18.804301213208333,
+        "total_token_throughput": 4832.705411794542,
+        "spec_decode_acceptance_rate": 13.70675453047776,
+        "spec_decode_acceptance_length": 1.685337726523888,
+        "spec_decode_accepted_tokens": 416,
+        "spec_decode_draft_tokens": 3035,
+        "spec_decode_num_drafts": 607,
+        "spec_decode_per_position_acceptance_rates": [
+          0.6359143327841845,
+          0.04942339373970346,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "inter_event_interval_counts": [
+        288,
+        315
+      ],
+      "server_metric_deltas": {
+        "prompt_tokens_total": 262144.0,
+        "generation_tokens_total": 1024.0,
+        "prefix_cache_hits_total": 0.0,
+        "num_preemptions_total": 0.0,
+        "request_prefill_time_seconds_sum": 43.35210204299801,
+        "request_prefill_time_seconds_count": 2.0,
+        "request_decode_time_seconds_sum": 10.503477360001853,
+        "request_decode_time_seconds_count": 2.0,
+        "request_queue_time_seconds_sum": 3.061600000364706e-05,
+        "e2e_request_latency_seconds_sum": 54.442251205444336,
+        "time_to_first_token_seconds_sum": 43.939401626586914,
+        "spec_decode_num_drafts_total": 607.0,
+        "spec_decode_num_draft_tokens_total": 3035.0,
+        "spec_decode_num_accepted_tokens_total": 416.0
+      },
+      "resources": {
+        "sampling_interval_seconds": 2,
+        "sample_count": 31,
+        "sampled_min_free_mib_per_gpu": [
+          795.0,
+          760.0
+        ],
+        "sampled_max_temperature_c_per_gpu": [
+          88.0,
+          86.0
+        ],
+        "sampled_max_power_w_per_gpu": [
+          300.29,
+          300.27
+        ],
+        "limits": "Samples include client setup and inference; they do not prove instantaneous peak headroom."
+      },
+      "private_raw_benchmark_sha256": "2fb854459a8bc32e05f7f23a407a68da2a7bc5e278d379eb8198f343f972c37d"
+    },
+    {
+      "configuration": {
+        "max_model_len": 1000000,
+        "max_num_batched_tokens": 2048,
+        "long_prefill_token_threshold": 1792,
+        "gpu_memory_utilization": 0.965
+      },
+      "repeat": 1,
+      "benchmark": {
+        "label": "pilot-1m-b2048-salted-c2",
+        "date": "20260905-031434",
+        "cache_salt": "f29c51bf-051e-4d19-8dc7-a689edf490f9",
+        "dataset_seed": "101",
+        "max_concurrency": 2,
+        "num_prompts": 2,
+        "completed": 2,
+        "failed": 0,
+        "errors": [
+          "",
+          ""
+        ],
+        "duration": 51.21137747800094,
+        "input_lens": [
+          131072,
+          131072
+        ],
+        "output_lens": [
+          512,
+          512
+        ],
+        "ttfts": [
+          45.11641341399809,
+          25.191062277997844
+        ],
+        "mean_tpot_ms": 28.973306055777645,
+        "median_tpot_ms": 28.973306055777645,
+        "p95_tpot_ms": 44.31496788268656,
+        "median_e2el_ms": 49959.09724050034,
+        "output_throughput": 19.995556660038748,
+        "total_token_throughput": 5138.858061629958,
+        "spec_decode_acceptance_rate": 19.574468085106382,
+        "spec_decode_acceptance_length": 1.978723404255319,
+        "spec_decode_accepted_tokens": 506,
+        "spec_decode_draft_tokens": 2585,
+        "spec_decode_num_drafts": 517,
+        "spec_decode_per_position_acceptance_rates": [
+          0.6634429400386848,
+          0.10638297872340426,
+          0.06963249516441006,
+          0.06963249516441006,
+          0.06963249516441006
+        ]
+      },
+      "inter_event_interval_counts": [
+        298,
+        217
+      ],
+      "server_metric_deltas": {
+        "prompt_tokens_total": 262144.0,
+        "generation_tokens_total": 1024.0,
+        "prefix_cache_hits_total": 0.0,
+        "num_preemptions_total": 0.0,
+        "request_prefill_time_seconds_sum": 69.255860958001,
+        "request_prefill_time_seconds_count": 2.0,
+        "request_decode_time_seconds_sum": 29.716016143996967,
+        "request_decode_time_seconds_count": 2.0,
+        "request_queue_time_seconds_sum": 2.0071001927135512e-05,
+        "e2e_request_latency_seconds_sum": 99.89690709114075,
+        "time_to_first_token_seconds_sum": 70.18241262435913,
+        "spec_decode_num_drafts_total": 517.0,
+        "spec_decode_num_draft_tokens_total": 2585.0,
+        "spec_decode_num_accepted_tokens_total": 506.0
+      },
+      "resources": {
+        "sampling_interval_seconds": 2,
+        "sample_count": 29,
+        "sampled_min_free_mib_per_gpu": [
+          795.0,
+          760.0
+        ],
+        "sampled_max_temperature_c_per_gpu": [
+          88.0,
+          87.0
+        ],
+        "sampled_max_power_w_per_gpu": [
+          300.5,
+          301.97
+        ],
+        "limits": "Samples include client setup and inference; they do not prove instantaneous peak headroom."
+      },
+      "private_raw_benchmark_sha256": "db5460a515bb2b8b21f772a94a4b9d6b93555748f640245ffb52b5ef918e67e3"
+    },
+    {
+      "configuration": {
+        "max_model_len": 1000000,
+        "max_num_batched_tokens": 2560,
+        "long_prefill_token_threshold": 2304,
+        "gpu_memory_utilization": 0.965
+      },
+      "repeat": 1,
+      "benchmark": {
+        "label": "pilot-1m-b2560-salted-c1",
+        "date": "20260905-025008",
+        "cache_salt": "f6e42729-4d63-4d3a-a834-2983773fd2ea",
+        "dataset_seed": "101",
+        "max_concurrency": 1,
+        "num_prompts": 2,
+        "completed": 2,
+        "failed": 0,
+        "errors": [
+          "",
+          ""
+        ],
+        "duration": 49.87582893799845,
+        "input_lens": [
+          131072,
+          131072
+        ],
+        "output_lens": [
+          512,
+          512
+        ],
+        "ttfts": [
+          20.402752480000345,
+          20.850588458997663
+        ],
+        "mean_tpot_ms": 8.43632933561668,
+        "median_tpot_ms": 8.43632933561668,
+        "p95_tpot_ms": 9.645852408513937,
+        "median_e2el_ms": 24937.634759999128,
+        "output_throughput": 20.53098708941666,
+        "total_token_throughput": 5276.463681980082,
+        "spec_decode_acceptance_rate": 20.51282051282051,
+        "spec_decode_acceptance_length": 2.0256410256410255,
+        "spec_decode_accepted_tokens": 520,
+        "spec_decode_draft_tokens": 2535,
+        "spec_decode_num_drafts": 507,
+        "spec_decode_per_position_acceptance_rates": [
+          0.6824457593688363,
+          0.1242603550295858,
+          0.07297830374753451,
+          0.07297830374753451,
+          0.07297830374753451
+        ]
+      },
+      "inter_event_interval_counts": [
+        289,
+        214
+      ],
+      "server_metric_deltas": {
+        "prompt_tokens_total": 262144.0,
+        "generation_tokens_total": 1024.0,
+        "prefix_cache_hits_total": 0.0,
+        "num_preemptions_total": 0.0,
+        "request_prefill_time_seconds_sum": 40.52939073500238,
+        "request_prefill_time_seconds_count": 2.0,
+        "request_decode_time_seconds_sum": 8.73775651699907,
+        "request_decode_time_seconds_count": 2.0,
+        "request_queue_time_seconds_sum": 2.1722997189499438e-05,
+        "e2e_request_latency_seconds_sum": 49.86063003540039,
+        "time_to_first_token_seconds_sum": 41.12403416633606,
+        "spec_decode_num_drafts_total": 507.0,
+        "spec_decode_num_draft_tokens_total": 2535.0,
+        "spec_decode_num_accepted_tokens_total": 520.0
+      },
+      "resources": {
+        "sampling_interval_seconds": 2,
+        "sample_count": 29,
+        "sampled_min_free_mib_per_gpu": [
+          587.0,
+          552.0
+        ],
+        "sampled_max_temperature_c_per_gpu": [
+          79.0,
+          77.0
+        ],
+        "sampled_max_power_w_per_gpu": [
+          300.43,
+          300.32
+        ],
+        "limits": "Samples include client setup and inference; they do not prove instantaneous peak headroom."
+      },
+      "private_raw_benchmark_sha256": "f98fa1fa1734f81af2bcd5b4932ac3a90353b1119b087ba3bc2f75bf8ca7cb57"
+    },
+    {
+      "configuration": {
+        "max_model_len": 1000000,
+        "max_num_batched_tokens": 2560,
+        "long_prefill_token_threshold": 2304,
+        "gpu_memory_utilization": 0.965
+      },
+      "repeat": 1,
+      "benchmark": {
+        "label": "pilot-1m-b2560-salted-c2",
+        "date": "20260905-025112",
+        "cache_salt": "8bb8c092-a3fa-4ff3-b715-80d62051429f",
+        "dataset_seed": "101",
+        "max_concurrency": 2,
+        "num_prompts": 2,
+        "completed": 2,
+        "failed": 0,
+        "errors": [
+          "",
+          ""
+        ],
+        "duration": 48.04914784199718,
+        "input_lens": [
+          131072,
+          131072
+        ],
+        "output_lens": [
+          512,
+          512
+        ],
+        "ttfts": [
+          22.778632319997996,
+          42.57124106699848
+        ],
+        "mean_tpot_ms": 29.751734489237375,
+        "median_tpot_ms": 29.751734489237375,
+        "p95_tpot_ms": 47.48235156869165,
+        "median_e2el_ms": 47878.07301749854,
+        "output_throughput": 21.311512190960784,
+        "total_token_throughput": 5477.058633076921,
+        "spec_decode_acceptance_rate": 19.689922480620154,
+        "spec_decode_acceptance_length": 1.9844961240310077,
+        "spec_decode_accepted_tokens": 508,
+        "spec_decode_draft_tokens": 2580,
+        "spec_decode_num_drafts": 516,
+        "spec_decode_per_position_acceptance_rates": [
+          0.6492248062015504,
+          0.12403100775193798,
+          0.07170542635658915,
+          0.06976744186046512,
+          0.06976744186046512
+        ]
+      },
+      "inter_event_interval_counts": [
+        292,
+        222
+      ],
+      "server_metric_deltas": {
+        "prompt_tokens_total": 262144.0,
+        "generation_tokens_total": 1024.0,
+        "prefix_cache_hits_total": 0.0,
+        "num_preemptions_total": 0.0,
+        "request_prefill_time_seconds_sum": 64.13574162199802,
+        "request_prefill_time_seconds_count": 2.0,
+        "request_decode_time_seconds_sum": 30.520626133002224,
+        "request_decode_time_seconds_count": 2.0,
+        "request_queue_time_seconds_sum": 1.895800232887268e-05,
+        "e2e_request_latency_seconds_sum": 95.73485779762268,
+        "time_to_first_token_seconds_sum": 65.21618342399597,
+        "spec_decode_num_drafts_total": 516.0,
+        "spec_decode_num_draft_tokens_total": 2580.0,
+        "spec_decode_num_accepted_tokens_total": 508.0
+      },
+      "resources": {
+        "sampling_interval_seconds": 2,
+        "sample_count": 28,
+        "sampled_min_free_mib_per_gpu": [
+          587.0,
+          552.0
+        ],
+        "sampled_max_temperature_c_per_gpu": [
+          86.0,
+          83.0
+        ],
+        "sampled_max_power_w_per_gpu": [
+          300.36,
+          300.25
+        ],
+        "limits": "Samples include client setup and inference; they do not prove instantaneous peak headroom."
+      },
+      "private_raw_benchmark_sha256": "e63969cbddb07bed3b2e3659bd57cdd6c1540bb89deb06ae4b5863be6ae782c0"
+    },
+    {
+      "configuration": {
+        "max_model_len": 524288,
+        "max_num_batched_tokens": 2560,
+        "long_prefill_token_threshold": 2304,
+        "gpu_memory_utilization": 0.965
+      },
+      "repeat": 1,
+      "benchmark": {
+        "label": "pilot-524k-b2560-salted-c1",
+        "date": "20260905-025701",
+        "cache_salt": "efab8cb7-0837-4020-85b9-469b34c44646",
+        "dataset_seed": "101",
+        "max_concurrency": 1,
+        "num_prompts": 2,
+        "completed": 2,
+        "failed": 0,
+        "errors": [
+          "",
+          ""
+        ],
+        "duration": 51.06307024299895,
+        "input_lens": [
+          131072,
+          131072
+        ],
+        "output_lens": [
+          512,
+          512
+        ],
+        "ttfts": [
+          21.171100309002213,
+          21.453406979999272
+        ],
+        "mean_tpot_ms": 8.25646456066446,
+        "median_tpot_ms": 8.25646456066446,
+        "p95_tpot_ms": 9.493601743537093,
+        "median_e2el_ms": 25531.30703500028,
+        "output_throughput": 20.05363161923066,
+        "total_token_throughput": 5153.78332614228,
+        "spec_decode_acceptance_rate": 20.236220472440944,
+        "spec_decode_acceptance_length": 2.0118110236220472,
+        "spec_decode_accepted_tokens": 514,
+        "spec_decode_draft_tokens": 2540,
+        "spec_decode_num_drafts": 508,
+        "spec_decode_per_position_acceptance_rates": [
+          0.6811023622047244,
+          0.11811023622047244,
+          0.07086614173228346,
+          0.07086614173228346,
+          0.07086614173228346
+        ]
+      },
+      "inter_event_interval_counts": [
+        292,
+        212
+      ],
+      "server_metric_deltas": {
+        "prompt_tokens_total": 262144.0,
+        "generation_tokens_total": 1024.0,
+        "prefix_cache_hits_total": 0.0,
+        "num_preemptions_total": 0.0,
+        "request_prefill_time_seconds_sum": 41.89969921800002,
+        "request_prefill_time_seconds_count": 2.0,
+        "request_decode_time_seconds_sum": 8.55465612899934,
+        "request_decode_time_seconds_count": 2.0,
+        "request_queue_time_seconds_sum": 3.708599979290739e-05,
+        "e2e_request_latency_seconds_sum": 51.049737215042114,
+        "time_to_first_token_seconds_sum": 42.49629235267639,
+        "spec_decode_num_drafts_total": 508.0,
+        "spec_decode_num_draft_tokens_total": 2540.0,
+        "spec_decode_num_accepted_tokens_total": 514.0
+      },
+      "resources": {
+        "sampling_interval_seconds": 2,
+        "sample_count": 29,
+        "sampled_min_free_mib_per_gpu": [
+          739.0,
+          704.0
+        ],
+        "sampled_max_temperature_c_per_gpu": [
+          89.0,
+          86.0
+        ],
+        "sampled_max_power_w_per_gpu": [
+          302.13,
+          303.01
+        ],
+        "limits": "Samples include client setup and inference; they do not prove instantaneous peak headroom."
+      },
+      "private_raw_benchmark_sha256": "cf4940531b831a08b6f7098bfc35ef0d95ea89fbbb85a6463aa280c69ecb03bd"
+    },
+    {
+      "configuration": {
+        "max_model_len": 524288,
+        "max_num_batched_tokens": 2560,
+        "long_prefill_token_threshold": 2304,
+        "gpu_memory_utilization": 0.965
+      },
+      "repeat": 1,
+      "benchmark": {
+        "label": "pilot-524k-b2560-salted-c2",
+        "date": "20260905-025757",
+        "cache_salt": "062b755d-17df-4b97-a252-b4cc4c4bee14",
+        "dataset_seed": "101",
+        "max_concurrency": 2,
+        "num_prompts": 2,
+        "completed": 2,
+        "failed": 0,
+        "errors": [
+          "",
+          ""
+        ],
+        "duration": 48.37365398399925,
+        "input_lens": [
+          131072,
+          131072
+        ],
+        "output_lens": [
+          512,
+          512
+        ],
+        "ttfts": [
+          23.158167087000038,
+          43.14610723900114
+        ],
+        "mean_tpot_ms": 29.348756042074026,
+        "median_tpot_ms": 29.348756042074026,
+        "p95_tpot_ms": 47.345150598921954,
+        "median_e2el_ms": 48149.351500500416,
+        "output_throughput": 21.16854766312904,
+        "total_token_throughput": 5440.316749424163,
+        "spec_decode_acceptance_rate": 20.078277886497066,
+        "spec_decode_acceptance_length": 2.003913894324853,
+        "spec_decode_accepted_tokens": 513,
+        "spec_decode_draft_tokens": 2555,
+        "spec_decode_num_drafts": 511,
+        "spec_decode_per_position_acceptance_rates": [
+          0.6692759295499021,
+          0.1232876712328767,
+          0.07045009784735812,
+          0.07045009784735812,
+          0.07045009784735812
+        ]
+      },
+      "inter_event_interval_counts": [
+        293,
+        216
+      ],
+      "server_metric_deltas": {
+        "prompt_tokens_total": 262144.0,
+        "generation_tokens_total": 1024.0,
+        "prefix_cache_hits_total": 0.0,
+        "num_preemptions_total": 0.0,
+        "request_prefill_time_seconds_sum": 65.10548464399835,
+        "request_prefill_time_seconds_count": 2.0,
+        "request_decode_time_seconds_sum": 30.11221149600533,
+        "request_decode_time_seconds_count": 2.0,
+        "request_queue_time_seconds_sum": 2.3594999220222235e-05,
+        "e2e_request_latency_seconds_sum": 96.2782952785492,
+        "time_to_first_token_seconds_sum": 66.16815614700317,
+        "spec_decode_num_drafts_total": 511.0,
+        "spec_decode_num_draft_tokens_total": 2555.0,
+        "spec_decode_num_accepted_tokens_total": 513.0
+      },
+      "resources": {
+        "sampling_interval_seconds": 2,
+        "sample_count": 28,
+        "sampled_min_free_mib_per_gpu": [
+          739.0,
+          704.0
+        ],
+        "sampled_max_temperature_c_per_gpu": [
+          88.0,
+          86.0
+        ],
+        "sampled_max_power_w_per_gpu": [
+          300.2,
+          300.4
+        ],
+        "limits": "Samples include client setup and inference; they do not prove instantaneous peak headroom."
+      },
+      "private_raw_benchmark_sha256": "a73917ba84a75002c7270da5f0406f3f22aecef14c3aac63cc8cf09391c61462"
+    },
+    {
+      "configuration": {
+        "max_model_len": 524288,
+        "max_num_batched_tokens": 4096,
+        "long_prefill_token_threshold": 3840,
+        "gpu_memory_utilization": 0.965
+      },
+      "repeat": 2,
+      "benchmark": {
+        "label": "pilot-524k-b4096-salted-c1-repeat2",
+        "date": "20260905-030603",
+        "cache_salt": "076c9f1b-91b6-4ad4-a7aa-86e532c3ad8e",
+        "dataset_seed": "101",
+        "max_concurrency": 1,
+        "num_prompts": 2,
+        "completed": 2,
+        "failed": 0,
+        "errors": [
+          "",
+          ""
+        ],
+        "duration": 48.5680219829992,
+        "input_lens": [
+          131072,
+          131072
+        ],
+        "output_lens": [
+          512,
+          512
+        ],
+        "ttfts": [
+          19.919115633998445,
+          20.414239321999048
+        ],
+        "mean_tpot_ms": 8.056980036205927,
+        "median_tpot_ms": 8.056980036205927,
+        "p95_tpot_ms": 9.278359385029454,
+        "median_e2el_ms": 24283.794276499975,
+        "output_throughput": 21.083831669291413,
+        "total_token_throughput": 5418.5447390078925,
+        "spec_decode_acceptance_rate": 21.204819277108435,
+        "spec_decode_acceptance_length": 2.0602409638554215,
+        "spec_decode_accepted_tokens": 528,
+        "spec_decode_draft_tokens": 2490,
+        "spec_decode_num_drafts": 498,
+        "spec_decode_per_position_acceptance_rates": [
+          0.714859437751004,
+          0.12449799196787148,
+          0.07429718875502007,
+          0.07429718875502007,
+          0.07228915662650602
+        ]
+      },
+      "inter_event_interval_counts": [
+        286,
+        208
+      ],
+      "server_metric_deltas": {
+        "prompt_tokens_total": 262144.0,
+        "generation_tokens_total": 1024.0,
+        "prefix_cache_hits_total": 0.0,
+        "num_preemptions_total": 0.0,
+        "request_prefill_time_seconds_sum": 39.60497538400159,
+        "request_prefill_time_seconds_count": 2.0,
+        "request_decode_time_seconds_sum": 8.343630261999351,
+        "request_decode_time_seconds_count": 2.0,
+        "request_queue_time_seconds_sum": 2.884299829020165e-05,
+        "e2e_request_latency_seconds_sum": 48.55374717712402,
+        "time_to_first_token_seconds_sum": 40.21063756942749,
+        "spec_decode_num_drafts_total": 498.0,
+        "spec_decode_num_draft_tokens_total": 2490.0,
+        "spec_decode_num_accepted_tokens_total": 528.0
+      },
+      "resources": {
+        "sampling_interval_seconds": 2,
+        "sample_count": 28,
+        "sampled_min_free_mib_per_gpu": [
+          407.0,
+          372.0
+        ],
+        "sampled_max_temperature_c_per_gpu": [
+          85.0,
+          83.0
+        ],
+        "sampled_max_power_w_per_gpu": [
+          304.4,
+          300.33
+        ],
+        "limits": "Samples include client setup and inference; they do not prove instantaneous peak headroom."
+      },
+      "private_raw_benchmark_sha256": "86b3db5e96dd844cb77732bbd9f7bba000378735fd5d929f806ea09ebc12ba4b"
+    },
+    {
+      "configuration": {
+        "max_model_len": 524288,
+        "max_num_batched_tokens": 4096,
+        "long_prefill_token_threshold": 3840,
+        "gpu_memory_utilization": 0.965
+      },
+      "repeat": 1,
+      "benchmark": {
+        "label": "pilot-524k-b4096-salted-c1",
+        "date": "20260905-030324",
+        "cache_salt": "f90964f4-4741-4d24-8b9b-d6da1afff178",
+        "dataset_seed": "101",
+        "max_concurrency": 1,
+        "num_prompts": 2,
+        "completed": 2,
+        "failed": 0,
+        "errors": [
+          "",
+          ""
+        ],
+        "duration": 54.12231121500008,
+        "input_lens": [
+          131072,
+          131072
+        ],
+        "output_lens": [
+          512,
+          512
+        ],
+        "ttfts": [
+          25.394107496998913,
+          20.527658109000186
+        ],
+        "mean_tpot_ms": 8.023479397256681,
+        "median_tpot_ms": 8.023479397256681,
+        "p95_tpot_ms": 9.136340646375295,
+        "median_e2el_ms": 27060.880774997713,
+        "output_throughput": 18.920108491527184,
+        "total_token_throughput": 4862.467882322487,
+        "spec_decode_acceptance_rate": 21.373737373737374,
+        "spec_decode_acceptance_length": 2.0686868686868687,
+        "spec_decode_accepted_tokens": 529,
+        "spec_decode_draft_tokens": 2475,
+        "spec_decode_num_drafts": 495,
+        "spec_decode_per_position_acceptance_rates": [
+          0.7111111111111111,
+          0.13535353535353536,
+          0.07676767676767676,
+          0.07272727272727272,
+          0.07272727272727272
+        ]
+      },
+      "inter_event_interval_counts": [
+        282,
+        210
+      ],
+      "server_metric_deltas": {
+        "prompt_tokens_total": 262144.0,
+        "generation_tokens_total": 1024.0,
+        "prefix_cache_hits_total": 0.0,
+        "num_preemptions_total": 0.0,
+        "request_prefill_time_seconds_sum": 45.205857632001425,
+        "request_prefill_time_seconds_count": 2.0,
+        "request_decode_time_seconds_sum": 8.299977086000581,
+        "request_decode_time_seconds_count": 2.0,
+        "request_queue_time_seconds_sum": 3.6714998714160174e-05,
+        "e2e_request_latency_seconds_sum": 54.107099771499634,
+        "time_to_first_token_seconds_sum": 45.807894706726074,
+        "spec_decode_num_drafts_total": 495.0,
+        "spec_decode_num_draft_tokens_total": 2475.0,
+        "spec_decode_num_accepted_tokens_total": 529.0
+      },
+      "resources": {
+        "sampling_interval_seconds": 2,
+        "sample_count": 31,
+        "sampled_min_free_mib_per_gpu": [
+          407.0,
+          372.0
+        ],
+        "sampled_max_temperature_c_per_gpu": [
+          88.0,
+          84.0
+        ],
+        "sampled_max_power_w_per_gpu": [
+          300.37,
+          300.38
+        ],
+        "limits": "Samples include client setup and inference; they do not prove instantaneous peak headroom."
+      },
+      "private_raw_benchmark_sha256": "48ac30b8e992de693f8c9b3acc62bc05e4c1b868863302ecbb363d5abebd600f"
+    },
+    {
+      "configuration": {
+        "max_model_len": 524288,
+        "max_num_batched_tokens": 4096,
+        "long_prefill_token_threshold": 3840,
+        "gpu_memory_utilization": 0.965
+      },
+      "repeat": 1,
+      "benchmark": {
+        "label": "pilot-524k-b4096-salted-c2",
+        "date": "20260905-030417",
+        "cache_salt": "ea26e671-3f5c-4a87-8abb-d8a4895da806",
+        "dataset_seed": "101",
+        "max_concurrency": 2,
+        "num_prompts": 2,
+        "completed": 2,
+        "failed": 0,
+        "errors": [
+          "",
+          ""
+        ],
+        "duration": 46.61766136300139,
+        "input_lens": [
+          131072,
+          131072
+        ],
+        "output_lens": [
+          512,
+          512
+        ],
+        "ttfts": [
+          21.7952609640015,
+          41.13889022100193
+        ],
+        "mean_tpot_ms": 28.85692596575,
+        "median_tpot_ms": 28.85692596575,
+        "p95_tpot_ms": 46.603722816336926,
+        "median_e2el_ms": 46212.96476099997,
+        "output_throughput": 21.965923859336037,
+        "total_token_throughput": 5645.242431849362,
+        "spec_decode_acceptance_rate": 20.554455445544555,
+        "spec_decode_acceptance_length": 2.0277227722772277,
+        "spec_decode_accepted_tokens": 519,
+        "spec_decode_draft_tokens": 2525,
+        "spec_decode_num_drafts": 505,
+        "spec_decode_per_position_acceptance_rates": [
+          0.689108910891089,
+          0.12475247524752475,
+          0.07128712871287128,
+          0.07128712871287128,
+          0.07128712871287128
+        ]
+      },
+      "inter_event_interval_counts": [
+        291,
+        212
+      ],
+      "server_metric_deltas": {
+        "prompt_tokens_total": 262144.0,
+        "generation_tokens_total": 1024.0,
+        "prefix_cache_hits_total": 0.0,
+        "num_preemptions_total": 0.0,
+        "request_prefill_time_seconds_sum": 61.81505309500426,
+        "request_prefill_time_seconds_count": 2.0,
+        "request_decode_time_seconds_sum": 29.611501439998392,
+        "request_decode_time_seconds_count": 2.0,
+        "request_queue_time_seconds_sum": 2.1862997527932748e-05,
+        "e2e_request_latency_seconds_sum": 92.4040322303772,
+        "time_to_first_token_seconds_sum": 62.79488778114319,
+        "spec_decode_num_drafts_total": 505.0,
+        "spec_decode_num_draft_tokens_total": 2525.0,
+        "spec_decode_num_accepted_tokens_total": 519.0
+      },
+      "resources": {
+        "sampling_interval_seconds": 2,
+        "sample_count": 27,
+        "sampled_min_free_mib_per_gpu": [
+          407.0,
+          372.0
+        ],
+        "sampled_max_temperature_c_per_gpu": [
+          89.0,
+          86.0
+        ],
+        "sampled_max_power_w_per_gpu": [
+          300.4,
+          300.59
+        ],
+        "limits": "Samples include client setup and inference; they do not prove instantaneous peak headroom."
+      },
+      "private_raw_benchmark_sha256": "a01f24400a22874ceeb91c3e2a1cd92ac8801ad7c16cb9db76b692d3ab6e6561"
+    }
+  ]
+}

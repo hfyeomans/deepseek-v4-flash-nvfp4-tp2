@@ -1,0 +1,200 @@
+INFO 09-05 00:44:10 [importing.py:53] Triton is installed but 0 active driver(s) found (expected 1). Disabling Triton to prevent runtime errors.
+INFO 09-05 00:44:10 [importing.py:88] Triton not installed or not compatible; certain GPU-related functions will not be available.
+WARNING 09-05 00:44:10 [interface.py:368] Failed to import from vllm._C: ModuleNotFoundError("No module named 'vllm._C'")
+W0905 00:44:10.777000 1 torch/utils/cpp_extension.py:178] No CUDA runtime is found, using CUDA_HOME='/usr/local/cuda'
+WARNING 09-05 00:44:11 [interface.py:368] Failed to import from vllm._C: ModuleNotFoundError("No module named 'vllm._C'")
+WARNING 09-05 00:44:11 [interface.py:368] Failed to import from vllm._C: ModuleNotFoundError("No module named 'vllm._C'")
+test_all_draft_prefixes_use_mxfp4_after_target_dispatch (__main__.QuantDispatchTest.test_all_draft_prefixes_use_mxfp4_after_target_dispatch) ... INFO 09-05 00:44:11 [quant_config.py:75] DeepSeek V4 expert_dtype resolved to 'fp4'
+WARNING 09-05 00:44:11 [modelopt.py:1019] Detected ModelOpt NVFP4 checkpoint (quant_algo=NVFP4). Please note that the format is experimental and could change in future.
+
+  test_all_draft_prefixes_use_mxfp4_after_target_dispatch (__main__.QuantDispatchTest.test_all_draft_prefixes_use_mxfp4_after_target_dispatch) (prefix='layers.43.ffn.experts') ... FAIL
+  test_all_draft_prefixes_use_mxfp4_after_target_dispatch (__main__.QuantDispatchTest.test_all_draft_prefixes_use_mxfp4_after_target_dispatch) (prefix='model.layers.43.ffn.experts') ... FAIL
+  test_all_draft_prefixes_use_mxfp4_after_target_dispatch (__main__.QuantDispatchTest.test_all_draft_prefixes_use_mxfp4_after_target_dispatch) (prefix='layers.44.ffn.experts') ... FAIL
+  test_all_draft_prefixes_use_mxfp4_after_target_dispatch (__main__.QuantDispatchTest.test_all_draft_prefixes_use_mxfp4_after_target_dispatch) (prefix='model.layers.44.ffn.experts') ... FAIL
+  test_all_draft_prefixes_use_mxfp4_after_target_dispatch (__main__.QuantDispatchTest.test_all_draft_prefixes_use_mxfp4_after_target_dispatch) (prefix='layers.45.ffn.experts') ... FAIL
+  test_all_draft_prefixes_use_mxfp4_after_target_dispatch (__main__.QuantDispatchTest.test_all_draft_prefixes_use_mxfp4_after_target_dispatch) (prefix='model.layers.45.ffn.experts') ... FAIL
+test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis (__main__.QuantDispatchTest.test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis) ... WARNING 09-05 00:44:11 [modelopt.py:1019] Detected ModelOpt NVFP4 checkpoint (quant_algo=NVFP4). Please note that the format is experimental and could change in future.
+
+  test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis (__main__.QuantDispatchTest.test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis) (case='not_a_mapping', api='get_quant_method') ... FAIL
+  test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis (__main__.QuantDispatchTest.test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis) (case='not_a_mapping', api='is_mxfp4_quant') ... FAIL
+WARNING 09-05 00:44:11 [modelopt.py:1019] Detected ModelOpt NVFP4 checkpoint (quant_algo=NVFP4). Please note that the format is experimental and could change in future.
+  test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis (__main__.QuantDispatchTest.test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis) (case='empty_explicit_scope', api='get_quant_method') ... FAIL
+  test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis (__main__.QuantDispatchTest.test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis) (case='empty_explicit_scope', api='is_mxfp4_quant') ... FAIL
+WARNING 09-05 00:44:11 [modelopt.py:1019] Detected ModelOpt NVFP4 checkpoint (quant_algo=NVFP4). Please note that the format is experimental and could change in future.
+  test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis (__main__.QuantDispatchTest.test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis) (case='missing_main_layer', api='get_quant_method') ... FAIL
+  test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis (__main__.QuantDispatchTest.test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis) (case='missing_main_layer', api='is_mxfp4_quant') ... FAIL
+WARNING 09-05 00:44:11 [modelopt.py:1019] Detected ModelOpt NVFP4 checkpoint (quant_algo=NVFP4). Please note that the format is experimental and could change in future.
+  test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis (__main__.QuantDispatchTest.test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis) (case='missing_layer_algorithm', api='get_quant_method') ... FAIL
+  test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis (__main__.QuantDispatchTest.test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis) (case='missing_layer_algorithm', api='is_mxfp4_quant') ... FAIL
+WARNING 09-05 00:44:11 [modelopt.py:1019] Detected ModelOpt NVFP4 checkpoint (quant_algo=NVFP4). Please note that the format is experimental and could change in future.
+  test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis (__main__.QuantDispatchTest.test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis) (case='unknown_layer_algorithm', api='get_quant_method') ... FAIL
+  test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis (__main__.QuantDispatchTest.test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis) (case='unknown_layer_algorithm', api='is_mxfp4_quant') ... FAIL
+test_native_mxfp4_control_without_conversion_metadata (__main__.QuantDispatchTest.test_native_mxfp4_control_without_conversion_metadata) ... ok
+test_pinned_fixture_declares_main_only_nvfp4_scope (__main__.QuantDispatchTest.test_pinned_fixture_declares_main_only_nvfp4_scope) ... ok
+test_target_boundary_prefixes_remain_nvfp4 (__main__.QuantDispatchTest.test_target_boundary_prefixes_remain_nvfp4) ... WARNING 09-05 00:44:11 [modelopt.py:1019] Detected ModelOpt NVFP4 checkpoint (quant_algo=NVFP4). Please note that the format is experimental and could change in future.
+ok
+
+======================================================================
+FAIL: test_all_draft_prefixes_use_mxfp4_after_target_dispatch (__main__.QuantDispatchTest.test_all_draft_prefixes_use_mxfp4_after_target_dispatch) (prefix='layers.43.ffn.experts')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<stdin>", line 135, in test_all_draft_prefixes_use_mxfp4_after_target_dispatch
+  File "<stdin>", line 98, in assert_routing
+AssertionError: Tuples differ: ('NVFP4', False) != ('MXFP4', True)
+
+First differing element 0:
+'NVFP4'
+'MXFP4'
+
+- ('NVFP4', False)
++ ('MXFP4', True) : layers.43.ffn.experts
+
+======================================================================
+FAIL: test_all_draft_prefixes_use_mxfp4_after_target_dispatch (__main__.QuantDispatchTest.test_all_draft_prefixes_use_mxfp4_after_target_dispatch) (prefix='model.layers.43.ffn.experts')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<stdin>", line 135, in test_all_draft_prefixes_use_mxfp4_after_target_dispatch
+  File "<stdin>", line 98, in assert_routing
+AssertionError: Tuples differ: ('NVFP4', False) != ('MXFP4', True)
+
+First differing element 0:
+'NVFP4'
+'MXFP4'
+
+- ('NVFP4', False)
++ ('MXFP4', True) : model.layers.43.ffn.experts
+
+======================================================================
+FAIL: test_all_draft_prefixes_use_mxfp4_after_target_dispatch (__main__.QuantDispatchTest.test_all_draft_prefixes_use_mxfp4_after_target_dispatch) (prefix='layers.44.ffn.experts')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<stdin>", line 135, in test_all_draft_prefixes_use_mxfp4_after_target_dispatch
+  File "<stdin>", line 98, in assert_routing
+AssertionError: Tuples differ: ('NVFP4', False) != ('MXFP4', True)
+
+First differing element 0:
+'NVFP4'
+'MXFP4'
+
+- ('NVFP4', False)
++ ('MXFP4', True) : layers.44.ffn.experts
+
+======================================================================
+FAIL: test_all_draft_prefixes_use_mxfp4_after_target_dispatch (__main__.QuantDispatchTest.test_all_draft_prefixes_use_mxfp4_after_target_dispatch) (prefix='model.layers.44.ffn.experts')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<stdin>", line 135, in test_all_draft_prefixes_use_mxfp4_after_target_dispatch
+  File "<stdin>", line 98, in assert_routing
+AssertionError: Tuples differ: ('NVFP4', False) != ('MXFP4', True)
+
+First differing element 0:
+'NVFP4'
+'MXFP4'
+
+- ('NVFP4', False)
++ ('MXFP4', True) : model.layers.44.ffn.experts
+
+======================================================================
+FAIL: test_all_draft_prefixes_use_mxfp4_after_target_dispatch (__main__.QuantDispatchTest.test_all_draft_prefixes_use_mxfp4_after_target_dispatch) (prefix='layers.45.ffn.experts')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<stdin>", line 135, in test_all_draft_prefixes_use_mxfp4_after_target_dispatch
+  File "<stdin>", line 98, in assert_routing
+AssertionError: Tuples differ: ('NVFP4', False) != ('MXFP4', True)
+
+First differing element 0:
+'NVFP4'
+'MXFP4'
+
+- ('NVFP4', False)
++ ('MXFP4', True) : layers.45.ffn.experts
+
+======================================================================
+FAIL: test_all_draft_prefixes_use_mxfp4_after_target_dispatch (__main__.QuantDispatchTest.test_all_draft_prefixes_use_mxfp4_after_target_dispatch) (prefix='model.layers.45.ffn.experts')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<stdin>", line 135, in test_all_draft_prefixes_use_mxfp4_after_target_dispatch
+  File "<stdin>", line 98, in assert_routing
+AssertionError: Tuples differ: ('NVFP4', False) != ('MXFP4', True)
+
+First differing element 0:
+'NVFP4'
+'MXFP4'
+
+- ('NVFP4', False)
++ ('MXFP4', True) : model.layers.45.ffn.experts
+
+======================================================================
+FAIL: test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis (__main__.QuantDispatchTest.test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis) (case='not_a_mapping', api='get_quant_method')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<stdin>", line 179, in test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis (__main__.QuantDispatchTest.test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis) (case='not_a_mapping', api='is_mxfp4_quant')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<stdin>", line 179, in test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis (__main__.QuantDispatchTest.test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis) (case='empty_explicit_scope', api='get_quant_method')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<stdin>", line 179, in test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis (__main__.QuantDispatchTest.test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis) (case='empty_explicit_scope', api='is_mxfp4_quant')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<stdin>", line 179, in test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis (__main__.QuantDispatchTest.test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis) (case='missing_main_layer', api='get_quant_method')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<stdin>", line 179, in test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis (__main__.QuantDispatchTest.test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis) (case='missing_main_layer', api='is_mxfp4_quant')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<stdin>", line 179, in test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis (__main__.QuantDispatchTest.test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis) (case='missing_layer_algorithm', api='get_quant_method')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<stdin>", line 179, in test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis (__main__.QuantDispatchTest.test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis) (case='missing_layer_algorithm', api='is_mxfp4_quant')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<stdin>", line 179, in test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis (__main__.QuantDispatchTest.test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis) (case='unknown_layer_algorithm', api='get_quant_method')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<stdin>", line 179, in test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis (__main__.QuantDispatchTest.test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis) (case='unknown_layer_algorithm', api='is_mxfp4_quant')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<stdin>", line 179, in test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.017s
+
+FAILED (failures=16)

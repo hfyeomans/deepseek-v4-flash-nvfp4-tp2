@@ -1,0 +1,8 @@
+.git
+.ai-shared
+work
+results
+__pycache__
+**/__pycache__
+.env
+.env.*

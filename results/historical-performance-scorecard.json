@@ -1,0 +1,130 @@
+{
+  "status": "historical_preview_stages_final_recipe_stages_pending",
+  "settings": {
+    "temperature": 0,
+    "seed": 42,
+    "output_tokens": 256,
+    "repeats": 2,
+    "cache": "one warmup per exact prompt"
+  },
+  "stages": [
+    {
+      "raw_result": "baseline-benchmark.json",
+      "recorded_at": "2026-09-05T01:02:24.216889+00:00",
+      "max_model_len": 32768,
+      "dspark": false,
+      "eager": true,
+      "median_single_request_output_tokens_per_second": {
+        "prose": 16.351750045886533,
+        "code": 16.310415165977638,
+        "reasoning": 16.331203286395656
+      },
+      "two_request_aggregate_output_tokens_per_second": 32.307454751307354,
+      "single_request_first_visible_output_range_ms": [
+        69.15524099895265,
+        70.18621799943503
+      ],
+      "actual_input_tokens_by_workload": {
+        "prose": 30,
+        "code": 39,
+        "reasoning": 41
+      }
+    },
+    {
+      "raw_result": "control-graphs-benchmark.json",
+      "recorded_at": "2026-09-05T01:29:43.756576+00:00",
+      "max_model_len": 65536,
+      "dspark": false,
+      "eager": false,
+      "median_single_request_output_tokens_per_second": {
+        "prose": 95.52509816324414,
+        "code": 95.56651842003856,
+        "reasoning": 95.47933351525143
+      },
+      "two_request_aggregate_output_tokens_per_second": 168.55263235693283,
+      "single_request_first_visible_output_range_ms": [
+        75.64899399949354,
+        77.57165900147811
+      ],
+      "actual_input_tokens_by_workload": {
+        "prose": 30,
+        "code": 39,
+        "reasoning": 41
+      }
+    },
+    {
+      "raw_result": "dspark-graphs-benchmark.json",
+      "recorded_at": "2026-09-05T01:26:09.081358+00:00",
+      "max_model_len": 65536,
+      "dspark": true,
+      "eager": false,
+      "median_single_request_output_tokens_per_second": {
+        "prose": 209.43208679862943,
+        "code": 190.15143365687146,
+        "reasoning": 173.99466828921805
+      },
+      "two_request_aggregate_output_tokens_per_second": 292.9009612329914,
+      "single_request_first_visible_output_range_ms": [
+        81.60790399961115,
+        94.01116899971385
+      ],
+      "actual_input_tokens_by_workload": {
+        "prose": 30,
+        "code": 39,
+        "reasoning": 41
+      }
+    }
+  ],
+  "ratios": [
+    {
+      "numerator": "control-graphs-benchmark.json",
+      "denominator": "baseline-benchmark.json",
+      "comparison_kind": "historical_configuration_difference",
+      "single_request": {
+        "prose": 5.8418883541627125,
+        "code": 5.859232732431208,
+        "reasoning": 5.846435920296721
+      },
+      "two_request_aggregate": 5.217143648560312
+    },
+    {
+      "numerator": "dspark-graphs-benchmark.json",
+      "denominator": "control-graphs-benchmark.json",
+      "comparison_kind": "matched_dspark_on_off",
+      "single_request": {
+        "prose": 2.192429956373644,
+        "code": 1.9897285869629437,
+        "reasoning": 1.8223280565885491
+      },
+      "two_request_aggregate": 1.7377418384824408
+    },
+    {
+      "numerator": "dspark-graphs-benchmark.json",
+      "denominator": "baseline-benchmark.json",
+      "comparison_kind": "historical_start_end_difference",
+      "single_request": {
+        "prose": 12.807931029456656,
+        "code": 11.658282865387374,
+        "reasoning": 10.65412420860381
+      },
+      "two_request_aggregate": 9.066048795476185
+    }
+  ],
+  "limits": [
+    "Initial eager disables both torch.compile and CUDA graphs and uses32K; later stages use64K. Initial derivative image digest and competing load are unverified.",
+    "Exact-prompt warmups are recorded as protocol, not confirmed prefix-cache hits; inputs are shorter than block256.",
+    "Later graph stages use the same coverage image with source build stopped; see graph-benchmark-comparison.json.",
+    "Single rates are medians of two repeats; aggregate is one paired trial. No stable tail latency or broad quality claim.",
+    "Table order represents configuration progression, not chronological benchmark execution."
+  ],
+  "initial_startup_evidence": {
+    "excerpt": "eager-baseline-startup-excerpt.txt",
+    "private_full_log_sha256": "a62f36223542daf9cd513676806de93656388df30a91f6f6fdeb35800bb5508d",
+    "max_num_batched_tokens": 2048,
+    "block_size": 256,
+    "reported_model_loading_gib": 77.83,
+    "reported_available_kv_gib": 11.82,
+    "reporting_rank": 0,
+    "limits": "Startup values, not benchmark peak GPU use."
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "Target": "vllm-openai",
+  "Dockerfile": "docker/Dockerfile",
+  "VCSRepository": "https://github.com/jasl/vllm.git",
+  "VCSRevision": "0f59188db1504b042ce621842bdde6c0fe862df6",
+  "BuildArgs": [
+    {
+      "Name": "max_jobs",
+      "Value": "16"
+    },
+    {
+      "Name": "nvcc_threads",
+      "Value": "8"
+    },
+    {
+      "Name": "torch_cuda_arch_list",
+      "Value": "12.0"
+    }
+  ],
+  "Materials": [
+    {
+      "URI": "pkg:docker/nvidia/cuda@13.0.3-base-ubuntu22.04?platform=linux%2Famd64",
+      "Digests": [
+        "sha256:73ab6dfb3814a5097cd456736e70650ef9dc72343be4117d0400de78168760fe"
+      ]
+    },
+    {
+      "URI": "pkg:docker/nvidia/cuda@13.0.3-devel-ubuntu22.04?platform=linux%2Famd64",
+      "Digests": [
+        "sha256:3869b846a8cc495ce11c172d87cfc0da8874b910d14a9810bec6b6182e9ee9f8"
+      ]
+    }
+  ]
+}

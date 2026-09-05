@@ -1,0 +1,36 @@
+{
+  "status": "build_and_cpu_tests_passed_gpu_acceptance_pending",
+  "source_repository": "https://github.com/jasl/vllm.git",
+  "source_revision": "0f59188db1504b042ce621842bdde6c0fe862df6",
+  "source_tag": "sm120-pr-41834-stable-preview-20260804",
+  "build_command": "APT_HTTPS_IPV4=1 BUILD_NETWORK=host bash build.sh",
+  "build_exit_code": 0,
+  "final_image": "dsv4-nvfp4:recipe",
+  "manifest_list_digest": "sha256:1f0776d3ac4a990186899d122ebee81e5ad0bcdf1dbb95ebccb30d5f94c6908e",
+  "image_manifest_digest": "sha256:8bd943b90567a8106b1aa6b4cd768898fe38f9e4ba27eb1d38aa3ec90e43b140",
+  "image_config_digest": "sha256:ada55873c1a2738104de90af925137d36766ac53f66b28bb72066d93ff9729f5",
+  "architecture": "amd64",
+  "installed_versions": {
+    "vllm": "20260804",
+    "torch": "2.13.0+cu130",
+    "transformers": "5.16.1",
+    "flashinfer-python": "0.6.16",
+    "flashinfer-cubin": "0.6.16",
+    "flashinfer-jit-cache": null,
+    "apache-tvm-ffi": "0.1.11",
+    "triton": "3.7.1"
+  },
+  "cpu_tests": {
+    "quant_dispatch": 5,
+    "reasoning_encoding": 4,
+    "weight_coverage": 4,
+    "all_passed": true,
+    "log": "source-image-cpu-tests.txt",
+    "log_sha256": "b883704aad86814722884fbd6d7d1b84c9011c820463d3f87d5e1d5a7443eb6b"
+  },
+  "limits": [
+    "Build succeeded on the original host using cached base/download layers; this is not a clean-machine or bit-for-bit rebuild claim.",
+    "BuildKit clipped the large wheel-packaging step log at 2 MiB; subsequent image export and all three patch stages completed and build.sh exited zero.",
+    "CPU tests intentionally run without GPU access. A missing optional vllm._C import warning also occurs in the functioning preview; stable-libtorch compiled extensions are present. GPU behavior remains a separate acceptance gate."
+  ]
+}

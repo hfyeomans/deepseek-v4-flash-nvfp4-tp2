@@ -1,0 +1,290 @@
+{
+  "profile": {
+    "image_manifest_list_digest": "sha256:1f0776d3ac4a990186899d122ebee81e5ad0bcdf1dbb95ebccb30d5f94c6908e",
+    "model_revision": "f1caa71142bd0be02f728c79f75042ac1e461579",
+    "tensor_parallel_size": 2,
+    "max_model_len": 1000000,
+    "gpu_memory_utilization": 0.965,
+    "max_num_batched_tokens": 2560,
+    "max_num_seqs": 2,
+    "long_prefill_token_threshold": 2304,
+    "dspark_tokens": 0,
+    "main_moe_backend": "flashinfer_cutlass",
+    "draft_moe_backend": null,
+    "kv_cache_dtype": "fp8",
+    "block_size": 256,
+    "target_cudagraph_mode": "FULL_DECODE_ONLY",
+    "max_cudagraph_capture_size": 16,
+    "experimental_draft_forward_graph": false,
+    "competing_source_build": false
+  },
+  "benchmark": {
+    "recorded_at": "2026-09-05T03:52:19.698386+00:00",
+    "label": "final-control-short-repeat2",
+    "settings": {
+      "temperature": 0,
+      "seed": 42,
+      "output_tokens": 256,
+      "repeats": 3,
+      "cache_mode": "warm-prefix",
+      "cache": "one warmup per exact prompt",
+      "code_prompt_sha256": "a0f7b172e0440c87770128f36e96b985c5ef23d07ba3c9eae7a41c7c6559d2b9"
+    },
+    "prompts": {
+      "prose": "Explain how photosynthesis works, with clear sections for light absorption, water splitting, carbon fixation, and environmental limits. Use complete paragraphs.",
+      "code": "Write a complete Python module that reads a CSV file, validates required name and age columns, rejects invalid ages, and emits a JSON summary. Include useful error handling and examples.",
+      "reasoning": "Compare merge sort and quicksort for a database sorting one million rows under a strict memory limit. Analyze time, memory, stability, and input distributions. Explain the tradeoffs carefully."
+    },
+    "warmups": [
+      {
+        "workload": "prose",
+        "elapsed_seconds": 2.7337817209991044,
+        "cache_salt": null,
+        "first_output_seconds": 0.07718186099737068,
+        "usage": {
+          "prompt_tokens": 30,
+          "total_tokens": 286,
+          "completion_tokens": 256
+        },
+        "finish_reason": "length",
+        "output_tokens_per_second": 93.64317495927973
+      },
+      {
+        "workload": "code",
+        "elapsed_seconds": 2.7335928180000337,
+        "cache_salt": null,
+        "first_output_seconds": 0.074761922001926,
+        "usage": {
+          "prompt_tokens": 39,
+          "total_tokens": 295,
+          "completion_tokens": 256
+        },
+        "finish_reason": "length",
+        "output_tokens_per_second": 93.6496461046807
+      },
+      {
+        "workload": "reasoning",
+        "elapsed_seconds": 2.7350243649998447,
+        "cache_salt": null,
+        "first_output_seconds": 0.07591677399977925,
+        "usage": {
+          "prompt_tokens": 41,
+          "total_tokens": 297,
+          "completion_tokens": 256
+        },
+        "finish_reason": "length",
+        "output_tokens_per_second": 93.60062867301532
+      }
+    ],
+    "measured": [
+      {
+        "workload": "prose",
+        "elapsed_seconds": 2.7321189970025443,
+        "cache_salt": null,
+        "first_output_seconds": 0.07484104000104708,
+        "usage": {
+          "prompt_tokens": 30,
+          "total_tokens": 286,
+          "completion_tokens": 256
+        },
+        "finish_reason": "length",
+        "output_tokens_per_second": 93.7001647003158,
+        "repeat": 0
+      },
+      {
+        "workload": "code",
+        "elapsed_seconds": 2.734429211999668,
+        "cache_salt": null,
+        "first_output_seconds": 0.07567225700040581,
+        "usage": {
+          "prompt_tokens": 39,
+          "total_tokens": 295,
+          "completion_tokens": 256
+        },
+        "finish_reason": "length",
+        "output_tokens_per_second": 93.62100100327302,
+        "repeat": 0
+      },
+      {
+        "workload": "reasoning",
+        "elapsed_seconds": 2.7354499520006357,
+        "cache_salt": null,
+        "first_output_seconds": 0.07628423400092288,
+        "usage": {
+          "prompt_tokens": 41,
+          "total_tokens": 297,
+          "completion_tokens": 256
+        },
+        "finish_reason": "length",
+        "output_tokens_per_second": 93.58606609225966,
+        "repeat": 0
+      },
+      {
+        "workload": "prose",
+        "elapsed_seconds": 2.733063674000732,
+        "cache_salt": null,
+        "first_output_seconds": 0.0756081700019422,
+        "usage": {
+          "prompt_tokens": 30,
+          "total_tokens": 286,
+          "completion_tokens": 256
+        },
+        "finish_reason": "length",
+        "output_tokens_per_second": 93.66777745988637,
+        "repeat": 1
+      },
+      {
+        "workload": "code",
+        "elapsed_seconds": 2.734933969000849,
+        "cache_salt": null,
+        "first_output_seconds": 0.07613548200242803,
+        "usage": {
+          "prompt_tokens": 39,
+          "total_tokens": 295,
+          "completion_tokens": 256
+        },
+        "finish_reason": "length",
+        "output_tokens_per_second": 93.60372239389905,
+        "repeat": 1
+      },
+      {
+        "workload": "reasoning",
+        "elapsed_seconds": 2.73632602699945,
+        "cache_salt": null,
+        "first_output_seconds": 0.07714676899922779,
+        "usage": {
+          "prompt_tokens": 41,
+          "total_tokens": 297,
+          "completion_tokens": 256
+        },
+        "finish_reason": "length",
+        "output_tokens_per_second": 93.55610313757816,
+        "repeat": 1
+      },
+      {
+        "workload": "prose",
+        "elapsed_seconds": 2.7329905750011676,
+        "cache_salt": null,
+        "first_output_seconds": 0.07550136099962401,
+        "usage": {
+          "prompt_tokens": 30,
+          "total_tokens": 286,
+          "completion_tokens": 256
+        },
+        "finish_reason": "length",
+        "output_tokens_per_second": 93.67028278167064,
+        "repeat": 2
+      },
+      {
+        "workload": "code",
+        "elapsed_seconds": 2.7346961020011804,
+        "cache_salt": null,
+        "first_output_seconds": 0.07601208699998097,
+        "usage": {
+          "prompt_tokens": 39,
+          "total_tokens": 295,
+          "completion_tokens": 256
+        },
+        "finish_reason": "length",
+        "output_tokens_per_second": 93.61186415290013,
+        "repeat": 2
+      },
+      {
+        "workload": "reasoning",
+        "elapsed_seconds": 2.7357719159990666,
+        "cache_salt": null,
+        "first_output_seconds": 0.07604515699858894,
+        "usage": {
+          "prompt_tokens": 41,
+          "total_tokens": 297,
+          "completion_tokens": 256
+        },
+        "finish_reason": "length",
+        "output_tokens_per_second": 93.57505225595983,
+        "repeat": 2
+      }
+    ],
+    "concurrent": [
+      {
+        "workload": "prose",
+        "elapsed_seconds": 3.0951196659989364,
+        "cache_salt": null,
+        "first_output_seconds": 0.07686725899839075,
+        "usage": {
+          "prompt_tokens": 30,
+          "total_tokens": 286,
+          "completion_tokens": 256
+        },
+        "finish_reason": "length",
+        "output_tokens_per_second": 82.71085697017052
+      },
+      {
+        "workload": "code",
+        "elapsed_seconds": 3.1152365150010155,
+        "cache_salt": null,
+        "first_output_seconds": 0.15369276499768603,
+        "usage": {
+          "prompt_tokens": 39,
+          "total_tokens": 295,
+          "completion_tokens": 256
+        },
+        "finish_reason": "length",
+        "output_tokens_per_second": 82.17674605676498
+      }
+    ],
+    "concurrent_workloads": [
+      "prose",
+      "code"
+    ],
+    "concurrent_elapsed_seconds": 3.116695593998884,
+    "aggregate_output_tokens_per_second": 164.27655013400818,
+    "median_output_tokens_per_second": {
+      "prose": 93.67028278167064,
+      "code": 93.61186415290013,
+      "reasoning": 93.57505225595983
+    },
+    "speculation_metrics_before": [],
+    "speculation_metrics_after": [],
+    "speculation_metrics_scope": "Entire run: warmups, all workloads and the concurrent pair"
+  },
+  "server_metric_deltas": {
+    "prompt_tokens_total": 509.0,
+    "generation_tokens_total": 3584.0,
+    "prefix_cache_hits_total": 0.0,
+    "num_preemptions_total": 0.0,
+    "spec_decode_num_drafts_total": 0,
+    "spec_decode_num_draft_tokens_total": 0,
+    "spec_decode_num_accepted_tokens_total": 0,
+    "request_prefill_time_seconds_sum": 1.0283505340012198,
+    "request_decode_time_seconds_sum": 37.882939920000354,
+    "request_queue_time_seconds_sum": 6.27959925623145e-05,
+    "e2e_request_latency_seconds_sum": 39.00437808036804
+  },
+  "sampled_resources": {
+    "sample_count": 18,
+    "interval_seconds": 2,
+    "minimum_free_mib_per_gpu": [
+      939.0,
+      900.0
+    ],
+    "maximum_temperature_c_per_gpu": [
+      86.0,
+      83.0
+    ],
+    "maximum_power_w_per_gpu": [
+      257.0,
+      269.2
+    ]
+  },
+  "private_raw_sha256": {
+    "benchmark": "20f4f8d55d2b15d3200acd721c9356345883736fef7d7845f983a3b81fdb5d72",
+    "resources": "276b2f4da1cd0ed247817e179f1d00b2ac5fd19b8d43bbec0742e6f6f5887dcd"
+  },
+  "limits": [
+    "One paired trial per saved run. Initial and repeated runs are preserved; no tail-latency guarantee.",
+    "Server metrics cover all warmups, workloads and the concurrent pair, not coding alone.",
+    "Output throughput includes prefill; first visible output differs from empty stream events.",
+    "Long-code input is repetitive synthetic validation code, not broad coding quality or representative acceptance.",
+    "Resource samples cannot establish instantaneous peaks. Concurrent request time sums overlap."
+  ]
+}

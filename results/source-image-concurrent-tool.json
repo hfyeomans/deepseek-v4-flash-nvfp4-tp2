@@ -1,0 +1,271 @@
+{
+  "recorded_at": "2026-09-05T03:40:33.728944+00:00",
+  "results": [
+    {
+      "check": "tools_auto",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 37.941025832958985
+    }
+  ],
+  "observations": [
+    {
+      "elapsed_seconds": 28.970605291018728,
+      "request": {
+        "model": "dsv4-nvfp4",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Use lookup_code to read record alpha. Do not guess its code."
+          },
+          {
+            "role": "assistant",
+            "content": "I'll look up the code for record alpha.\n\n",
+            "refusal": null,
+            "annotations": null,
+            "audio": null,
+            "function_call": null,
+            "tool_calls": [
+              {
+                "id": "chatcmpl-tool-ba0f8de5f7d5f737",
+                "type": "function",
+                "function": {
+                  "name": "lookup_code",
+                  "arguments": "{\"record\": \"alpha\"}"
+                }
+              }
+            ],
+            "reasoning": null,
+            "reasoning_content": null
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "chatcmpl-tool-ba0f8de5f7d5f737",
+            "content": "{\"code\":\"VIOLET-937\"}"
+          },
+          {
+            "role": "user",
+            "content": "Reply with exactly the code returned by the tool."
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 256,
+        "chat_template_kwargs": {
+          "thinking": false
+        },
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "lookup_code",
+              "description": "Read the code for a named synthetic record.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "record"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        ],
+        "tool_choice": "auto"
+      },
+      "response": {
+        "id": "chatcmpl-a39eb85ca81d87ad",
+        "object": "chat.completion",
+        "created": 1788579595,
+        "model": "dsv4-nvfp4",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "I'll look up the code for record alpha.\n\n",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": [
+                {
+                  "id": "chatcmpl-tool-ba0f8de5f7d5f737",
+                  "type": "function",
+                  "function": {
+                    "name": "lookup_code",
+                    "arguments": "{\"record\": \"alpha\"}"
+                  }
+                }
+              ],
+              "reasoning": null,
+              "reasoning_content": null
+            },
+            "logprobs": null,
+            "finish_reason": "tool_calls",
+            "stop_reason": null,
+            "token_ids": null,
+            "routed_experts": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": "vllm-20260804-tp2-bcf53d9b",
+        "usage": {
+          "prompt_tokens": 295,
+          "total_tokens": 349,
+          "completion_tokens": 54,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "prompt_text": null,
+        "kv_transfer_params": null,
+        "ec_transfer_params": null,
+        "metrics": null
+      },
+      "request_recording_notice": "The pre-fix verifier retained a mutable request object; this recorded payload contains later tool-turn messages. It is not an exact copy of the original HTTP request. Response, server token usage and elapsed time were recorded separately and remain valid."
+    },
+    {
+      "elapsed_seconds": 8.970328332972713,
+      "request": {
+        "model": "dsv4-nvfp4",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Use lookup_code to read record alpha. Do not guess its code."
+          },
+          {
+            "role": "assistant",
+            "content": "I'll look up the code for record alpha.\n\n",
+            "refusal": null,
+            "annotations": null,
+            "audio": null,
+            "function_call": null,
+            "tool_calls": [
+              {
+                "id": "chatcmpl-tool-ba0f8de5f7d5f737",
+                "type": "function",
+                "function": {
+                  "name": "lookup_code",
+                  "arguments": "{\"record\": \"alpha\"}"
+                }
+              }
+            ],
+            "reasoning": null,
+            "reasoning_content": null
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "chatcmpl-tool-ba0f8de5f7d5f737",
+            "content": "{\"code\":\"VIOLET-937\"}"
+          },
+          {
+            "role": "user",
+            "content": "Reply with exactly the code returned by the tool."
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 256,
+        "chat_template_kwargs": {
+          "thinking": false
+        },
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "lookup_code",
+              "description": "Read the code for a named synthetic record.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "record"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        ],
+        "tool_choice": "none"
+      },
+      "response": {
+        "id": "chatcmpl-8dfb63e7c68f8b1e",
+        "object": "chat.completion",
+        "created": 1788579624,
+        "model": "dsv4-nvfp4",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "VIOLET-937",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "reasoning": null,
+              "reasoning_content": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null,
+            "routed_experts": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": "vllm-20260804-tp2-bcf53d9b",
+        "usage": {
+          "prompt_tokens": 379,
+          "total_tokens": 385,
+          "completion_tokens": 6,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "prompt_text": null,
+        "kv_transfer_params": null,
+        "ec_transfer_params": null,
+        "metrics": null
+      }
+    }
+  ],
+  "profile": {
+    "image_manifest_list_digest": "sha256:1f0776d3ac4a990186899d122ebee81e5ad0bcdf1dbb95ebccb30d5f94c6908e",
+    "max_model_len": 1000000,
+    "gpu_memory_utilization": 0.965,
+    "max_num_batched_tokens": 2560,
+    "long_prefill_token_threshold": 2304,
+    "dspark_tokens": 5,
+    "tensor_parallel_size": 2,
+    "max_num_seqs": 2,
+    "client_location": "macOS client over LAN"
+  },
+  "server_activity": {
+    "before": [
+      "vllm:num_requests_running{engine=\"0\",model_name=\"dsv4-nvfp4\"} 1.0",
+      "vllm:num_requests_waiting{engine=\"0\",model_name=\"dsv4-nvfp4\"} 0.0"
+    ],
+    "during": [
+      "vllm:num_requests_running{engine=\"0\",model_name=\"dsv4-nvfp4\"} 2.0",
+      "vllm:num_requests_waiting{engine=\"0\",model_name=\"dsv4-nvfp4\"} 0.0"
+    ],
+    "after": [
+      "vllm:num_requests_running{engine=\"0\",model_name=\"dsv4-nvfp4\"} 1.0",
+      "vllm:num_requests_waiting{engine=\"0\",model_name=\"dsv4-nvfp4\"} 0.0"
+    ]
+  },
+  "limits": [
+    "One automatic tool round trip during an existing near-1M retrieval; two requests:295 input/54 output, then379 input/6 output.",
+    "Server activity was1 running before,2 during,1 after. Timed resource samples from the outer mixed probe provide additional overlap evidence.",
+    "The long mixed probe includes this extra tool traffic; its global metrics and elapsed time must not be labeled a long-plus-tiny-chat-only workload.",
+    "Functional success is not a low-latency guarantee. The tiny chat and tool probes occur at different points in the prefill and have different request lengths."
+  ]
+}

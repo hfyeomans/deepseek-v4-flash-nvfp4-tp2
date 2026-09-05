@@ -1,0 +1,213 @@
+{
+  "recorded_at": "2026-09-05T01:39:00.032573+00:00",
+  "model_revision": "f1caa71142bd0be02f728c79f75042ac1e461579",
+  "image_config_digest": "sha256:363d84a361356b156b7bd04f895782d4ab9aa7d258a96f6a1ddc9e582c1f6315",
+  "configuration": {
+    "tensor_parallel_size": 2,
+    "max_model_len": 801000,
+    "max_num_seqs": 2,
+    "max_num_batched_tokens": 2048,
+    "gpu_memory_utilization": 0.95,
+    "kv_cache_dtype": "fp8",
+    "block_size": 256,
+    "cudagraph_mode": "FULL_DECODE_ONLY",
+    "max_cudagraph_capture_size": 16,
+    "target_moe_backend": "flashinfer_cutlass",
+    "draft_moe_backend": "marlin",
+    "num_speculative_tokens": 5,
+    "draft_weight_coverage": true
+  },
+  "probe": {
+    "generator": "verify.py --only identity,long_context,chat --long-context-tokens 800000 --timeout 1800",
+    "verify_py_sha256": "b87a269f10086c9ecdb1c6a20ab0ebfe35915aaa686a0554a084532739245db1",
+    "fact_positions_approximate": [
+      0.1,
+      0.5,
+      0.9
+    ]
+  },
+  "startup_evidence": [
+    "(Worker_TP1 pid=732) INFO 09-05 01:31:11 [dspark.py:1168] DSpark weight coverage verified on TP rank 1: 4608 expert tensors, 99 non-expert source tensors and 99 parameter bindings",
+    "(Worker_TP0 pid=731) INFO 09-05 01:31:11 [dspark.py:1168] DSpark weight coverage verified on TP rank 0: 4608 expert tensors, 99 non-expert source tensors and 99 parameter bindings",
+    "(Worker_TP0 pid=731) INFO 09-05 01:31:59 [gpu_worker.py:563] Available KV cache memory: 5.22 GiB",
+    "(EngineCore pid=654) INFO 09-05 01:31:59 [kv_cache_utils.py:2283] GPU KV cache size: 928,987 tokens",
+    "(EngineCore pid=654) INFO 09-05 01:31:59 [kv_cache_utils.py:2284] Maximum concurrency for 801,000 tokens per request: 1.16x",
+    "(Worker_TP0 pid=731) INFO 09-05 01:32:19 [gpu_model_runner.py:6945] Graph capturing finished in 1 secs, took 0.10 GiB"
+  ],
+  "results": [
+    {
+      "check": "identity",
+      "status": "pass",
+      "detail": {
+        "object": "list",
+        "data": [
+          {
+            "id": "dsv4-nvfp4",
+            "object": "model",
+            "created": 1788571996,
+            "owned_by": "vllm",
+            "root": "nvidia/DeepSeek-V4-Flash-0731-NVFP4",
+            "parent": null,
+            "max_model_len": 801000,
+            "permission": [
+              {
+                "id": "modelperm-878f4e9fd2856bca",
+                "object": "model_permission",
+                "created": 1788571996,
+                "allow_create_engine": false,
+                "allow_sampling": true,
+                "allow_logprobs": true,
+                "allow_search_indices": false,
+                "allow_view": true,
+                "allow_fine_tuning": false,
+                "organization": "*",
+                "group": null,
+                "is_blocking": false
+              }
+            ]
+          }
+        ]
+      },
+      "elapsed_seconds": 0.0061093740005162545
+    },
+    {
+      "check": "long_context",
+      "status": "pass",
+      "detail": {
+        "requested_prompt_tokens": 800000,
+        "measured_prompt_tokens": 799847,
+        "expected": {
+          "first": "IVORY-162",
+          "middle": "COPPER-493",
+          "last": "SILVER-857"
+        },
+        "observed": {
+          "first": "IVORY-162",
+          "middle": "COPPER-493",
+          "last": "SILVER-857"
+        }
+      },
+      "elapsed_seconds": 343.622073945
+    },
+    {
+      "check": "chat",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.11011868700006744
+    }
+  ],
+  "observations": [
+    {
+      "elapsed_seconds": 342.2050277319995,
+      "request_settings": {
+        "model": "dsv4-nvfp4",
+        "temperature": 0,
+        "max_tokens": 256,
+        "chat_template_kwargs": {
+          "thinking": false
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      },
+      "response": {
+        "id": "chatcmpl-b3c211fdd52b7108",
+        "object": "chat.completion",
+        "created": 1788571998,
+        "model": "dsv4-nvfp4",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "{\n  \"first\": \"IVORY-162\",\n  \"middle\": \"COPPER-493\",\n  \"last\": \"SILVER-857\"\n}",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "reasoning": null,
+              "reasoning_content": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null,
+            "routed_experts": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": "vllm-20260804-tp2-52108915",
+        "usage": {
+          "prompt_tokens": 799847,
+          "total_tokens": 799882,
+          "completion_tokens": 35,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "prompt_text": null,
+        "kv_transfer_params": null,
+        "ec_transfer_params": null,
+        "metrics": null
+      }
+    },
+    {
+      "elapsed_seconds": 0.1100997390003613,
+      "request_settings": {
+        "model": "dsv4-nvfp4",
+        "temperature": 0,
+        "max_tokens": 256,
+        "chat_template_kwargs": {
+          "thinking": false
+        }
+      },
+      "response": {
+        "id": "chatcmpl-b7b2bc6d53c6e949",
+        "object": "chat.completion",
+        "created": 1788572339,
+        "model": "dsv4-nvfp4",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "ORBIT-629",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "reasoning": null,
+              "reasoning_content": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null,
+            "routed_experts": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": "vllm-20260804-tp2-52108915",
+        "usage": {
+          "prompt_tokens": 12,
+          "total_tokens": 17,
+          "completion_tokens": 5,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "prompt_text": null,
+        "kv_transfer_params": null,
+        "ec_transfer_params": null,
+        "metrics": null
+      }
+    }
+  ],
+  "limits": [
+    "One synthetic three-fact retrieval request; not a broad long-context accuracy evaluation.",
+    "343.622 seconds is total probe time including prompt preparation and tokenization. The completion HTTP request took 342.205 seconds.",
+    "First use of large input shapes triggered compilation, and a CPU-heavy public-source image build ran concurrently. These timings are not controlled steady-state performance.",
+    "Single near-full request; two simultaneous near-full requests were not tested.",
+    "Tested patched preview image; fresh public-source rebuild still pending."
+  ]
+}

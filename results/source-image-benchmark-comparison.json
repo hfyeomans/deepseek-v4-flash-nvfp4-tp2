@@ -1,0 +1,108 @@
+{
+  "status": "matched_source_image_comparison_complete",
+  "common_profile": {
+    "image_manifest_list_digest": "sha256:1f0776d3ac4a990186899d122ebee81e5ad0bcdf1dbb95ebccb30d5f94c6908e",
+    "model_revision": "f1caa71142bd0be02f728c79f75042ac1e461579",
+    "tensor_parallel_size": 2,
+    "max_model_len": 1000000,
+    "gpu_memory_utilization": 0.965,
+    "max_num_batched_tokens": 2560,
+    "max_num_seqs": 2,
+    "long_prefill_token_threshold": 2304,
+    "main_moe_backend": "flashinfer_cutlass",
+    "kv_cache_dtype": "fp8",
+    "block_size": 256,
+    "target_cudagraph_mode": "FULL_DECODE_ONLY",
+    "max_cudagraph_capture_size": 16,
+    "experimental_draft_forward_graph": false,
+    "competing_source_build": false
+  },
+  "short_input_tokens": {
+    "prose": 30,
+    "code": 39,
+    "reasoning": 41
+  },
+  "short_output_tokens": 256,
+  "single_measured_requests_per_workload_per_configuration": 9,
+  "paired_trials_per_configuration": 3,
+  "long_code_actual_input_tokens": 48345,
+  "long_code_output_tokens": 512,
+  "long_code_measured_requests_per_configuration": 3,
+  "results": {
+    "dspark": {
+      "single_request_medians": {
+        "prose": 192.3155110488499,
+        "code": 187.41959772478592,
+        "reasoning": 189.57822135244322
+      },
+      "aggregate_trials": [
+        203.38163373294688,
+        302.91647718013974,
+        263.3112264291795
+      ],
+      "aggregate_median": 263.3112264291795,
+      "long_code": {
+        "median_rate": 61.49828041735262,
+        "median_elapsed_seconds": 8.325436036997417,
+        "first_output_seconds_range": [
+          6.239172238998435,
+          6.364082306998171
+        ],
+        "after_first_output_seconds_range": [
+          1.9613537299992458,
+          2.074650861999544
+        ]
+      }
+    },
+    "control": {
+      "single_request_medians": {
+        "prose": 93.66398211784201,
+        "code": 93.60223960968244,
+        "reasoning": 93.57505225595983
+      },
+      "aggregate_trials": [
+        163.9573660342441,
+        164.27655013400818,
+        163.9311755822419
+      ],
+      "aggregate_median": 163.9573660342441,
+      "long_code": {
+        "median_rate": 43.49425348792689,
+        "median_elapsed_seconds": 11.771670023998013,
+        "first_output_seconds_range": [
+          6.283238254000025,
+          6.367402116000449
+        ],
+        "after_first_output_seconds_range": [
+          5.4398164990016085,
+          5.441465141997469
+        ]
+      }
+    }
+  },
+  "ratios_dspark_over_control": {
+    "single_request": {
+      "prose": 2.053249356907449,
+      "code": 2.0022982196400223,
+      "reasoning": 2.0259483353947996
+    },
+    "aggregate_medians": 1.6059737527997635,
+    "long_code_median_rate": 1.4139403596022926
+  },
+  "reported_kv_gib": {
+    "dspark": 6.3,
+    "control": 11.84
+  },
+  "reported_maximum_length_cache_concurrency": {
+    "dspark": 1.12,
+    "control": 2.11
+  },
+  "limits": [
+    "All three paired trials are included. Initial DSpark pair was slower with671ms first output; its cause was not established.",
+    "Each short run has one warmup per exact prompt and three single-request repeats; long-code run occurred between first and second short runs in both configurations.",
+    "Short outputs and long synthetic code are not broad accuracy benchmarks or proof of optimal serving settings.",
+    "After-first-output duration includes stream completion and potentially multiple tokens in the first event; not isolated GPU decode time.",
+    "Matched knobs retain the same memory utilization but DSpark changes model/temporary/KV memory use. Reported capacity does not prove two live1M requests.",
+    "No competing source build. Uncached long-code requests have unique salts and zero observed prefix hits."
+  ]
+}

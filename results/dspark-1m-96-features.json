@@ -1,0 +1,323 @@
+{
+  "recorded_at": "2026-09-05T01:54:52.274345+00:00",
+  "model_revision": "f1caa71142bd0be02f728c79f75042ac1e461579",
+  "image_config_digest": "sha256:363d84a361356b156b7bd04f895782d4ab9aa7d258a96f6a1ddc9e582c1f6315",
+  "configuration": {
+    "tensor_parallel_size": 2,
+    "max_model_len": 1000000,
+    "max_num_seqs": 2,
+    "max_num_batched_tokens": 2048,
+    "gpu_memory_utilization": 0.96,
+    "kv_cache_dtype": "fp8",
+    "block_size": 256,
+    "cudagraph_mode": "FULL_DECODE_ONLY",
+    "max_cudagraph_capture_size": 16,
+    "target_moe_backend": "flashinfer_cutlass",
+    "draft_moe_backend": "marlin",
+    "num_speculative_tokens": 5,
+    "draft_weight_coverage": true
+  },
+  "probe": {
+    "generator": "verify.py --only long_context --long-context-tokens 999000 --timeout 1800; followed by all 19 default API checks",
+    "verify_py_sha256": "b87a269f10086c9ecdb1c6a20ab0ebfe35915aaa686a0554a084532739245db1",
+    "fact_positions_approximate": [
+      0.1,
+      0.5,
+      0.9
+    ]
+  },
+  "startup_evidence": [
+    "(Worker_TP1 pid=732) INFO 09-05 01:44:44 [dspark.py:1168] DSpark weight coverage verified on TP rank 1: 4608 expert tensors, 99 non-expert source tensors and 99 parameter bindings",
+    "(Worker_TP0 pid=731) INFO 09-05 01:44:44 [dspark.py:1168] DSpark weight coverage verified on TP rank 0: 4608 expert tensors, 99 non-expert source tensors and 99 parameter bindings",
+    "(Worker_TP0 pid=731) INFO 09-05 01:45:32 [gpu_worker.py:563] Available KV cache memory: 5.93 GiB",
+    "(EngineCore pid=654) INFO 09-05 01:45:32 [kv_cache_utils.py:2283] GPU KV cache size: 1,135,251 tokens",
+    "(EngineCore pid=654) INFO 09-05 01:45:32 [kv_cache_utils.py:2284] Maximum concurrency for 1,000,000 tokens per request: 1.14x",
+    "(Worker_TP0 pid=731) INFO 09-05 01:45:53 [gpu_model_runner.py:6945] Graph capturing finished in 1 secs, took 0.10 GiB",
+    "(Worker_TP1 pid=732) INFO 09-05 01:45:53 [gpu_worker.py:789] Free memory on device (93.92/95.01 GiB) on startup. Desired GPU memory utilization is (0.96, 91.2 GiB). Actual usage is 84.59 GiB for consumed memory (weights + non-torch), 0.68 GiB for peak activation, and 0.1 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=6099920487` (5.68 GiB) to fit into requested memory, or `--kv-cache-memory=9017163776` (8.4 GiB) to fully utilize gpu memory. Current kv cache memory in use is 5.93 GiB.",
+    "(Worker_TP0 pid=731) INFO 09-05 01:45:53 [gpu_worker.py:789] Free memory on device (93.96/95.01 GiB) on startup. Desired GPU memory utilization is (0.96, 91.21 GiB). Actual usage is 84.59 GiB for consumed memory (weights + non-torch), 0.68 GiB for peak activation, and 0.1 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=6102940386` (5.68 GiB) to fit into requested memory, or `--kv-cache-memory=9053863936` (8.43 GiB) to fully utilize gpu memory. Current kv cache memory in use is 5.93 GiB."
+  ],
+  "results": [
+    {
+      "check": "long_context",
+      "status": "pass",
+      "detail": {
+        "requested_prompt_tokens": 999000,
+        "measured_prompt_tokens": 998847,
+        "expected": {
+          "first": "IVORY-162",
+          "middle": "COPPER-493",
+          "last": "SILVER-857"
+        },
+        "observed": {
+          "first": "IVORY-162",
+          "middle": "COPPER-493",
+          "last": "SILVER-857"
+        }
+      },
+      "elapsed_seconds": 509.7043750109988
+    },
+    {
+      "check": "identity",
+      "status": "pass",
+      "detail": {
+        "object": "list",
+        "data": [
+          {
+            "id": "dsv4-nvfp4",
+            "object": "model",
+            "created": 1788573362,
+            "owned_by": "vllm",
+            "root": "nvidia/DeepSeek-V4-Flash-0731-NVFP4",
+            "parent": null,
+            "max_model_len": 1000000,
+            "permission": [
+              {
+                "id": "modelperm-81754d7f644b3f1e",
+                "object": "model_permission",
+                "created": 1788573362,
+                "allow_create_engine": false,
+                "allow_sampling": true,
+                "allow_logprobs": true,
+                "allow_search_indices": false,
+                "allow_view": true,
+                "allow_fine_tuning": false,
+                "organization": "*",
+                "group": null,
+                "is_blocking": false
+              }
+            ]
+          }
+        ]
+      },
+      "elapsed_seconds": 0.00650569000026735
+    },
+    {
+      "check": "chat",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.11156043600021803
+    },
+    {
+      "check": "multi_turn",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.8537380529996881
+    },
+    {
+      "check": "reasoning",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 1.1559395349995611
+    },
+    {
+      "check": "reasoning_high",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.9848686590012221
+    },
+    {
+      "check": "reasoning_max",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.19763404600053036
+    },
+    {
+      "check": "stream_reasoning",
+      "status": "pass",
+      "detail": {
+        "content": "323",
+        "reasoning_characters": 46
+      },
+      "elapsed_seconds": 0.2002902210006141
+    },
+    {
+      "check": "reasoning_tools",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 5.9744357359995774
+    },
+    {
+      "check": "tools_auto",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.4582207359999302
+    },
+    {
+      "check": "tools_required",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.32902229899991653
+    },
+    {
+      "check": "tools_named",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.3235136549992603
+    },
+    {
+      "check": "json_object",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.7449946730012016
+    },
+    {
+      "check": "json_schema",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.14020949599944288
+    },
+    {
+      "check": "streaming",
+      "status": "pass",
+      "detail": {
+        "content": "STREAM-416",
+        "usage": {
+          "prompt_tokens": 12,
+          "total_tokens": 17,
+          "completion_tokens": 5
+        }
+      },
+      "elapsed_seconds": 0.10869391600135714
+    },
+    {
+      "check": "stream_tools",
+      "status": "pass",
+      "detail": [
+        {
+          "id": "chatcmpl-tool-96cd223a3dda4efe",
+          "type": "function",
+          "function": {
+            "name": "lookup_code",
+            "arguments": "{\"record\": \"gamma\"}"
+          }
+        }
+      ],
+      "elapsed_seconds": 0.655213610998544
+    },
+    {
+      "check": "multiple_tools",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 5.4821399789998395
+    },
+    {
+      "check": "concurrency",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.9155407310008741
+    },
+    {
+      "check": "prefix_reuse",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 5.716613914000845
+    },
+    {
+      "check": "cancellation",
+      "status": "pass",
+      "detail": null,
+      "elapsed_seconds": 0.21260780000011437
+    }
+  ],
+  "observations": [
+    {
+      "elapsed_seconds": 507.9059889599994,
+      "request_settings": {
+        "model": "dsv4-nvfp4",
+        "temperature": 0,
+        "max_tokens": 256,
+        "chat_template_kwargs": {
+          "thinking": false
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      },
+      "response": {
+        "id": "chatcmpl-90874c3bacddf997",
+        "object": "chat.completion",
+        "created": 1788572786,
+        "model": "dsv4-nvfp4",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "{\n  \"first\": \"IVORY-162\",\n  \"middle\": \"COPPER-493\",\n  \"last\": \"SILVER-857\"\n}",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "reasoning": null,
+              "reasoning_content": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null,
+            "routed_experts": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": "vllm-20260804-tp2-86915d62",
+        "usage": {
+          "prompt_tokens": 998847,
+          "total_tokens": 998882,
+          "completion_tokens": 35,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "prompt_text": null,
+        "kv_transfer_params": null,
+        "ec_transfer_params": null,
+        "metrics": null
+      }
+    }
+  ],
+  "limits": [
+    "One synthetic three-fact retrieval, not a broad long-context accuracy evaluation.",
+    "The 19 follow-up API checks use short inputs on the same 1M configuration; reasoning/tools were not combined with near-1M input.",
+    "509.704 seconds is total probe time including preparation and tokenization; completion HTTP time was 507.906 seconds.",
+    "First use of large input shapes triggered compilation and a CPU-heavy source build ran concurrently; timings are not controlled steady-state benchmarks.",
+    "The 35-token answer is too short for a representative sustained decode benchmark.",
+    "GPU maxima are observed 2-second samples, not exact allocation peaks; startup is outside this sampling window.",
+    "Two simultaneous near-full requests were not tested.",
+    "Patched preview image; public-source rebuild acceptance remains pending."
+  ],
+  "followup_api_evidence": "dspark-1m-96-api-features.json",
+  "resource_sampling": {
+    "sample_count": 251,
+    "interval_seconds_target": 2,
+    "start_epoch_seconds": 1788572782.5362322,
+    "end_epoch_seconds": 1788573290.5104258,
+    "scope": "Near-1M request only, not startup; CPU-heavy source build ran concurrently.",
+    "ranks": [
+      {
+        "rank": 0,
+        "max_observed_used_MiB": 95756.0,
+        "max_observed_power_W": 300.42,
+        "max_observed_temperature_C": 89.0
+      },
+      {
+        "rank": 1,
+        "max_observed_used_MiB": 95788.0,
+        "max_observed_power_W": 300.31,
+        "max_observed_temperature_C": 88.0
+      }
+    ]
+  },
+  "single_request_metric_delta": {
+    "vllm:spec_decode_num_draft_tokens_total": 34.0,
+    "vllm:spec_decode_num_accepted_tokens_total": 27.0,
+    "vllm:time_to_first_token_seconds_count": 1.0,
+    "vllm:time_to_first_token_seconds_sum": 507.48089027404785,
+    "vllm:e2e_request_latency_seconds_count": 1.0,
+    "vllm:e2e_request_latency_seconds_sum": 507.87986731529236,
+    "vllm:request_prefill_time_seconds_count": 1.0,
+    "vllm:request_prefill_time_seconds_sum": 505.3603656209998,
+    "vllm:request_decode_time_seconds_count": 1.0,
+    "vllm:request_decode_time_seconds_sum": 0.4249139080002351
+  },
+  "startup_allocation_warning_review": "startup-allocation-review.json"
+}

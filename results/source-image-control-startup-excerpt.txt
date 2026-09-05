@@ -1,0 +1,7 @@
+Graph-enabled DSpark-off source-image control; UTC times and original line numbers.
+
+138: (Worker_TP0 pid=445) INFO 09-05 03:47:04 [gpu_model_runner.py:5416] Model loading took 77.84 GiB memory and 18.994033 seconds
+193: (Worker_TP0 pid=445) INFO 09-05 03:47:39 [gpu_worker.py:563] Available KV cache memory: 11.84 GiB
+195: (EngineCore pid=356) INFO 09-05 03:47:39 [kv_cache_utils.py:2283] GPU KV cache size: 2,108,265 tokens
+196: (EngineCore pid=356) INFO 09-05 03:47:39 [kv_cache_utils.py:2284] Maximum concurrency for 1,000,000 tokens per request: 2.11x
+401: (Worker_TP0 pid=445) INFO 09-05 03:48:00 [gpu_model_runner.py:6945] Graph capturing finished in 1 secs, took 0.09 GiB

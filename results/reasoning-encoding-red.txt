@@ -1,0 +1,41 @@
+INFO 09-05 00:46:46 [importing.py:53] Triton is installed but 0 active driver(s) found (expected 1). Disabling Triton to prevent runtime errors.
+INFO 09-05 00:46:46 [importing.py:88] Triton not installed or not compatible; certain GPU-related functions will not be available.
+W0905 00:46:46.581000 1 torch/utils/cpp_extension.py:178] No CUDA runtime is found, using CUDA_HOME='/usr/local/cuda'
+test_chat_does_not_include_effort_prefix (__main__.ReasoningEncodingTest.test_chat_does_not_include_effort_prefix) ... ok
+test_default_thinking_matches_low (__main__.ReasoningEncodingTest.test_default_thinking_matches_low) ... ok
+test_three_thinking_efforts_match_pinned_encoder (__main__.ReasoningEncodingTest.test_three_thinking_efforts_match_pinned_encoder) ...
+  test_three_thinking_efforts_match_pinned_encoder (__main__.ReasoningEncodingTest.test_three_thinking_efforts_match_pinned_encoder) (effort='high') ... FAIL
+  test_three_thinking_efforts_match_pinned_encoder (__main__.ReasoningEncodingTest.test_three_thinking_efforts_match_pinned_encoder) (effort='max') ... FAIL
+test_xhigh_alias_matches_max (__main__.ReasoningEncodingTest.test_xhigh_alias_matches_max) ... FAIL
+
+======================================================================
+FAIL: test_three_thinking_efforts_match_pinned_encoder (__main__.ReasoningEncodingTest.test_three_thinking_efforts_match_pinned_encoder) (effort='high')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<stdin>", line 35, in test_three_thinking_efforts_match_pinned_encoder
+  File "<stdin>", line 30, in assert_prompt
+AssertionError: '<｜begin▁of▁sentence｜><｜User｜>Calculate 17 * 19.<｜Assistant｜><think>' != '<｜begin▁of▁sentence｜>Reasoning Effort: Absolute maximum with n[481 chars]ink>'
+Diff is 649 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_three_thinking_efforts_match_pinned_encoder (__main__.ReasoningEncodingTest.test_three_thinking_efforts_match_pinned_encoder) (effort='max')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<stdin>", line 35, in test_three_thinking_efforts_match_pinned_encoder
+  File "<stdin>", line 30, in assert_prompt
+AssertionError: '<｜be[30 chars]ort: Absolute maximum with no shortcuts permit[463 chars]ink>' != '<｜be[30 chars]ort: Beyond maximum — exhaustive, relentless, [513 chars]ink>'
+Diff is 1107 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_xhigh_alias_matches_max (__main__.ReasoningEncodingTest.test_xhigh_alias_matches_max)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<stdin>", line 46, in test_xhigh_alias_matches_max
+  File "<stdin>", line 30, in assert_prompt
+AssertionError: '<｜be[30 chars]ort: Absolute maximum with no shortcuts permit[463 chars]ink>' != '<｜be[30 chars]ort: Beyond maximum — exhaustive, relentless, [513 chars]ink>'
+Diff is 1107 characters long. Set self.maxDiff to None to see it.
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.410s
+
+FAILED (failures=3)

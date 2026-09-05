@@ -1,0 +1,13 @@
+# Repair the kernel ABI in the public-source image produced by build.sh.
+ARG BASE_IMAGE=dsv4-sm120:source-20260804
+FROM ${BASE_IMAGE}
+
+# The bundled cache references TVMFFIGetCustomAllocator, which apache-tvm-ffi
+# 0.1.11 does not export. Compile against the installed headers/runtime instead.
+RUN uv pip uninstall --system flashinfer-jit-cache
+
+# This runtime image carries NVRTC headers in the Python CUDA package.
+# NVCC's default toolkit include directory does not contain nvrtc.h.
+ENV CPLUS_INCLUDE_PATH=/usr/local/lib/python3.12/dist-packages/nvidia/cu13/include
+# The runtime library exists, but the development linker name is absent.
+RUN ln -s libnvrtc.so.13 /usr/local/cuda/lib64/libnvrtc.so

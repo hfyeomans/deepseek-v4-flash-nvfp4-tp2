@@ -1,0 +1,51 @@
+sha256:1f0776d3ac4a990186899d122ebee81e5ad0bcdf1dbb95ebccb30d5f94c6908e 2026-09-04T23:19:07.595296521-04:00 amd64
+{"installed_versions": {"apache-tvm-ffi": "0.1.11", "flashinfer-cubin": "0.6.16", "flashinfer-jit-cache": null, "flashinfer-python": "0.6.16", "torch": "2.13.0+cu130", "transformers": "5.16.1", "triton": "3.7.1", "vllm": "20260804"}}
+INFO 09-05 03:22:06 [importing.py:53] Triton is installed but 0 active driver(s) found (expected 1). Disabling Triton to prevent runtime errors.
+INFO 09-05 03:22:06 [importing.py:88] Triton not installed or not compatible; certain GPU-related functions will not be available.
+WARNING 09-05 03:22:06 [interface.py:368] Failed to import from vllm._C: ModuleNotFoundError("No module named 'vllm._C'")
+W0905 03:22:06.664000 7 torch/utils/cpp_extension.py:178] No CUDA runtime is found, using CUDA_HOME='/usr/local/cuda'
+WARNING 09-05 03:22:06 [interface.py:368] Failed to import from vllm._C: ModuleNotFoundError("No module named 'vllm._C'")
+WARNING 09-05 03:22:06 [interface.py:368] Failed to import from vllm._C: ModuleNotFoundError("No module named 'vllm._C'")
+test_all_draft_prefixes_use_mxfp4_after_target_dispatch (__main__.QuantDispatchTest.test_all_draft_prefixes_use_mxfp4_after_target_dispatch) ... INFO 09-05 03:22:07 [quant_config.py:76] DeepSeek V4 expert_dtype resolved to 'fp4'
+WARNING 09-05 03:22:07 [modelopt.py:1019] Detected ModelOpt NVFP4 checkpoint (quant_algo=NVFP4). Please note that the format is experimental and could change in future.
+ok
+test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis (__main__.QuantDispatchTest.test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis) ... ok
+test_native_mxfp4_control_without_conversion_metadata (__main__.QuantDispatchTest.test_native_mxfp4_control_without_conversion_metadata) ... ok
+test_pinned_fixture_declares_main_only_nvfp4_scope (__main__.QuantDispatchTest.test_pinned_fixture_declares_main_only_nvfp4_scope) ... ok
+test_target_boundary_prefixes_remain_nvfp4 (__main__.QuantDispatchTest.test_target_boundary_prefixes_remain_nvfp4) ... WARNING 09-05 03:22:07 [modelopt.py:1019] Detected ModelOpt NVFP4 checkpoint (quant_algo=NVFP4). Please note that the format is experimental and could change in future.
+ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.014s
+
+OK
+INFO 09-05 03:22:11 [importing.py:53] Triton is installed but 0 active driver(s) found (expected 1). Disabling Triton to prevent runtime errors.
+INFO 09-05 03:22:11 [importing.py:88] Triton not installed or not compatible; certain GPU-related functions will not be available.
+W0905 03:22:11.829000 154 torch/utils/cpp_extension.py:178] No CUDA runtime is found, using CUDA_HOME='/usr/local/cuda'
+test_chat_does_not_include_effort_prefix (__main__.ReasoningEncodingTest.test_chat_does_not_include_effort_prefix) ... ok
+test_default_thinking_matches_low (__main__.ReasoningEncodingTest.test_default_thinking_matches_low) ... ok
+test_three_thinking_efforts_match_pinned_encoder (__main__.ReasoningEncodingTest.test_three_thinking_efforts_match_pinned_encoder) ... ok
+test_xhigh_alias_matches_max (__main__.ReasoningEncodingTest.test_xhigh_alias_matches_max) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.378s
+
+OK
+INFO 09-05 03:22:16 [importing.py:53] Triton is installed but 0 active driver(s) found (expected 1). Disabling Triton to prevent runtime errors.
+INFO 09-05 03:22:16 [importing.py:88] Triton not installed or not compatible; certain GPU-related functions will not be available.
+WARNING 09-05 03:22:16 [interface.py:368] Failed to import from vllm._C: ModuleNotFoundError("No module named 'vllm._C'")
+W0905 03:22:16.251000 224 torch/utils/cpp_extension.py:178] No CUDA runtime is found, using CUDA_HOME='/usr/local/cuda'
+WARNING 09-05 03:22:16 [interface.py:368] Failed to import from vllm._C: ModuleNotFoundError("No module named 'vllm._C'")
+WARNING 09-05 03:22:16 [interface.py:368] Failed to import from vllm._C: ModuleNotFoundError("No module named 'vllm._C'")
+test_complete_fixture_passes_on_both_tp_ranks (__main__.WeightCoverageTest.test_complete_fixture_passes_on_both_tp_ranks) ... INFO 09-05 03:22:16 [dspark.py:1168] DSpark weight coverage verified on TP rank 0: 4608 expert tensors, 99 non-expert source tensors and 99 parameter bindings
+INFO 09-05 03:22:16 [dspark.py:1176] DSpark draft model loaded: 99 params
+INFO 09-05 03:22:16 [dspark.py:1168] DSpark weight coverage verified on TP rank 1: 4608 expert tensors, 99 non-expert source tensors and 99 parameter bindings
+ok
+test_disabled_diagnostic_preserves_loader_behavior (__main__.WeightCoverageTest.test_disabled_diagnostic_preserves_loader_behavior) ... ok
+test_missing_expert_tensor_is_still_rejected (__main__.WeightCoverageTest.test_missing_expert_tensor_is_still_rejected) ... ok
+test_missing_fused_companion_is_rejected (__main__.WeightCoverageTest.test_missing_fused_companion_is_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.446s
+
+OK

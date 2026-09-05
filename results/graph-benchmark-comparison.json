@@ -1,0 +1,26 @@
+{
+  "configuration": {
+    "max_model_len": 65536,
+    "max_num_seqs": 2,
+    "tensor_parallel_size": 2,
+    "gpu_memory_utilization": 0.95,
+    "kv_cache_dtype": "fp8",
+    "cudagraph_mode": "FULL_DECODE_ONLY",
+    "max_cudagraph_capture_size": 16,
+    "model_revision": "f1caa71142bd0be02f728c79f75042ac1e461579",
+    "image_config_digest": "sha256:363d84a361356b156b7bd04f895782d4ab9aa7d258a96f6a1ddc9e582c1f6315"
+  },
+  "one_request_ratios": {
+    "prose": 2.192429956373644,
+    "code": 1.9897285869629437,
+    "reasoning": 1.8223280565885491
+  },
+  "two_request_aggregate_ratio": 1.7377418384824408,
+  "limits": [
+    "Short input prompts: 30, 39, and 41 tokens; 256 generated tokens per request.",
+    "One warmup per prompt; two measured repeats. Source build stopped during both runs.",
+    "End-to-end output rates include request latency; these are not long-context throughput measurements.",
+    "Changing DSpark changes draft memory and remaining KV allocation; common memory-utilization and context settings are equal.",
+    "A small synthetic benchmark is not a broad quality or performance evaluation."
+  ]
+}

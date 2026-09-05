@@ -1,0 +1,84 @@
+{
+  "model_revision": "f1caa71142bd0be02f728c79f75042ac1e461579",
+  "image_config_digest": "sha256:363d84a361356b156b7bd04f895782d4ab9aa7d258a96f6a1ddc9e582c1f6315",
+  "profiles": [
+    {
+      "label": "1m-96",
+      "configuration": {
+        "max_model_len": 1000000,
+        "gpu_memory_utilization": 0.96,
+        "max_num_batched_tokens": 2048
+      },
+      "draft_post_load_warning_count": 0,
+      "later_autotuning_warning_count": 2,
+      "ready": true,
+      "representative_early_warnings": [],
+      "representative_later_warnings": [
+        "[AutoTuner]: Tuning trtllm::fused_moe::gemm2:  90%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588 | 19/21 [00:05<00:00,  2.93profile/s][rank0]:[W905 01:45:50.244217281 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 0 while trying to allocate 377487360 bytes (free: 189792256, total: 102014189568).",
+        "[AutoTuner]: Tuning trtllm::fused_moe::gemm2:  90%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588 | 19/21 [00:05<00:00,  2.93profile/s][rank1]:[W905 01:45:50.269402097 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 1 while trying to allocate 377487360 bytes (free: 153092096, total: 102011043840)."
+      ]
+    },
+    {
+      "label": "1m-97",
+      "configuration": {
+        "max_model_len": 1000000,
+        "gpu_memory_utilization": 0.97,
+        "max_num_batched_tokens": 2048
+      },
+      "draft_post_load_warning_count": 0,
+      "later_autotuning_warning_count": 4,
+      "ready": true,
+      "representative_early_warnings": [],
+      "representative_later_warnings": [
+        "[AutoTuner]: Tuning trtllm::fused_moe::gemm1:  86%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258c | 18/21 [00:03<00:00,  3.63profile/s][rank0]:[W905 01:59:10.366112131 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 0 while trying to allocate 304087040 bytes (free: 233832448, total: 102014189568).",
+        "[AutoTuner]: Tuning trtllm::fused_moe::gemm1:  86%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258c | 18/21 [00:03<00:00,  3.53profile/s][rank1]:[W905 01:59:10.473650844 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 1 while trying to allocate 304087040 bytes (free: 197132288, total: 102011043840)."
+      ]
+    },
+    {
+      "label": "1m-97-b2560",
+      "configuration": {
+        "max_model_len": 1000000,
+        "gpu_memory_utilization": 0.97,
+        "max_num_batched_tokens": 2560
+      },
+      "draft_post_load_warning_count": 198,
+      "later_autotuning_warning_count": 4,
+      "ready": true,
+      "representative_early_warnings": [
+        "[rank0]:[W905 02:10:28.952483497 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 0 while trying to allocate 20971520 bytes (free: 7340032, total: 102014189568).",
+        "[rank1]:[W905 02:10:28.952596557 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 1 while trying to allocate 20971520 bytes (free: 12582912, total: 102011043840)."
+      ],
+      "representative_later_warnings": [
+        "[AutoTuner]: Tuning trtllm::fused_moe::gemm1:  95%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258c| 20/21 [00:04<00:00,  3.43profile/s][rank0]:[W905 02:11:25.446512649 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 0 while trying to allocate 505413632 bytes (free: 124780544, total: 102014189568).",
+        "[AutoTuner]: Tuning trtllm::fused_moe::gemm1:  95%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258c| 20/21 [00:04<00:00,  3.42profile/s][rank1]:[W905 02:11:25.515786468 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 1 while trying to allocate 505413632 bytes (free: 88080384, total: 102011043840)."
+      ]
+    },
+    {
+      "label": "1m-965-b2560",
+      "configuration": {
+        "max_model_len": 1000000,
+        "gpu_memory_utilization": 0.965,
+        "max_num_batched_tokens": 2560
+      },
+      "draft_post_load_warning_count": 191,
+      "later_autotuning_warning_count": 2,
+      "ready": true,
+      "representative_early_warnings": [
+        "[rank1]:[W905 02:24:19.257832532 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 1 while trying to allocate 20971520 bytes (free: 4194304, total: 102011043840).",
+        "[rank1]:[W905 02:24:19.259159203 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 1 while trying to allocate 20971520 bytes (free: 4194304, total: 102011043840)."
+      ],
+      "representative_later_warnings": [
+        "[AutoTuner]: Tuning trtllm::fused_moe::gemm2:  90%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588 | 19/21 [00:05<00:00,  2.92profile/s][rank0]:[W905 02:25:21.070191791 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 0 while trying to allocate 377487360 bytes (free: 202375168, total: 102014189568).",
+        "[AutoTuner]: Tuning trtllm::fused_moe::gemm2:  90%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588 | 19/21 [00:05<00:00,  2.92profile/s][rank1]:[W905 02:25:21.152730411 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 1 while trying to allocate 377487360 bytes (free: 165675008, total: 102011043840)."
+      ]
+    }
+  ],
+  "limits": [
+    "Counts are warning occurrences across both TP ranks, not failed requests.",
+    "Early warnings precede KV pool profiling/allocation; logs do not contain individual allocation stacks or establish a recovery mechanism.",
+    "All four launches reached readiness. This does not prove comfortable startup headroom.",
+    "Periodic GPU samples missed allocator-reported availability as low as 1-2 MiB in both batch2560 runs.",
+    "Only the tested startup attempts are represented; this is not a restart reliability distribution."
+  ],
+  "analysis": "../docs/memory-utilization-review.md#startup-and-serving-headroom-are-separate"
+}

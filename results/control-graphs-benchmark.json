@@ -1,0 +1,131 @@
+{
+  "recorded_at": "2026-09-05T01:29:43.756576+00:00",
+  "label": "no-dspark-64k-graphs",
+  "settings": {
+    "temperature": 0,
+    "seed": 42,
+    "output_tokens": 256,
+    "repeats": 2,
+    "cache": "one warmup per exact prompt"
+  },
+  "prompts": {
+    "prose": "Explain how photosynthesis works, with clear sections for light absorption, water splitting, carbon fixation, and environmental limits. Use complete paragraphs.",
+    "code": "Write a complete Python module that reads a CSV file, validates required name and age columns, rejects invalid ages, and emits a JSON summary. Include useful error handling and examples.",
+    "reasoning": "Compare merge sort and quicksort for a database sorting one million rows under a strict memory limit. Analyze time, memory, stability, and input distributions. Explain the tradeoffs carefully."
+  },
+  "measured": [
+    {
+      "workload": "prose",
+      "elapsed_seconds": 2.680072082001061,
+      "first_output_seconds": 0.07666791300107434,
+      "usage": {
+        "prompt_tokens": 30,
+        "total_tokens": 286,
+        "completion_tokens": 256
+      },
+      "finish_reason": "length",
+      "output_tokens_per_second": 95.51981893295161,
+      "repeat": 0
+    },
+    {
+      "workload": "code",
+      "elapsed_seconds": 2.6783212650007044,
+      "first_output_seconds": 0.07564899399949354,
+      "usage": {
+        "prompt_tokens": 39,
+        "total_tokens": 295,
+        "completion_tokens": 256
+      },
+      "finish_reason": "length",
+      "output_tokens_per_second": 95.58226018114846,
+      "repeat": 0
+    },
+    {
+      "workload": "reasoning",
+      "elapsed_seconds": 2.681636299001184,
+      "first_output_seconds": 0.07757165900147811,
+      "usage": {
+        "prompt_tokens": 41,
+        "total_tokens": 297,
+        "completion_tokens": 256
+      },
+      "finish_reason": "length",
+      "output_tokens_per_second": 95.46410156192735,
+      "repeat": 0
+    },
+    {
+      "workload": "prose",
+      "elapsed_seconds": 2.6797758679986146,
+      "first_output_seconds": 0.07729293099873757,
+      "usage": {
+        "prompt_tokens": 30,
+        "total_tokens": 286,
+        "completion_tokens": 256
+      },
+      "finish_reason": "length",
+      "output_tokens_per_second": 95.53037739353668,
+      "repeat": 1
+    },
+    {
+      "workload": "code",
+      "elapsed_seconds": 2.679203759000302,
+      "first_output_seconds": 0.07659385199985991,
+      "usage": {
+        "prompt_tokens": 39,
+        "total_tokens": 295,
+        "completion_tokens": 256
+      },
+      "finish_reason": "length",
+      "output_tokens_per_second": 95.55077665892867,
+      "repeat": 1
+    },
+    {
+      "workload": "reasoning",
+      "elapsed_seconds": 2.6807808250014205,
+      "first_output_seconds": 0.07696455800032709,
+      "usage": {
+        "prompt_tokens": 41,
+        "total_tokens": 297,
+        "completion_tokens": 256
+      },
+      "finish_reason": "length",
+      "output_tokens_per_second": 95.4945654685755,
+      "repeat": 1
+    }
+  ],
+  "concurrent": [
+    {
+      "workload": "prose",
+      "elapsed_seconds": 3.036120229999142,
+      "first_output_seconds": 0.15585491499950876,
+      "usage": {
+        "prompt_tokens": 30,
+        "total_tokens": 286,
+        "completion_tokens": 256
+      },
+      "finish_reason": "length",
+      "output_tokens_per_second": 84.31813650544147
+    },
+    {
+      "workload": "code",
+      "elapsed_seconds": 3.0157026830001996,
+      "first_output_seconds": 0.07725883900093322,
+      "usage": {
+        "prompt_tokens": 39,
+        "total_tokens": 295,
+        "completion_tokens": 256
+      },
+      "finish_reason": "length",
+      "output_tokens_per_second": 84.88900495499644
+    }
+  ],
+  "concurrent_elapsed_seconds": 3.037626839999575,
+  "aggregate_output_tokens_per_second": 168.55263235693283,
+  "median_output_tokens_per_second": {
+    "prose": 95.52509816324414,
+    "code": 95.56651842003856,
+    "reasoning": 95.47933351525143
+  },
+  "speculation_metrics_before": [],
+  "speculation_metrics_after": []
+}

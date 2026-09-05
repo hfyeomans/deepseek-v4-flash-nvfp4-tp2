@@ -1,0 +1,7 @@
+Selected eager baseline startup lines; UTC log timestamps. Original line numbers retained.
+
+7: (APIServer pid=1) INFO 09-05 00:54:12 [api_utils.py:273] non-default args: {'model_tag': 'nvidia/DeepSeek-V4-Flash-0731-NVFP4', 'enable_auto_tool_choice': True, 'tool_call_parser': 'deepseek_v4', 'model': 'nvidia/DeepSeek-V4-Flash-0731-NVFP4', 'tokenizer_mode': 'deepseek_v4', 'trust_remote_code': True, 'revision': 'f1caa71142bd0be02f728c79f75042ac1e461579', 'tokenizer_revision': 'f1caa71142bd0be02f728c79f75042ac1e461579', 'max_model_len': 32768, 'enforce_eager': True, 'served_model_name': ['dsv4-nvfp4'], 'reasoning_parser': 'deepseek_v4', 'tensor_parallel_size': 2, 'block_size': 256, 'gpu_memory_utilization': 0.95, 'kv_cache_dtype': 'fp8', 'enable_prefix_caching': True, 'max_num_batched_tokens': 2048, 'max_num_seqs': 2, 'moe_backend': 'flashinfer_cutlass'}
+13: (APIServer pid=1) WARNING 09-05 00:54:18 [vllm.py:1241] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+91: Loading safetensors checkpoint shards:  52% Completed | 25/48 [00:12<00:15,  1.52it/s]
+128: (Worker_TP0 pid=445) 
+129: Loading safetensors checkpoint shards:  92% Completed | 44/48 [00:20<00:01,  3.47it/s]

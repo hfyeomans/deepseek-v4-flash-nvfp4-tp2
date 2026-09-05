@@ -1,0 +1,417 @@
+{
+  "restoration": {
+    "ready": true,
+    "ready_seconds": 55.327951076993486,
+    "image_id": "sha256:1f0776d3ac4a990186899d122ebee81e5ad0bcdf1dbb95ebccb30d5f94c6908e",
+    "command": [
+      "nvidia/DeepSeek-V4-Flash-0731-NVFP4",
+      "--revision",
+      "f1caa71142bd0be02f728c79f75042ac1e461579",
+      "--tokenizer-revision",
+      "f1caa71142bd0be02f728c79f75042ac1e461579",
+      "--trust-remote-code",
+      "--tokenizer-mode",
+      "deepseek_v4",
+      "--tool-call-parser",
+      "deepseek_v4",
+      "--enable-auto-tool-choice",
+      "--reasoning-parser",
+      "deepseek_v4",
+      "--tensor-parallel-size",
+      "2",
+      "--kv-cache-dtype",
+      "fp8",
+      "--block-size",
+      "256",
+      "--moe-backend",
+      "flashinfer_cutlass",
+      "--max-model-len",
+      "1000000",
+      "--max-num-seqs",
+      "2",
+      "--max-num-batched-tokens",
+      "2048",
+      "--gpu-memory-utilization",
+      "0.96",
+      "--enable-prefix-caching",
+      "--served-model-name",
+      "dsv4-nvfp4",
+      "--compilation-config",
+      "{\"cudagraph_mode\":\"FULL_DECODE_ONLY\",\"max_cudagraph_capture_size\":16}",
+      "--speculative-config",
+      "{\"method\":\"dspark\",\"num_speculative_tokens\":5,\"draft_sample_method\":\"probabilistic\",\"moe_backend\":\"marlin\",\"revision\":\"f1caa71142bd0be02f728c79f75042ac1e461579\"}",
+      "--long-prefill-token-threshold",
+      "1792"
+    ],
+    "samples": [
+      {
+        "elapsed_seconds": 0.1337580849940423,
+        "gpus_csv": [
+          "0, 2, 97288, 0, 21.64, 62",
+          "1, 34, 97253, 0, 87.07, 61"
+        ]
+      },
+      {
+        "elapsed_seconds": 2.1756916570011526,
+        "gpus_csv": [
+          "0, 2, 97288, 0, 17.89, 62",
+          "1, 34, 97253, 0, 78.93, 60"
+        ]
+      },
+      {
+        "elapsed_seconds": 4.235074625990819,
+        "gpus_csv": [
+          "0, 2, 97288, 0, 17.49, 61",
+          "1, 34, 97253, 0, 43.94, 59"
+        ]
+      },
+      {
+        "elapsed_seconds": 6.297435993998079,
+        "gpus_csv": [
+          "0, 2, 97288, 0, 18.07, 61",
+          "1, 34, 97253, 0, 38.75, 59"
+        ]
+      },
+      {
+        "elapsed_seconds": 8.357061356000486,
+        "gpus_csv": [
+          "0, 2, 97288, 0, 16.97, 61",
+          "1, 34, 97253, 0, 38.44, 59"
+        ]
+      },
+      {
+        "elapsed_seconds": 10.41694372499478,
+        "gpus_csv": [
+          "0, 2, 97288, 0, 17.52, 60",
+          "1, 34, 97253, 0, 38.04, 58"
+        ]
+      },
+      {
+        "elapsed_seconds": 12.476481806996162,
+        "gpus_csv": [
+          "0, 2, 97288, 0, 19.18, 60",
+          "1, 34, 97253, 0, 38.32, 58"
+        ]
+      },
+      {
+        "elapsed_seconds": 14.543929975989158,
+        "gpus_csv": [
+          "0, 1150, 96139, 0, 26.41, 60",
+          "1, 1182, 96104, 0, 56.07, 59"
+        ]
+      },
+      {
+        "elapsed_seconds": 16.577153699996416,
+        "gpus_csv": [
+          "0, 80976, 16313, 11, 83.09, 61",
+          "1, 81008, 16278, 13, 92.57, 59"
+        ]
+      },
+      {
+        "elapsed_seconds": 18.611655361994053,
+        "gpus_csv": [
+          "0, 80976, 16313, 12, 83.38, 61",
+          "1, 81008, 16278, 13, 93.61, 59"
+        ]
+      },
+      {
+        "elapsed_seconds": 20.650415773998247,
+        "gpus_csv": [
+          "0, 80976, 16313, 12, 83.50, 61",
+          "1, 81008, 16278, 12, 93.54, 59"
+        ]
+      },
+      {
+        "elapsed_seconds": 22.686402793988236,
+        "gpus_csv": [
+          "0, 80976, 16313, 12, 83.28, 61",
+          "1, 81008, 16278, 12, 93.94, 59"
+        ]
+      },
+      {
+        "elapsed_seconds": 24.721394170992426,
+        "gpus_csv": [
+          "0, 80976, 16313, 12, 83.26, 61",
+          "1, 81008, 16278, 13, 93.75, 59"
+        ]
+      },
+      {
+        "elapsed_seconds": 26.756808281992562,
+        "gpus_csv": [
+          "0, 80976, 16313, 12, 83.45, 61",
+          "1, 81008, 16278, 12, 93.62, 59"
+        ]
+      },
+      {
+        "elapsed_seconds": 28.791392637998797,
+        "gpus_csv": [
+          "0, 80976, 16313, 12, 83.53, 61",
+          "1, 81008, 16278, 12, 93.85, 59"
+        ]
+      },
+      {
+        "elapsed_seconds": 30.826705786996172,
+        "gpus_csv": [
+          "0, 87866, 9423, 0, 81.67, 62",
+          "1, 87898, 9388, 0, 91.40, 59"
+        ]
+      },
+      {
+        "elapsed_seconds": 32.86396077000245,
+        "gpus_csv": [
+          "0, 86430, 10859, 0, 87.51, 61",
+          "1, 86462, 10824, 0, 89.64, 59"
+        ]
+      },
+      {
+        "elapsed_seconds": 34.897525145992404,
+        "gpus_csv": [
+          "0, 88504, 8785, 99, 97.02, 64",
+          "1, 88540, 8746, 100, 109.65, 63"
+        ]
+      },
+      {
+        "elapsed_seconds": 36.93346961199131,
+        "gpus_csv": [
+          "0, 87996, 9293, 0, 80.59, 62",
+          "1, 88028, 9258, 0, 89.63, 59"
+        ]
+      },
+      {
+        "elapsed_seconds": 38.96762157000194,
+        "gpus_csv": [
+          "0, 94024, 3265, 0, 81.94, 62",
+          "1, 94056, 3230, 0, 85.07, 59"
+        ]
+      },
+      {
+        "elapsed_seconds": 41.001409580989275,
+        "gpus_csv": [
+          "0, 94746, 2543, 96, 252.18, 66",
+          "1, 94778, 2508, 96, 244.32, 64"
+        ]
+      },
+      {
+        "elapsed_seconds": 43.059161583994864,
+        "gpus_csv": [
+          "0, 95630, 1659, 95, 299.57, 67",
+          "1, 95662, 1624, 96, 300.17, 65"
+        ]
+      },
+      {
+        "elapsed_seconds": 45.10770907800179,
+        "gpus_csv": [
+          "0, 96984, 305, 96, 299.80, 68",
+          "1, 97016, 270, 96, 299.82, 67"
+        ]
+      },
+      {
+        "elapsed_seconds": 47.143174785989686,
+        "gpus_csv": [
+          "0, 96984, 305, 96, 301.83, 70",
+          "1, 97016, 270, 96, 302.58, 67"
+        ]
+      },
+      {
+        "elapsed_seconds": 49.188621658002376,
+        "gpus_csv": [
+          "0, 96984, 305, 95, 300.65, 71",
+          "1, 97016, 270, 96, 300.62, 69"
+        ]
+      },
+      {
+        "elapsed_seconds": 51.23168595599418,
+        "gpus_csv": [
+          "0, 96430, 859, 0, 276.55, 70",
+          "1, 96462, 824, 0, 268.64, 67"
+        ]
+      },
+      {
+        "elapsed_seconds": 53.26503557000251,
+        "gpus_csv": [
+          "0, 94960, 2329, 0, 85.46, 68",
+          "1, 94992, 2294, 0, 97.97, 65"
+        ]
+      },
+      {
+        "elapsed_seconds": 55.299966032995144,
+        "gpus_csv": [
+          "0, 94960, 2329, 0, 81.79, 67",
+          "1, 94992, 2294, 0, 91.97, 65"
+        ]
+      }
+    ],
+    "kernel_returncode": 0
+  },
+  "api": {
+    "recorded_at": "2026-09-05T16:25:35.525927+00:00",
+    "results": [
+      {
+        "check": "identity",
+        "status": "pass",
+        "detail": {
+          "object": "list",
+          "data": [
+            {
+              "id": "dsv4-nvfp4",
+              "object": "model",
+              "created": 1788625530,
+              "owned_by": "vllm",
+              "root": "nvidia/DeepSeek-V4-Flash-0731-NVFP4",
+              "parent": null,
+              "max_model_len": 1000000,
+              "permission": [
+                {
+                  "id": "modelperm-8e711b43898c7189",
+                  "object": "model_permission",
+                  "created": 1788625530,
+                  "allow_create_engine": false,
+                  "allow_sampling": true,
+                  "allow_logprobs": true,
+                  "allow_search_indices": false,
+                  "allow_view": true,
+                  "allow_fine_tuning": false,
+                  "organization": "*",
+                  "group": null,
+                  "is_blocking": false
+                }
+              ]
+            }
+          ]
+        },
+        "elapsed_seconds": 0.005263876999379136
+      },
+      {
+        "check": "chat",
+        "status": "pass",
+        "detail": null,
+        "elapsed_seconds": 0.22410957200918347
+      },
+      {
+        "check": "multi_turn",
+        "status": "pass",
+        "detail": null,
+        "elapsed_seconds": 0.1210049329965841
+      },
+      {
+        "check": "reasoning",
+        "status": "pass",
+        "detail": null,
+        "elapsed_seconds": 0.24695628600602504
+      },
+      {
+        "check": "reasoning_high",
+        "status": "pass",
+        "detail": null,
+        "elapsed_seconds": 0.2128652730025351
+      },
+      {
+        "check": "reasoning_max",
+        "status": "pass",
+        "detail": null,
+        "elapsed_seconds": 0.17477888500434346
+      },
+      {
+        "check": "stream_reasoning",
+        "status": "pass",
+        "detail": {
+          "content": "323",
+          "reasoning_characters": 66
+        },
+        "elapsed_seconds": 0.20726505199854728
+      },
+      {
+        "check": "reasoning_tools",
+        "status": "pass",
+        "detail": null,
+        "elapsed_seconds": 0.6565594280109508
+      },
+      {
+        "check": "tools_auto",
+        "status": "pass",
+        "detail": null,
+        "elapsed_seconds": 0.3502486169891199
+      },
+      {
+        "check": "tools_required",
+        "status": "pass",
+        "detail": null,
+        "elapsed_seconds": 0.527632811004878
+      },
+      {
+        "check": "tools_named",
+        "status": "pass",
+        "detail": null,
+        "elapsed_seconds": 0.33207250900159124
+      },
+      {
+        "check": "json_object",
+        "status": "pass",
+        "detail": null,
+        "elapsed_seconds": 0.14231490199745167
+      },
+      {
+        "check": "json_schema",
+        "status": "pass",
+        "detail": null,
+        "elapsed_seconds": 0.13755079499969725
+      },
+      {
+        "check": "streaming",
+        "status": "pass",
+        "detail": {
+          "content": "STREAM-416",
+          "usage": {
+            "prompt_tokens": 12,
+            "total_tokens": 17,
+            "completion_tokens": 5
+          }
+        },
+        "elapsed_seconds": 0.10629443399375305
+      },
+      {
+        "check": "stream_tools",
+        "status": "pass",
+        "detail": [
+          {
+            "id": "chatcmpl-tool-b8a1bd93a4fa6367",
+            "type": "function",
+            "function": {
+              "name": "lookup_code",
+              "arguments": "{\"record\": \"gamma\"}"
+            }
+          }
+        ],
+        "elapsed_seconds": 0.23018736999074463
+      },
+      {
+        "check": "multiple_tools",
+        "status": "pass",
+        "detail": null,
+        "elapsed_seconds": 0.44395596800313797
+      },
+      {
+        "check": "concurrency",
+        "status": "pass",
+        "detail": null,
+        "elapsed_seconds": 0.21890458300185855
+      },
+      {
+        "check": "prefix_reuse",
+        "status": "pass",
+        "detail": null,
+        "elapsed_seconds": 0.40372085699345917
+      },
+      {
+        "check": "cancellation",
+        "status": "pass",
+        "detail": null,
+        "elapsed_seconds": 0.2015454310021596
+      }
+    ]
+  },
+  "limits": [
+    "API behavior checks only; no new 801K/1M long request or soak test in this stage.",
+    "Original serving container restarted without changing its image or engine command."
+  ]
+}

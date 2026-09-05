@@ -1,0 +1,324 @@
+{
+  "recorded_at": "2026-09-05T02:21:22.665446+00:00",
+  "label": "1m-97-b2560-t2304",
+  "status": "pass",
+  "settings": {
+    "requested_prompt_tokens": 999000,
+    "probe_delay_seconds": 30,
+    "short_timeout_seconds": 180,
+    "long_timeout_seconds": 1800,
+    "minimum_completion_separation_seconds": 1
+  },
+  "short_finished_before_long_seconds": 490.7913809770034,
+  "results": [
+    {
+      "check": "long_context",
+      "status": "pass",
+      "detail": {
+        "requested_prompt_tokens": 999000,
+        "measured_prompt_tokens": 998847,
+        "expected": {
+          "first": "IVORY-162",
+          "middle": "COPPER-493",
+          "last": "SILVER-857"
+        },
+        "observed": {
+          "first": "IVORY-162",
+          "middle": "COPPER-493",
+          "last": "SILVER-857"
+        }
+      },
+      "started_seconds": 0.0005747819996031467,
+      "finished_seconds": 525.5192539220006,
+      "elapsed_seconds": 525.5186792999993
+    },
+    {
+      "check": "concurrent_short",
+      "status": "pass",
+      "detail": {
+        "observed": "CONCURRENT-947"
+      },
+      "started_seconds": 30.00764619599795,
+      "finished_seconds": 34.727872944997216,
+      "elapsed_seconds": 4.72022692000246
+    }
+  ],
+  "observations": {
+    "long": [
+      {
+        "elapsed_seconds": 523.6619571230003,
+        "response": {
+          "id": "chatcmpl-b7e135a5a9a29e12",
+          "object": "chat.completion",
+          "created": 1788574360,
+          "model": "dsv4-nvfp4",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "{\n  \"first\": \"IVORY-162\",\n  \"middle\": \"COPPER-493\",\n  \"last\": \"SILVER-857\"\n}",
+                "refusal": null,
+                "annotations": null,
+                "audio": null,
+                "function_call": null,
+                "reasoning": null,
+                "reasoning_content": null
+              },
+              "logprobs": null,
+              "finish_reason": "stop",
+              "stop_reason": null,
+              "token_ids": null,
+              "routed_experts": null
+            }
+          ],
+          "service_tier": null,
+          "system_fingerprint": "vllm-20260804-tp2-bcf53d9b",
+          "usage": {
+            "prompt_tokens": 998847,
+            "total_tokens": 998882,
+            "completion_tokens": 35,
+            "prompt_tokens_details": null
+          },
+          "prompt_logprobs": null,
+          "prompt_token_ids": null,
+          "prompt_text": null,
+          "kv_transfer_params": null,
+          "ec_transfer_params": null,
+          "metrics": null
+        },
+        "request_settings": {
+          "model": "dsv4-nvfp4",
+          "temperature": 0,
+          "max_tokens": 256,
+          "chat_template_kwargs": {
+            "thinking": false
+          },
+          "response_format": {
+            "type": "json_object"
+          }
+        }
+      }
+    ],
+    "short": [
+      {
+        "elapsed_seconds": 4.720196605001547,
+        "response": {
+          "id": "chatcmpl-a6901f6bcd5aecb3",
+          "object": "chat.completion",
+          "created": 1788574387,
+          "model": "dsv4-nvfp4",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "CONCURRENT-947",
+                "refusal": null,
+                "annotations": null,
+                "audio": null,
+                "function_call": null,
+                "reasoning": null,
+                "reasoning_content": null
+              },
+              "logprobs": null,
+              "finish_reason": "stop",
+              "stop_reason": null,
+              "token_ids": null,
+              "routed_experts": null
+            }
+          ],
+          "service_tier": null,
+          "system_fingerprint": "vllm-20260804-tp2-bcf53d9b",
+          "usage": {
+            "prompt_tokens": 13,
+            "total_tokens": 19,
+            "completion_tokens": 6,
+            "prompt_tokens_details": null
+          },
+          "prompt_logprobs": null,
+          "prompt_token_ids": null,
+          "prompt_text": null,
+          "kv_transfer_params": null,
+          "ec_transfer_params": null,
+          "metrics": null
+        },
+        "request_settings": {
+          "model": "dsv4-nvfp4",
+          "temperature": 0,
+          "max_tokens": 64,
+          "chat_template_kwargs": {
+            "thinking": false
+          }
+        }
+      }
+    ]
+  },
+  "limits": [
+    "One synthetic three-fact retrieval and two short responses; not a broad accuracy or sustained decode benchmark.",
+    "First-use compilation and a concurrent source build affect timing. This is not a matched batch-speed comparison.",
+    "Original mixed_probe.py overlap includes prompt preparation. Separate warm-short metrics prove one running request before and after the short response; fresh container and server prefix-hit logs provide external context.",
+    "The standalone probe was subsequently corrected to anchor overlap at completion-call boundaries and supply unique prompt prefixes.",
+    "Workload metric deltas include all three successful requests, not only the long request.",
+    "Resources sampled every roughly two seconds; sampled extrema are not exact allocation peaks.",
+    "Patched preview image. Public-source rebuild acceptance remains pending."
+  ],
+  "configuration": {
+    "tensor_parallel_size": 2,
+    "max_model_len": 1000000,
+    "max_num_seqs": 2,
+    "max_num_batched_tokens": 2560,
+    "gpu_memory_utilization": 0.97,
+    "kv_cache_dtype": "fp8",
+    "block_size": 256,
+    "cudagraph_mode": "FULL_DECODE_ONLY",
+    "max_cudagraph_capture_size": 16,
+    "target_moe_backend": "flashinfer_cutlass",
+    "draft_moe_backend": "marlin",
+    "num_speculative_tokens": 5,
+    "draft_weight_coverage": true,
+    "long_prefill_token_threshold": 2304
+  },
+  "model_revision": "f1caa71142bd0be02f728c79f75042ac1e461579",
+  "image_config_digest": "sha256:363d84a361356b156b7bd04f895782d4ab9aa7d258a96f6a1ddc9e582c1f6315",
+  "additional_warm_short": {
+    "request": {
+      "model": "dsv4-nvfp4",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Reply with exactly: CONCURRENT-682"
+        }
+      ],
+      "temperature": 0,
+      "max_tokens": 64,
+      "chat_template_kwargs": {
+        "thinking": false
+      }
+    },
+    "status": "pass",
+    "response": {
+      "id": "chatcmpl-84421baf00baf860",
+      "object": "chat.completion",
+      "created": 1788574481,
+      "model": "dsv4-nvfp4",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "CONCURRENT-682",
+            "refusal": null,
+            "annotations": null,
+            "audio": null,
+            "function_call": null,
+            "reasoning": null,
+            "reasoning_content": null
+          },
+          "logprobs": null,
+          "finish_reason": "stop",
+          "stop_reason": null,
+          "token_ids": null,
+          "routed_experts": null
+        }
+      ],
+      "service_tier": null,
+      "system_fingerprint": "vllm-20260804-tp2-bcf53d9b",
+      "usage": {
+        "prompt_tokens": 13,
+        "total_tokens": 19,
+        "completion_tokens": 6,
+        "prompt_tokens_details": null
+      },
+      "prompt_logprobs": null,
+      "prompt_token_ids": null,
+      "prompt_text": null,
+      "kv_transfer_params": null,
+      "ec_transfer_params": null,
+      "metrics": null
+    },
+    "elapsed_seconds": 3.241703043997404,
+    "running_requests_before": 1.0,
+    "running_requests_after": 1.0,
+    "completed_requests_before": 1.0,
+    "completed_requests_after": 2.0
+  },
+  "startup": {
+    "status": "ready",
+    "elapsed_seconds": 118.27281602900257,
+    "sample_count": 59,
+    "ranks": [
+      {
+        "rank": 0,
+        "max_observed_used_MiB": 97178.0,
+        "min_observed_free_MiB": 111.0,
+        "max_observed_power_W": 302.17,
+        "max_observed_temperature_C": 72.0
+      },
+      {
+        "rank": 1,
+        "max_observed_used_MiB": 97210.0,
+        "min_observed_free_MiB": 76.0,
+        "max_observed_power_W": 302.36,
+        "max_observed_temperature_C": 70.0
+      }
+    ]
+  },
+  "resource_sampling": {
+    "sample_count": 259,
+    "interval_seconds_target": 2,
+    "ranks": [
+      {
+        "rank": 0,
+        "max_observed_used_MiB": 96836.0,
+        "min_observed_free_MiB": 453.0,
+        "max_observed_power_W": 302.73,
+        "max_observed_temperature_C": 89.0
+      },
+      {
+        "rank": 1,
+        "max_observed_used_MiB": 96868.0,
+        "min_observed_free_MiB": 418.0,
+        "max_observed_power_W": 302.82,
+        "max_observed_temperature_C": 88.0
+      }
+    ],
+    "start_epoch_seconds": 1788574357.1131172,
+    "end_epoch_seconds": 1788574881.322742
+  },
+  "startup_evidence": [
+    "(Worker_TP1 pid=733) INFO 09-05 02:10:28 [dspark.py:1168] DSpark weight coverage verified on TP rank 1: 4608 expert tensors, 99 non-expert source tensors and 99 parameter bindings",
+    "(Worker_TP0 pid=732) INFO 09-05 02:10:28 [dspark.py:1168] DSpark weight coverage verified on TP rank 0: 4608 expert tensors, 99 non-expert source tensors and 99 parameter bindings",
+    "(Worker_TP0 pid=732) INFO 09-05 02:11:12 [gpu_worker.py:563] Available KV cache memory: 6.78 GiB",
+    "(EngineCore pid=655) INFO 09-05 02:11:12 [kv_cache_utils.py:2283] GPU KV cache size: 1,207,051 tokens",
+    "(EngineCore pid=655) INFO 09-05 02:11:12 [kv_cache_utils.py:2284] Maximum concurrency for 1,000,000 tokens per request: 1.21x",
+    "(Worker_TP1 pid=733) INFO 09-05 02:11:33 [gpu_worker.py:789] Free memory on device (93.85/95.01 GiB) on startup. Desired GPU memory utilization is (0.97, 92.16 GiB). Actual usage is 84.64 GiB for consumed memory (weights + non-torch), 0.74 GiB for peak activation, and 0.1 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=7005981901` (6.52 GiB) to fit into requested memory, or `--kv-cache-memory=8827617280` (8.22 GiB) to fully utilize gpu memory. Current kv cache memory in use is 6.77 GiB.",
+    "(Worker_TP0 pid=732) INFO 09-05 02:11:33 [gpu_worker.py:789] Free memory on device (93.89/95.01 GiB) on startup. Desired GPU memory utilization is (0.97, 92.16 GiB). Actual usage is 84.64 GiB for consumed memory (weights + non-torch), 0.74 GiB for peak activation, and 0.1 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=7009033257` (6.53 GiB) to fit into requested memory, or `--kv-cache-memory=8864317440` (8.26 GiB) to fully utilize gpu memory. Current kv cache memory in use is 6.78 GiB."
+  ],
+  "workload_metric_delta": {
+    "vllm:spec_decode_num_draft_tokens_total": 45.0,
+    "vllm:spec_decode_num_accepted_tokens_total": 36.0,
+    "vllm:time_to_first_token_seconds_count": 3.0,
+    "vllm:time_to_first_token_seconds_sum": 528.7666094303131,
+    "vllm:e2e_request_latency_seconds_count": 3.0,
+    "vllm:e2e_request_latency_seconds_sum": 531.5906322002411,
+    "vllm:request_prefill_time_seconds_count": 3.0,
+    "vllm:request_prefill_time_seconds_sum": 525.8108221330003,
+    "vllm:request_decode_time_seconds_count": 3.0,
+    "vllm:request_decode_time_seconds_sum": 2.9816463379975175
+  },
+  "followup_api_evidence": "dspark-1m-97-b2560-t2304-api.json",
+  "prefix_evidence": [
+    "(APIServer pid=1) INFO 09-05 02:13:15 [loggers.py:310] Engine 000: Avg prompt throughput: 1.3 tokens/s, Avg generation throughput: 0.6 tokens/s, Running: 1 reqs, Waiting: 0 reqs, GPU KV cache usage: 33.9%, Prefix cache hit rate: 0.0%",
+    "(APIServer pid=1) INFO 09-05 02:13:25 [loggers.py:310] Engine 000: Avg prompt throughput: 0.0 tokens/s, Avg generation throughput: 0.0 tokens/s, Running: 1 reqs, Waiting: 0 reqs, GPU KV cache usage: 36.4%, Prefix cache hit rate: 0.0%",
+    "(APIServer pid=1) INFO 09-05 02:14:45 [loggers.py:310] Engine 000: Avg prompt throughput: 1.3 tokens/s, Avg generation throughput: 0.6 tokens/s, Running: 1 reqs, Waiting: 0 reqs, GPU KV cache usage: 49.1%, Prefix cache hit rate: 0.0%",
+    "(APIServer pid=1) INFO 09-05 02:14:55 [loggers.py:310] Engine 000: Avg prompt throughput: 0.0 tokens/s, Avg generation throughput: 0.0 tokens/s, Running: 1 reqs, Waiting: 0 reqs, GPU KV cache usage: 50.4%, Prefix cache hit rate: 0.0%",
+    "(APIServer pid=1) INFO 09-05 02:21:25 [loggers.py:310] Engine 000: Avg prompt throughput: 99884.1 tokens/s, Avg generation throughput: 3.5 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 46.6%, Prefix cache hit rate: 0.0%",
+    "(APIServer pid=1) INFO 09-05 02:21:35 [loggers.py:310] Engine 000: Avg prompt throughput: 0.0 tokens/s, Avg generation throughput: 0.0 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 46.6%, Prefix cache hit rate: 0.0%",
+    "(APIServer pid=1) INFO 09-05 02:22:35 [loggers.py:310] Engine 000: Avg prompt throughput: 4.4 tokens/s, Avg generation throughput: 1.0 tokens/s, Running: 1 reqs, Waiting: 0 reqs, GPU KV cache usage: 46.8%, Prefix cache hit rate: 0.0%",
+    "(APIServer pid=1) INFO 09-05 02:22:45 [loggers.py:310] Engine 000: Avg prompt throughput: 189.7 tokens/s, Avg generation throughput: 31.0 tokens/s, Running: 1 reqs, Waiting: 0 reqs, GPU KV cache usage: 48.2%, Prefix cache hit rate: 0.1%",
+    "(APIServer pid=1) INFO 09-05 02:22:55 [loggers.py:310] Engine 000: Avg prompt throughput: 86.1 tokens/s, Avg generation throughput: 17.3 tokens/s, Running: 1 reqs, Waiting: 0 reqs, GPU KV cache usage: 52.1%, Prefix cache hit rate: 0.1%",
+    "(APIServer pid=1) INFO 09-05 02:23:05 [loggers.py:310] Engine 000: Avg prompt throughput: 84.3 tokens/s, Avg generation throughput: 2.2 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 49.0%, Prefix cache hit rate: 0.2%"
+  ],
+  "startup_allocation_warning_review": "startup-allocation-review.json"
+}

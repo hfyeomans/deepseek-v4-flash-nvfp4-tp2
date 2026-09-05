@@ -1,0 +1,12 @@
+INFO 09-05 00:48:55 [importing.py:53] Triton is installed but 0 active driver(s) found (expected 1). Disabling Triton to prevent runtime errors.
+INFO 09-05 00:48:55 [importing.py:88] Triton not installed or not compatible; certain GPU-related functions will not be available.
+W0905 00:48:55.650000 1 torch/utils/cpp_extension.py:178] No CUDA runtime is found, using CUDA_HOME='/usr/local/cuda'
+test_chat_does_not_include_effort_prefix (__main__.ReasoningEncodingTest.test_chat_does_not_include_effort_prefix) ... ok
+test_default_thinking_matches_low (__main__.ReasoningEncodingTest.test_default_thinking_matches_low) ... ok
+test_three_thinking_efforts_match_pinned_encoder (__main__.ReasoningEncodingTest.test_three_thinking_efforts_match_pinned_encoder) ... ok
+test_xhigh_alias_matches_max (__main__.ReasoningEncodingTest.test_xhigh_alias_matches_max) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.451s
+
+OK

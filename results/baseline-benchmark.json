@@ -1,0 +1,131 @@
+{
+  "recorded_at": "2026-09-05T01:02:24.216889+00:00",
+  "label": "patched-baseline-no-dspark",
+  "settings": {
+    "temperature": 0,
+    "seed": 42,
+    "output_tokens": 256,
+    "repeats": 2,
+    "cache": "one warmup per exact prompt"
+  },
+  "prompts": {
+    "prose": "Explain how photosynthesis works, with clear sections for light absorption, water splitting, carbon fixation, and environmental limits. Use complete paragraphs.",
+    "code": "Write a complete Python module that reads a CSV file, validates required name and age columns, rejects invalid ages, and emits a JSON summary. Include useful error handling and examples.",
+    "reasoning": "Compare merge sort and quicksort for a database sorting one million rows under a strict memory limit. Analyze time, memory, stability, and input distributions. Explain the tradeoffs carefully."
+  },
+  "measured": [
+    {
+      "workload": "prose",
+      "elapsed_seconds": 15.622379819000344,
+      "first_output_seconds": 0.0693700430001627,
+      "usage": {
+        "prompt_tokens": 30,
+        "total_tokens": 286,
+        "completion_tokens": 256
+      },
+      "finish_reason": "length",
+      "output_tokens_per_second": 16.386747919714907,
+      "repeat": 0
+    },
+    {
+      "workload": "code",
+      "elapsed_seconds": 15.71190779799872,
+      "first_output_seconds": 0.06941203600035806,
+      "usage": {
+        "prompt_tokens": 39,
+        "total_tokens": 295,
+        "completion_tokens": 256
+      },
+      "finish_reason": "length",
+      "output_tokens_per_second": 16.293374636058367,
+      "repeat": 0
+    },
+    {
+      "workload": "reasoning",
+      "elapsed_seconds": 15.719235331998789,
+      "first_output_seconds": 0.06979306799985352,
+      "usage": {
+        "prompt_tokens": 41,
+        "total_tokens": 297,
+        "completion_tokens": 256
+      },
+      "finish_reason": "length",
+      "output_tokens_per_second": 16.285779466566975,
+      "repeat": 0
+    },
+    {
+      "workload": "prose",
+      "elapsed_seconds": 15.68939684200086,
+      "first_output_seconds": 0.0693527780003933,
+      "usage": {
+        "prompt_tokens": 30,
+        "total_tokens": 286,
+        "completion_tokens": 256
+      },
+      "finish_reason": "length",
+      "output_tokens_per_second": 16.316752172058163,
+      "repeat": 1
+    },
+    {
+      "workload": "code",
+      "elapsed_seconds": 15.679111599998578,
+      "first_output_seconds": 0.07018621799943503,
+      "usage": {
+        "prompt_tokens": 39,
+        "total_tokens": 295,
+        "completion_tokens": 256
+      },
+      "finish_reason": "length",
+      "output_tokens_per_second": 16.327455695896905,
+      "repeat": 1
+    },
+    {
+      "workload": "reasoning",
+      "elapsed_seconds": 15.632034504998956,
+      "first_output_seconds": 0.06915524099895265,
+      "usage": {
+        "prompt_tokens": 41,
+        "total_tokens": 297,
+        "completion_tokens": 256
+      },
+      "finish_reason": "length",
+      "output_tokens_per_second": 16.376627106224333,
+      "repeat": 1
+    }
+  ],
+  "concurrent": [
+    {
+      "workload": "prose",
+      "elapsed_seconds": 15.724160141999164,
+      "first_output_seconds": 0.06966405499952089,
+      "usage": {
+        "prompt_tokens": 30,
+        "total_tokens": 286,
+        "completion_tokens": 256
+      },
+      "finish_reason": "length",
+      "output_tokens_per_second": 16.28067875728543
+    },
+    {
+      "workload": "code",
+      "elapsed_seconds": 15.846010396000565,
+      "first_output_seconds": 0.1989207520000491,
+      "usage": {
+        "prompt_tokens": 39,
+        "total_tokens": 295,
+        "completion_tokens": 256
+      },
+      "finish_reason": "length",
+      "output_tokens_per_second": 16.155486056263904
+    }
+  ],
+  "concurrent_elapsed_seconds": 15.847735575000115,
+  "aggregate_output_tokens_per_second": 32.307454751307354,
+  "median_output_tokens_per_second": {
+    "prose": 16.351750045886533,
+    "code": 16.310415165977638,
+    "reasoning": 16.331203286395656
+  },
+  "speculation_metrics_before": [],
+  "speculation_metrics_after": []
+}

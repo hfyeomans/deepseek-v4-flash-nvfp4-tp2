@@ -1,0 +1,19 @@
+INFO 09-05 00:45:36 [importing.py:53] Triton is installed but 0 active driver(s) found (expected 1). Disabling Triton to prevent runtime errors.
+INFO 09-05 00:45:36 [importing.py:88] Triton not installed or not compatible; certain GPU-related functions will not be available.
+WARNING 09-05 00:45:36 [interface.py:368] Failed to import from vllm._C: ModuleNotFoundError("No module named 'vllm._C'")
+W0905 00:45:36.840000 1 torch/utils/cpp_extension.py:178] No CUDA runtime is found, using CUDA_HOME='/usr/local/cuda'
+WARNING 09-05 00:45:37 [interface.py:368] Failed to import from vllm._C: ModuleNotFoundError("No module named 'vllm._C'")
+WARNING 09-05 00:45:37 [interface.py:368] Failed to import from vllm._C: ModuleNotFoundError("No module named 'vllm._C'")
+test_all_draft_prefixes_use_mxfp4_after_target_dispatch (__main__.QuantDispatchTest.test_all_draft_prefixes_use_mxfp4_after_target_dispatch) ... INFO 09-05 00:45:37 [quant_config.py:76] DeepSeek V4 expert_dtype resolved to 'fp4'
+WARNING 09-05 00:45:37 [modelopt.py:1019] Detected ModelOpt NVFP4 checkpoint (quant_algo=NVFP4). Please note that the format is experimental and could change in future.
+ok
+test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis (__main__.QuantDispatchTest.test_malformed_explicit_scope_is_rejected_by_both_dispatch_apis) ... ok
+test_native_mxfp4_control_without_conversion_metadata (__main__.QuantDispatchTest.test_native_mxfp4_control_without_conversion_metadata) ... ok
+test_pinned_fixture_declares_main_only_nvfp4_scope (__main__.QuantDispatchTest.test_pinned_fixture_declares_main_only_nvfp4_scope) ... ok
+test_target_boundary_prefixes_remain_nvfp4 (__main__.QuantDispatchTest.test_target_boundary_prefixes_remain_nvfp4) ... WARNING 09-05 00:45:37 [modelopt.py:1019] Detected ModelOpt NVFP4 checkpoint (quant_algo=NVFP4). Please note that the format is experimental and could change in future.
+ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.015s
+
+OK
