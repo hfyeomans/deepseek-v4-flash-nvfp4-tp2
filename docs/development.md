@@ -15,8 +15,10 @@ bash scripts/check-local.sh
 ```
 
 This is also the CPU CI entrypoint. It checks benchmark requests, stream endings
-and diagnostics, mixed-request overlap, profiling and patch direction without
-a GPU or model server. Run [image/GPU checks](running.md) separately.
+and diagnostics, mixed-request overlap, profiling and patch direction. It also
+checks the real build/serve entrypoints against fake Docker/Git executables,
+config loading and health probes against a temporary localhost HTTP server.
+No GPU or model server is needed. Run [image/GPU checks](running.md) separately.
 
 ## Make a bounded change
 
@@ -36,4 +38,6 @@ Don't rewrite an old result to match a new client. Historical hashes refer to
 hashes, settings and warmup/cache details. Keep host logs and credentials private.
 
 The [release review](../tasks/release-readiness/review.md) records adversarial
-and duplication findings, fixes and validation limits.
+and duplication findings, fixes and validation limits. The
+[operator update](../tasks/operator-experience/state.md) tracks config/logging
+changes and the owner's pending GPU retest.

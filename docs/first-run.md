@@ -1,14 +1,13 @@
 # Your first deployment
 
-Start here to get a coding/tools endpoint running and understand the checks
-along the way. Run everything on the Linux GPU host. We tested two RTX PRO
-6000 Blackwell Max-Q cards, 96 GB each, at TP=2, with 246 GiB RAM and driver
-610.57.04. The RAM and driver describe that machine; they aren't minimum
-requirements. Other GPU architectures haven't been tested.
+I wanted to keep the settings in one place and see what the server was doing.
+This walkthrough gets the image built, the endpoint checked and your coding
+agent connected. Run these commands in Bash on the Linux GPU host.
 
-Check disk space before the download. Weights alone use 175,550,788,904 bytes,
-and Docker layers, source and kernel caches need more. The model and Docker
-may be on different disks; check both.
+We tested two RTX PRO 6000 Blackwell Max-Q cards, 96 GB each, at TP=2, with
+246 GiB RAM and driver 610.57.04. RAM and driver describe that machine, not
+minimum requirements. Other GPU architectures haven't been tested. Weights
+alone use 175,550,788,904 bytes; allow more for Docker layers and caches.
 
 ## 1. Check the machine
 
@@ -24,13 +23,12 @@ df -h
 ```
 
 You need Linux x86_64, Git, curl, Python 3.10+, Docker with BuildKit and permission
-to run `docker` as your login user. Check GPU access inside Docker even if
-`nvidia-smi` works on the host. If needed, follow the official
-[Docker Engine installation](https://docs.docker.com/engine/install/) and
-[NVIDIA Container Toolkit setup](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
-with your administrator. Restarting Docker can interrupt other containers.
+to run Docker as your login user. If needed, follow the official
+[Docker installation](https://docs.docker.com/engine/install/) and
+[NVIDIA Container Toolkit setup](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html).
+Restarting Docker can interrupt other containers.
 
-Verify Docker GPU visibility using the recipe's pinned CUDA base:
+Check GPU access inside Docker before spending time on a build:
 
 ```bash
 docker run --rm --gpus all \
@@ -38,120 +36,155 @@ docker run --rm --gpus all \
   nvidia-smi
 ```
 
-You should see both cards. Fix access errors here before spending time on a build.
+You should see both cards. Check space on the model-cache and Docker disks.
 
-## 2. Get the recipe and checkpoint
+## 2. Configure and download
 
 ```bash
 git clone https://github.com/hfyeomans/deepseek-v4-flash-nvfp4-tp2.git
 cd deepseek-v4-flash-nvfp4-tp2
+cp example.env .env
+```
+
+Edit `.env` before continuing. It contains the tested everyday profile:
+**1,000,000 tokens, 96% memory, two slots, batch 2,048, prefill cap 1,792 and
+fixed-K5 DSpark**. These are defaults you can change; other values need testing.
+Set `HF_CACHE` to your weight-cache location. For a coding agent on another
+machine, set `BIND_ADDRESS` to the GPU host's LAN IPv4 address.
+
+Build and serve load `.env` themselves and fail if it's missing. These are
+trusted Bash assignments; file values win over old shell exports. The shared
+loader also makes the same settings available to the commands below:
+
+```bash
+source scripts/config.sh
 mkdir -p results/raw
 python3 -m venv .venv
-. .venv/bin/activate
+source .venv/bin/activate
 python -m pip install 'huggingface_hub==1.30.0'
-hf --help
-export MODEL=nvidia/DeepSeek-V4-Flash-0731-NVFP4
-export REVISION=f1caa71142bd0be02f728c79f75042ac1e461579
-export HF_CACHE="$HOME/.cache/huggingface"
 hf download "$MODEL" --revision "$REVISION" --cache-dir "$HF_CACHE/hub"
 ```
 
 If Ubuntu lacks `venv`, install `python3-venv`. The
 [HF CLI guide](https://huggingface.co/docs/huggingface_hub/guides/cli) covers
-installation and authentication; this rehearsal used package version 1.30.0.
-Reuse a complete pinned cache if you have one. No GGUF conversion or separate
-draft download is needed. `HF_CACHE` is the parent of `hub`; use the same value
-for downloading and serving. Keep these exports in this terminal or set them
-again after reconnecting.
+installation and authentication. Reuse a complete pinned cache if you have one.
+`HF_CACHE` is the parent of `hub`; no GGUF conversion or separate draft download
+is needed. After editing `.env` or reconnecting, source the loader again for
+manual commands. [Alternate config files](running.md#configuration) work too.
 
 ## 3. Build and check the image
 
 ```bash
-export FINAL_IMAGE=dsv4-nvfp4:first-run
 bash build.sh > results/raw/build.log 2>&1
-docker image inspect "$FINAL_IMAGE" --format '{{.Id}}'
+docker image inspect "$IMAGE" --format '{{.Id}}'
 ```
 
 Wait for a successful build exit. In another terminal, `tail -f
-results/raw/build.log` shows progress. Defaults are 16 build jobs and 8 NVCC
-threads; lower `BUILD_JOBS` and `NVCC_THREADS` to reduce compilation load. If
-Ubuntu HTTP downloads stall, retry with
-`APT_HTTPS_IPV4=1 BUILD_NETWORK=host bash build.sh` and a separate log. This
-keeps the signed repositories; see [the diagnosed failure](troubleshooting.md#slow-ubuntu-package-downloads-during-the-public-rebuild).
+results/raw/build.log` shows progress. The default image tag is
+`dsv4-nvfp4:recipe`; Docker may display `docker.io/library/` in front of it.
+That display doesn't mean the image was uploaded.
 
-Check the patches and model metadata inside your new image before loading GPUs:
+Already built this pinned, patched image under an older name? These launcher
+changes don't require recompiling it. Give it the stable tag with
+`docker tag <existing-image-tag-or-id> dsv4-nvfp4:recipe`, then run the image
+checks below. Tagging keeps the same bytes and leaves the old tag available.
+
+Lower `BUILD_JOBS` and `NVCC_THREADS` in `.env` if compilation uses too much RAM.
+If Ubuntu HTTP downloads stall, set `APT_HTTPS_IPV4=1` and `BUILD_NETWORK=host`
+in `.env`, then rerun the build with a new log filename. See
+[the network diagnosis](troubleshooting.md#slow-ubuntu-package-downloads-during-the-public-rebuild).
+A [setup.py deprecation warning](troubleshooting.md#python-packaging-deprecation-warning)
+alone isn't a failed build; retain the log and check the final exit status.
+
+Check the patches and checkpoint metadata inside the image before loading GPUs:
 
 ```bash
-export CHECK_MODEL_DIR="/root/.cache/huggingface/hub/models--nvidia--DeepSeek-V4-Flash-0731-NVFP4/snapshots/$REVISION"
+CHECK_MODEL_DIR="/root/.cache/huggingface/hub/models--nvidia--DeepSeek-V4-Flash-0731-NVFP4/snapshots/$REVISION"
 docker run --rm --entrypoint bash \
   -e HF_HUB_OFFLINE=1 -e CUDA_VISIBLE_DEVICES=-1 \
   -e "DSPARK_TEST_MODEL_CONFIG=$CHECK_MODEL_DIR/config.json" \
   -e "DSPARK_TEST_MODEL_DIR=$CHECK_MODEL_DIR" \
   -v "$HF_CACHE:/root/.cache/huggingface:ro" \
-  "$FINAL_IMAGE" -c 'set -e
+  "$IMAGE" -c 'set -e
     for check_test in /opt/recipe-tests/test_*.py; do
       python3 "$check_test"
     done'
 ```
 
-All 13 methods must pass. These check CPU behavior and checkpoint metadata.
-Next, we'll check the running model.
+All 13 methods must pass. These check CPU behavior and metadata; the next step
+checks the running model.
 
-## 4. Launch your everyday coding/tools profile
+## 4. Start and watch the server
 
-Let the old model finish its requests, then stop its container. You'll need
-both GPUs. Keep that container and image so recovery is a restart away.
-
-```bash
-IMAGE="$FINAL_IMAGE" CONTAINER_NAME=dsv4-first-run \
-KERNEL_CACHE=dsv4-first-run-kernels \
-MAX_MODEL_LEN=1000000 GPU_MEMORY_UTILIZATION=0.96 \
-MAX_BATCHED_TOKENS=2048 MAX_NUM_SEQS=2 \
-  bash serve.sh --long-prefill-token-threshold 1792
-docker logs -f dsv4-first-run
-```
-
-Use a new kernel-volume name for first qualification, then keep it for
-restarts. Wait for **Application startup complete**. Ctrl-C leaves the detached
-server running. The fresh-cache rehearsal took about nine minutes to readiness;
-some later request shapes still needed compilation. Busy CPU compilers with
-low GPU use and periodic shared-memory wait messages don't, alone, indicate a
-hang. See the [qualification timings](../tasks/release-readiness/verification.md).
+Both GPUs must be available. Let the old model finish its requests, then stop
+its container. This stops that container, not the Docker service or its image:
 
 ```bash
-curl --fail http://127.0.0.1:8000/health
-curl --fail http://127.0.0.1:8000/v1/models
-curl --fail http://127.0.0.1:8000/v1/chat/completions \
-  -H 'Content-Type: application/json' \
-  -d '{"model":"dsv4-nvfp4","messages":[{"role":"user","content":"Write a Python function that adds two numbers."}],"max_tokens":128,"chat_template_kwargs":{"thinking":false}}'
-python3 verify.py --output results/raw/first-run-features.json
+docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}'
+docker stop <old-container-name>
 ```
 
-Expect HTTP 200 with an empty health response and `dsv4-nvfp4` in `/v1/models`.
-All 19 short feature checks should pass. These cover APIs such as tools, reasoning
-and streaming. You'll need separate measurements for coding accuracy, 1M
-retrieval and DSpark speed.
-
-## 5. Reconnect, recover and choose the next check
-
-After your test requests finish, verify a warmed restart:
+Replace the placeholder with the name from the list. Keep that container for
+recovery. With the default name in `.env`, launch and follow logs:
 
 ```bash
-docker restart dsv4-first-run
-docker logs -f dsv4-first-run
+bash serve.sh
+docker logs --timestamps -f dsv4-nvfp4
 ```
 
-Wait for startup, then repeat health and the feature suite with a new output
-filename. Connect a local client to `http://127.0.0.1:8000/v1` with model
-`dsv4-nvfp4`. For another machine, follow the
-[LAN binding instructions](running.md#start-the-server).
+The launcher prints your configured client URL, model name, health and stop
+commands. Ctrl-C exits the log viewer and leaves the server running. Wait for
+**Application startup complete** and a healthy status:
 
-The coding profile is ready to use. The [running guide](running.md) covers
-benchmarks, DSpark counters, 801K/1M probes and the secondary profile. Budget
-time for large probes: the measured near-1M mixed run took about 514 seconds.
-Two full-window requests haven't been qualified. For recovery, use the
-[saved container or tagged rebuild](running.md#preserved-baseline-and-rollback).
+```bash
+source scripts/config.sh
+docker inspect --format '{{.State.Status}} / {{.State.Health.Status}}' "$CONTAINER_NAME"
+curl --fail "$BASE_URL/health"
+curl --fail "$BASE_URL/v1/models"
+python3 verify.py --base-url "$BASE_URL" --model "$SERVED_MODEL_NAME" \
+  --output results/raw/features.json
+```
 
-The [release record](../tasks/release-readiness/verification.md) says exactly
-what we rehearsed on the existing host. I haven't personally walked these
-steps yet, and an independent fresh-machine install is still untested.
+Health returns HTTP 200 with an empty body. `/v1/models` lists your served alias.
+All 19 short feature checks should pass. These cover tools, reasoning, streaming
+and other APIs; coding accuracy, 1M retrieval and speed need separate tests.
+
+A fresh kernel cache took about nine minutes to readiness in the rehearsal.
+Keep `dsv4-nvfp4-kernels` for later restarts. Some new request shapes can still
+compile kernels. See [startup timings](../tasks/release-readiness/verification.md)
+and [what the logs mean](running.md#logs-and-health).
+
+## 5. Connect your coding agent
+
+Choose an OpenAI-compatible provider. With the default settings, use:
+
+| Client setting | Value |
+|---|---|
+| Base URL, on the GPU host | `http://127.0.0.1:8000/v1` |
+| Base URL, on another machine | `http://<gpu-host-LAN-address>:8000/v1` after changing `BIND_ADDRESS` |
+| Model name | `dsv4-nvfp4` (the `SERVED_MODEL_NAME` value) |
+| API key | A nonempty placeholder if your client requires one; this recipe doesn't configure server authentication |
+
+The client sends the served alias as its model name. The Hugging Face path
+identifies the download; the Docker tag identifies the runtime image.
+
+## 6. Stop, restart and change settings
+
+With the default container name:
+
+```bash
+docker stop dsv4-nvfp4
+docker start dsv4-nvfp4
+docker logs --timestamps -f dsv4-nvfp4
+```
+
+To check a warmed restart while it's running, use `docker restart dsv4-nvfp4`.
+Wait for healthy, then repeat the feature suite with a new output filename.
+**Restarting keeps the container's original settings.** To apply an edited
+`.env`, stop the old container, give `CONTAINER_NAME` a new name in `.env`, and
+run `bash serve.sh`. This keeps the previous container and logs for recovery.
+The [running guide](running.md) covers comparisons, profile changes and rollback.
+
+The [release record](../tasks/release-readiness/verification.md) covers the
+rehearsal on the existing host. The owner's walkthrough is in progress;
+an independent fresh-machine install remains unqualified.

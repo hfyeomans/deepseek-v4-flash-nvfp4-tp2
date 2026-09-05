@@ -1,22 +1,24 @@
 #!/usr/bin/env bash
-# Experimental launch under validation; see README.md for current limitations.
+# Launch the profile in .env; see docs/running.md for checks and recovery.
 set -euo pipefail
 
-IMAGE=${IMAGE:-dsv4-nvfp4:recipe}
-MODEL=${MODEL:-nvidia/DeepSeek-V4-Flash-0731-NVFP4}
-REVISION=${REVISION:-f1caa71142bd0be02f728c79f75042ac1e461579}
-HF_CACHE=${HF_CACHE:-${HOME}/.cache/huggingface}
-KERNEL_CACHE=${KERNEL_CACHE:-codex-dsv4-kernel-cache}
-CONTAINER_NAME=${CONTAINER_NAME:-dsv4-nvfp4}
-BIND_ADDRESS=${BIND_ADDRESS:-127.0.0.1}
-PORT=${PORT:-8000}
-MAX_MODEL_LEN=${MAX_MODEL_LEN:-65536}
-MAX_NUM_SEQS=${MAX_NUM_SEQS:-2}
-MAX_BATCHED_TOKENS=${MAX_BATCHED_TOKENS:-2048}
-GPU_MEMORY_UTILIZATION=${GPU_MEMORY_UTILIZATION:-0.95}
-OFFLINE=${OFFLINE:-1}
-DSPARK=${DSPARK:-1}
-EAGER=${EAGER:-0}
+RECIPE_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+# shellcheck source=scripts/config.sh
+source "$RECIPE_DIR/scripts/config.sh"
+if (( $# != 0 )); then
+  echo 'serve.sh takes no arguments. Change .env or select a file with RECIPE_ENV_FILE.' >&2
+  exit 1
+fi
+require_settings IMAGE MODEL REVISION HF_CACHE KERNEL_CACHE CONTAINER_NAME \
+  BIND_ADDRESS PORT SERVER_PORT SERVED_MODEL_NAME MAX_MODEL_LEN MAX_NUM_SEQS \
+  MAX_BATCHED_TOKENS LONG_PREFILL_TOKEN_THRESHOLD GPU_MEMORY_UTILIZATION \
+  MAX_CUDAGRAPH_CAPTURE_SIZE MAX_JOBS LOGGING_CONFIG DOCKER_LOG_MAX_SIZE \
+  DOCKER_LOG_MAX_FILES HEALTH_INTERVAL HEALTH_TIMEOUT_SECONDS HEALTH_START_PERIOD HEALTH_RETRIES
+require_uints PORT SERVER_PORT MAX_MODEL_LEN MAX_NUM_SEQS MAX_BATCHED_TOKENS \
+  LONG_PREFILL_TOKEN_THRESHOLD MAX_CUDAGRAPH_CAPTURE_SIZE MAX_JOBS MAX_LOG_LEN \
+  DOCKER_LOG_MAX_FILES HEALTH_TIMEOUT_SECONDS HEALTH_RETRIES
+require_switches OFFLINE DSPARK EAGER LOG_REQUESTS LOG_OUTPUTS
+[[ -f "$LOGGING_CONFIG" ]] || { echo 'LOGGING_CONFIG must name an existing file.' >&2; exit 1; }
 
 [[ "$REVISION" =~ ^[0-9a-f]{40}$ ]] || {
   echo 'REVISION must be a full pinned Hugging Face commit SHA.' >&2
@@ -27,21 +29,37 @@ extra_args=()
 if [[ "$EAGER" == 1 ]]; then
   extra_args+=(--enforce-eager)
 else
-  extra_args+=(--compilation-config '{"cudagraph_mode":"FULL_DECODE_ONLY","max_cudagraph_capture_size":16}')
+  printf -v compilation_config '{"cudagraph_mode":"FULL_DECODE_ONLY","max_cudagraph_capture_size":%s}' "$MAX_CUDAGRAPH_CAPTURE_SIZE"
+  extra_args+=(--compilation-config "$compilation_config")
 fi
 if [[ "$DSPARK" == 1 ]]; then
   printf -v speculative_config '{"method":"dspark","num_speculative_tokens":5,"draft_sample_method":"probabilistic","moe_backend":"marlin","revision":"%s"}' "$REVISION"
   extra_args+=(--speculative-config "$speculative_config")
 fi
+if [[ "$LOG_REQUESTS" == 1 ]]; then
+  extra_args+=(--enable-log-requests --max-log-len "$MAX_LOG_LEN")
+  if [[ "$LOG_OUTPUTS" == 1 ]]; then
+    extra_args+=(--enable-log-outputs --no-enable-log-deltas)
+  fi
+fi
+printf -v health_cmd "python3 -c 'import sys, urllib.request; r = urllib.request.urlopen(\"http://127.0.0.1:%s/health\", timeout=%s); sys.exit(0 if r.status == 200 else 1)'" \
+  "$SERVER_PORT" "$HEALTH_TIMEOUT_SECONDS"
 
-exec docker run -d --name "$CONTAINER_NAME" --gpus all --ipc=host \
-  -p "$BIND_ADDRESS:$PORT:8000" \
+container_id=$(docker run -d --name "$CONTAINER_NAME" --gpus all --ipc=host \
+  -p "$BIND_ADDRESS:$PORT:$SERVER_PORT" \
+  --log-driver json-file --log-opt "max-size=$DOCKER_LOG_MAX_SIZE" --log-opt "max-file=$DOCKER_LOG_MAX_FILES" \
+  --health-cmd "$health_cmd" --health-interval "$HEALTH_INTERVAL" \
+  --health-timeout "${HEALTH_TIMEOUT_SECONDS}s" --health-start-period "$HEALTH_START_PERIOD" \
+  --health-retries "$HEALTH_RETRIES" \
   -e HF_HUB_OFFLINE="$OFFLINE" -e HF_DATASETS_OFFLINE="$OFFLINE" \
-  -e MAX_JOBS="${MAX_JOBS:-8}" \
+  -e MAX_JOBS="$MAX_JOBS" \
+  -e VLLM_LOGGING_CONFIG_PATH=/etc/vllm/logging.json \
   -e DSPARK_VERIFY_WEIGHT_COVERAGE=1 \
+  --mount "type=bind,source=$LOGGING_CONFIG,target=/etc/vllm/logging.json,readonly" \
   -v "$HF_CACHE:/root/.cache/huggingface" \
   -v "$KERNEL_CACHE:/root/.cache/flashinfer" \
   "$IMAGE" "$MODEL" \
+  --host 0.0.0.0 --port "$SERVER_PORT" \
   --revision "$REVISION" --tokenizer-revision "$REVISION" \
   --trust-remote-code --tokenizer-mode deepseek_v4 \
   --tool-call-parser deepseek_v4 --enable-auto-tool-choice \
@@ -49,6 +67,15 @@ exec docker run -d --name "$CONTAINER_NAME" --gpus all --ipc=host \
   --kv-cache-dtype fp8 --block-size 256 --moe-backend flashinfer_cutlass \
   --max-model-len "$MAX_MODEL_LEN" --max-num-seqs "$MAX_NUM_SEQS" \
   --max-num-batched-tokens "$MAX_BATCHED_TOKENS" \
+  --long-prefill-token-threshold "$LONG_PREFILL_TOKEN_THRESHOLD" \
   --gpu-memory-utilization "$GPU_MEMORY_UTILIZATION" \
-  --enable-prefix-caching --served-model-name dsv4-nvfp4 \
-  "${extra_args[@]}" "$@"
+  --enable-prefix-caching --served-model-name "$SERVED_MODEL_NAME" \
+  "${extra_args[@]}")
+
+printf 'Created %s (%s). Starting; wait for healthy before sending requests.\n' "$CONTAINER_NAME" "$container_id"
+printf 'Config: %s\nImage: %s\nClient base URL: %s/v1\nModel: %s\n' \
+  "$RECIPE_ENV_FILE" "$IMAGE" "$BASE_URL" "$SERVED_MODEL_NAME"
+[[ "$BIND_ADDRESS" != 0.0.0.0 ]] || echo 'For LAN clients, replace 127.0.0.1 with the GPU host address.'
+printf 'Logs:   docker logs --timestamps -f %q\n' "$CONTAINER_NAME"
+printf "Status: docker inspect --format '{{.State.Status}} / {{.State.Health.Status}}' %q\n" "$CONTAINER_NAME"
+printf 'Stop:   docker stop %q\nRestart saved container: docker start %q\n' "$CONTAINER_NAME" "$CONTAINER_NAME"

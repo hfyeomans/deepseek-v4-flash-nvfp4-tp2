@@ -4,6 +4,26 @@ These are the failures we reproduced and the fixes we checked. Use the symptoms
 to find the relevant case, then validate your own GPU/API behavior if the image
 or model revision differs.
 
+## Python packaging deprecation warning
+
+`SetuptoolsDeprecationWarning: setup.py install is deprecated` is a maintenance
+warning. It doesn't by itself fail the build or show a runtime/DSpark defect.
+Keep the full log, including the step heading above the warning, and check the
+build's exit status. An image with the same tag may be left from an older build.
+
+The pinned upstream [Dockerfile](https://github.com/jasl/vllm/blob/0f59188db1504b042ce621842bdde6c0fe862df6/docker/Dockerfile#L575)
+invokes `setup.py bdist_wheel`, which can reach the deprecated install machinery
+while assembling a wheel. The reported step `#57` alone doesn't identify the
+emitting package. [PyPA's guidance](https://packaging.python.org/en/latest/discussions/setup-py-deprecated/)
+is to use a build frontend such as `python -m build`; setuptools and `setup.py`
+as configuration remain supported.
+
+This needs follow-up before updating the build toolchain. Migrate the upstream
+wheel steps, preserve their CUDA/build flags and Python ABI tag, then run a full
+build, the 13 image CPU tests and GPU/API checks. We haven't made that packaging
+change or suppressed the warning. Track it in the
+[operator test record](../tasks/operator-experience/state.md).
+
 ## FlashInfer cache and TVM ABI
 
 The original image loads the main model at 77.83 GiB per GPU, then both workers
@@ -86,7 +106,7 @@ On the test host, the original HTTP package-index fetch remained stalled after
 more than ten minutes. Small container probes reproduced timeouts. A 64 KiB
 HTTPS/IPv4 probe over host networking completed in 0.14 seconds.
 
-`APT_HTTPS_IPV4=1 BUILD_NETWORK=host` switches the pinned CUDA parents to HTTPS
+Setting `APT_HTTPS_IPV4=1` and `BUILD_NETWORK=host` in `.env` switches the pinned CUDA parents to HTTPS
 for the same Ubuntu repositories and forces APT to use IPv4. Package signatures
 remain verified. It passed the stalled fetch, completed the build and passed
 [source-image acceptance](source-image-validation.md). The default build keeps

@@ -133,9 +133,7 @@ below match the pinned CLI. Random completions exercise memory and scheduling;
 include coding fixtures, tool roundtrips and API checks when choosing a default.
 
 ```bash
-CONTAINER_NAME=dsv4-nvfp4
-MODEL_ALIAS=dsv4-nvfp4
-REVISION=f1caa71142bd0be02f728c79f75042ac1e461579
+source scripts/config.sh
 TOKENIZER_PATH="/root/.cache/huggingface/hub/models--nvidia--DeepSeek-V4-Flash-0731-NVFP4/snapshots/$REVISION"
 LABEL=1m-b2560-c1-seed101
 BENCH_SEED=101
@@ -144,9 +142,9 @@ CONCURRENCY=1
 PROMPT_COUNT=2
 
 docker exec "$CONTAINER_NAME" vllm bench serve \
-  --model "$MODEL_ALIAS" --tokenizer "$TOKENIZER_PATH" \
+  --model "$SERVED_MODEL_NAME" --tokenizer "$TOKENIZER_PATH" \
   --tokenizer-mode deepseek_v4 --backend vllm \
-  --base-url http://127.0.0.1:8000 --endpoint /v1/completions \
+  --base-url "http://127.0.0.1:$SERVER_PORT" --endpoint /v1/completions \
   --dataset-name random --random-input-len 131072 --random-output-len 512 \
   --random-prefix-len 0 --random-range-ratio 0 \
   --num-prompts "$PROMPT_COUNT" --max-concurrency "$CONCURRENCY" \

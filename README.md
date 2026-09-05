@@ -20,10 +20,11 @@ and check the image, then connect a client. Use the
 [running guide](docs/running.md) when you're ready to compare profiles or
 repeat the experiments.
 
-The launcher defaults to 64K / 95%; the selected profile needs explicit
-overrides. The secondary profile changes only the prefill cap to 512. It
-improved tool latency during long inputs at the cost of slower foreground
-coding. See [both launch commands and the tradeoff](docs/running.md#recommended-coding-profile).
+Copy [example.env](example.env) to `.env` and edit it for your host. Both build
+and serve require it. The example uses the selected 1M/96% profile; change the
+prefill cap to 512 for the secondary profile. That improved tool latency during
+long inputs at the cost of slower foreground coding. See
+[configuration and the tradeoff](docs/running.md#recommended-coding-profile).
 
 ## Acceleration benefits and costs
 
