@@ -89,9 +89,10 @@ sustained throughput.
   [feature requirements](docs/validation.md): reasoning, tools, streaming,
   structured output, cancellation, concurrency and proof boundaries.
 
-Target decode graphs, parallel drafting, Markov correction and target
-verification are active. The confidence head is loaded but unused. Adaptive
-verification and optional draft-forward graphs have no measured gain here.
+DSpark is enabled. Its optional draft CUDA graph remains disabled pending
+testing on this hardware. Target decode graphs, parallel drafting, Markov
+correction and target verification are active. The confidence head is loaded
+but unused; adaptive verification is not implemented in this pinned proposer.
 
 ## Provenance and repository boundary
 

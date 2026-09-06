@@ -55,7 +55,7 @@ head but doesn't call it to select variable prefixes. Our profile uses
 | Confidence/load/hardware-aware variable-prefix verification | Not implemented in this pinned proposer |
 | Generic draft-length table by batch size | Disabled; not a validated substitute for confidence scheduling |
 | Target decode CUDA graphs | Enabled and measured with `FULL_DECODE_ONLY` |
-| Experimental DSpark draft-forward graph | Available in the pinned fork, disabled and not GPU-validated here |
+| Optional DSpark draft CUDA graph | Available in the pinned fork; disabled pending testing on this hardware |
 | Fused Markov sampling optimization | Enabled by default, with request-dependent fallbacks; temperature-zero requests use the greedy path |
 
 We didn't lose confidence scheduling through memory tuning; this source never
@@ -69,7 +69,9 @@ below the checkpoint's validated five-token layout. See
 [Markov sampling](https://github.com/jasl/vllm/blob/0f59188db1504b042ce621842bdde6c0fe862df6/vllm/v1/spec_decode/dspark_sampling.py#L182)
 and [dynamic graph behavior](https://github.com/jasl/vllm/blob/0f59188db1504b042ce621842bdde6c0fe862df6/vllm/config/vllm.py#L902).
 
-Measured graphs cover **target decode**. The separate draft-forward prototype
+Measured graphs cover **target decode**. DSpark drafting is enabled. Its optional
+draft CUDA graph records and replays the draft model's forward pass, the
+computation used to propose tokens, to reduce GPU launch overhead. The prototype
 uses `dspark_forward_cudagraph` and, for TP2, `dspark_forward_cudagraph_allow_tp`;
 both default false. It captures one active draft request; two-request batches
 fall back to ordinary execution while retaining two slots. Draft KV preparation,

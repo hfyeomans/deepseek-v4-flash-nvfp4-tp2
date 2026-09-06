@@ -137,7 +137,8 @@ The example binds to loopback and starts with:
 | Main expert backend | FlashInfer CUTLASS, NVFP4 |
 | DSpark draft | Marlin, original MXFP4, five speculative tokens |
 | KV cache | FP8, block size 256, prefix caching enabled |
-| Target decode CUDA graphs | FULL_DECODE_ONLY, maximum capture size 16; experimental draft-forward graph disabled |
+| Target decode CUDA graphs | Enabled with FULL_DECODE_ONLY, maximum capture size 16 |
+| Optional DSpark draft CUDA graph | Disabled pending testing on this hardware; DSpark drafting remains enabled |
 | Sequence slots / batched tokens | 2 / 2,048 |
 | Tokenizer, reasoning, tool parser | `deepseek_v4` |
 
@@ -310,8 +311,9 @@ Keep `CONTAINER_NAME` and all other settings fixed.
 Cap 512 reduced the tool median to 2.186 seconds during repeated 262K inputs
 and took 18.113 seconds in one near-1M trial. The coding fixture slowed to
 12.205 seconds. Both profiles keep fixed-K5 DSpark, Markov correction and target
-decode graphs. Adaptive verification and optional draft-forward graphs are
-disabled. See [measurements and startup limits](interactive-latency.md).
+decode graphs. The optional draft CUDA graph remains disabled pending testing
+on this hardware. Adaptive verification is not implemented in this pinned
+proposer. See [measurements and startup limits](interactive-latency.md).
 
 ## Run the API checks
 

@@ -8,8 +8,8 @@ use all three recipe patches. The source rebuild has
 
 Both modes use 64K, TP=2, two slots, FP8 KV, 95% memory and FULL_DECODE_ONLY
 **target decode** graphs. Main experts use FlashInfer CUTLASS; DSpark uses
-Marlin with five proposals. The source build was stopped. Optional draft-forward
-graphs were disabled.
+Marlin with five proposals. The source build was stopped. The optional DSpark
+draft CUDA graph was disabled in these measurements.
 
 Single-request rates are medians of two repeats after one warmup per prompt;
 concurrency uses one paired trial per mode. Each response has 256 tokens.
