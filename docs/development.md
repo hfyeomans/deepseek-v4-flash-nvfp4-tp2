@@ -24,7 +24,7 @@ No GPU or model server is needed. Run [image/GPU checks](running.md) separately.
 
 ## Make a bounded change
 
-1. Branch from the current recipe and record the problem in `tasks/<slug>/`.
+1. Branch from `main` and record the problem in `tasks/<slug>/`.
    Add a failing regression for behavior changes.
 2. Fix the cause. Keep request records in the API client and feature assertions
    in their checks. Clients with different timing definitions need separate logic.

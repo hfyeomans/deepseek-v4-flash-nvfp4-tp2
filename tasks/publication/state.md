@@ -1,5 +1,9 @@
 # Recipe publication state
 
+`main` consolidates the recipe branches. The original branches and recovery tag
+are retained; see [branch integration](../main-integration/state.md). This does
+not change repository visibility or the pending GPU qualification.
+
 `recipe-1m-k5` preserves tested profiles and findings. Later release fixes add
 client/build hardening, onboarding and CPU CI. Historical results and runtime
 patches remain unchanged. See [provenance](../../docs/provenance.md).

@@ -1,8 +1,8 @@
 # Lifecycle automation state
 
 Design agreed: automatic apply after editing `.env`, with an optional preview.
-Implemented on `recipe/operator-config`; recovery is `a2a699b`. The
-[plan](plan.md), [research](research.md) and [verification](verification.md)
+Implemented on `recipe/operator-config` and included in `main`; recovery is
+`a2a699b`. The [plan](plan.md), [research](research.md) and [verification](verification.md)
 record ownership, review findings and failure paths.
 
 `recipe.sh` now chooses build, resume or replacement and offers plan/build/

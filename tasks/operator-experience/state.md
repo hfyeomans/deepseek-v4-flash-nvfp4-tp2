@@ -1,7 +1,8 @@
 # State
 
-Implemented and locally verified on `recipe/operator-config`. Recovery point:
-`1ed5bfa`. The owner's GPU walkthrough is in progress; host checks have been read-only.
+Implemented and locally verified on `recipe/operator-config`, now included in
+`main`. Recovery point: `1ed5bfa`. The owner's GPU walkthrough is in progress;
+host checks have been read-only.
 Independent fresh-machine qualification remains open.
 
 The later [lifecycle task](../lifecycle-automation/state.md) replaces the manual

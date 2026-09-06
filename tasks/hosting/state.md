@@ -12,7 +12,8 @@ fixed-K5 deployment code and findings. The split changed no serving settings.
 
 ## Verified
 
-- Recorded branch: `recipe/validated-tp2`.
+- Historical measurement branch: `recipe/validated-tp2`. Current recipe work
+  is consolidated in `main`; see [branch integration](../main-integration/state.md).
 - Two RTX PRO 6000 Blackwell Max-Q GPUs, 97,887 MiB each, TP=2.
 - Driver 610.57.04, Linux 7.0.0-30-generic, 246 GiB RAM; NODE topology within one
   NUMA node, no NVLink.
