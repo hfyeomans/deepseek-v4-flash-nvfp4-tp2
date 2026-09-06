@@ -38,3 +38,13 @@ The changed setting was `BIND_ADDRESS=0.0.0.0`. Docker's published address is
 chosen at container creation. Rebuilding the image cannot update that address
 in an existing container. The owner emphasized that this distinction must be
 visible to anyone following the recipe, before they rebuild unnecessarily.
+
+## Kernel provenance clarification
+
+`build.sh` targets architecture 12.0 using the pinned SM120 fork and CUDA 13.0.3.
+The original build provenance records the same target. The ABI Dockerfile
+removes the incompatible FlashInfer JIT cache and fixes header/linker lookup;
+it contains no CUDA kernel source edits. All three recipe patches modify Python
+files. Source-image records retain packaged FlashInfer cubins, so this isn't a
+claim that every GPU binary was compiled locally. Existing component profiles
+provide a starting point for future kernel work, not proof of kernel optimality.

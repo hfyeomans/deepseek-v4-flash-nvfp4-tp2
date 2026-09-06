@@ -88,12 +88,17 @@ Checkpoint: `f1caa71142bd0be02f728c79f75042ac1e461579`; source fork:
 DSpark experts use MXFP4 with Marlin. The source image passed 13 runtime CPU
 tests; client checks and GPU measurements are recorded separately.
 
+The [kernel sources and local changes](docs/provenance.md#kernel-sources-and-local-changes)
+table explains what we rebuilt for SM120, which upstream implementations we
+reused and how we fixed their integration. Further kernel experiments are planned;
+the current gains measure serving configurations.
+
 For changes, use the [local checks and development workflow](docs/development.md).
 
 Deployment code and findings live in
 [deepseek-v4-flash-nvfp4-tp2](https://github.com/hfyeomans/deepseek-v4-flash-nvfp4-tp2).
 The private [adaptive-verification repository](https://github.com/hfyeomans/deepseek-v4-flash-adaptive-verification)
-owns compatibility research and future experiments. It shares these baseline
+owns adaptive compatibility research and adaptive experiments. It shares these baseline
 measurements; adaptive speedup remains unmeasured.
 
 The clean recipe checkpoint is `recipe-1m-k5`. Original combined history and

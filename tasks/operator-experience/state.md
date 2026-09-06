@@ -21,6 +21,11 @@ Docker owns health probes and log rotation; launch output includes client,
 status, log, stop and recovery commands. Restarting doesn't apply edited `.env`
 settings; create a new container for those changes.
 
+The [kernel provenance table](../../docs/provenance.md#kernel-sources-and-local-changes)
+now separates upstream implementations, SM120 compilation, the ABI repair and
+our Python patches. Further kernel experiments are recorded in
+[their own future task](../kernel-experiments/state.md); they haven't started.
+
 All 47 local tests passed, including 19 operator tests. Both earlier adversarial
 findings were reproduced and fixed. See [verification](verification.md),
 [design](plan.md) and [source findings](research.md).

@@ -68,6 +68,8 @@ For serving-only `.env` changes, skip this section and
 Check Docker GPU access and Git first. `build.sh` checks out the pinned source
 into `work/vllm-source`, recreates the SM120 build, fixes the FlashInfer cache
 ABI issue and applies three runtime patches.
+See [kernel sources and local changes](provenance.md#kernel-sources-and-local-changes)
+for what compiles for SM120 and what we changed.
 
 ```bash
 bash build.sh

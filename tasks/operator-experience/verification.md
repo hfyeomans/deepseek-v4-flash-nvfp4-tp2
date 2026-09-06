@@ -56,3 +56,12 @@ with stdout redirection alone could lose stderr before removal. The replacement
 command now saves both streams with `2>&1`. No other actionable lifecycle or
 duplication findings were reported. This follow-up made no GPU-host changes
 and doesn't establish startup, throughput or model-quality results.
+
+## Kernel provenance documentation
+
+Checked the explanation against `build.sh`, both patch Dockerfiles, the patch
+inventory and saved build provenance. It distinguishes SM120 compilation and
+integration fixes from CUDA arithmetic edits, and preserves upstream attribution.
+The component table and future-task links received Humanizer and then Hank's
+technical-voice passes. Markdown link/anchor and whitespace checks passed.
+This was a documentation-only change; no runtime tests or GPU experiments ran.

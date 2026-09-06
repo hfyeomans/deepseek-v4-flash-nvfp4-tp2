@@ -3,7 +3,7 @@
 Use this repo to run fixed-K5 NVFP4 at TP2 and understand its measured tradeoffs.
 It includes builds, patches, profiles, checks and benchmarks.
 
-Keep adaptive compatibility research and future experiments in the private
+Keep adaptive compatibility research and adaptive experiments in the private
 project. Both repos retain fixed-mode numbers: they explain this recipe's
 gains and give adaptive work a baseline. Measure a candidate before
 recommending it.

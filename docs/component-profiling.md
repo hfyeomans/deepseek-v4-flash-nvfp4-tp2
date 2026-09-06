@@ -111,3 +111,5 @@ Use these profiles to find work worth investigating, then measure gains with
 unprofiled [controls](primary-control-screen.md). Padding and overlap matter,
 and instrumentation changes costs. The [adaptive project](repository-boundaries.md)
 shares these baselines; any new claim needs its own matched measurements.
+The [future kernel task](../tasks/kernel-experiments/state.md) uses the same
+evidence to investigate SM120 improvements beyond the current recipe.

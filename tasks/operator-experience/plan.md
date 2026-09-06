@@ -63,3 +63,12 @@ Add regressions for stopped and active containers, preserving the no-container
 launch and Docker-failure checks. Clarify resume versus replacement in the
 existing lifecycle documentation. Run local checks and a bounded independent
 lifecycle review before committing. The owner's GPU session stays untouched.
+
+## Explain kernel provenance
+
+Add the component table and concrete build/runtime changes to the provenance
+guide, with short links from the README and build instructions. Distinguish
+SM120 compilation and Python compatibility fixes from CUDA kernel rewrites.
+Record future kernel experiments in their own task state and link it from the
+development guide. Preserve runtime code, measurements and all existing tables.
+Review prose with Humanizer, then Hank's technical voice, and validate links.

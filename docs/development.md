@@ -41,3 +41,11 @@ The [release review](../tasks/release-readiness/review.md) records adversarial
 and duplication findings, fixes and validation limits. The
 [operator update](../tasks/operator-experience/state.md) tracks config/logging
 changes and the owner's pending GPU retest.
+
+## Future kernel experiments
+
+The [kernel experiment task](../tasks/kernel-experiments/state.md) is recorded
+but hasn't started. It covers profiling and testing further SM120 improvements
+against the current recipe. Start with the existing component traces; preserve
+the working image and require measured gains, correctness and memory checks
+before adopting a change. Adaptive-verification work stays in its own repo.
