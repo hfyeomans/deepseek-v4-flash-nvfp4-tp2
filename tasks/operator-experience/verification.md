@@ -1,7 +1,7 @@
 # Verification, 2026-09-05
 
-`bash scripts/check-local.sh` passed: Bash syntax, ShellCheck and **44 CPU test
-methods**, including 16 operator tests. The health test needed permission to
+`bash scripts/check-local.sh` passed: Bash syntax, ShellCheck and **47 CPU test
+methods**, including 19 operator tests. The health test needed permission to
 bind a temporary localhost socket in this sandbox. It made no GPU requests.
 
 The entrypoint tests execute real Bash scripts with fake Docker/Git boundaries.
@@ -40,3 +40,19 @@ Pinned source inspection confirmed request/output flags, the negative
 prompt detail behavior. A full image build, actual vLLM logs, GPU health and
 performance under the new logging defaults remain for the owner's retest.
 The existing host/container was not changed. No public release was made.
+
+## Saved-container follow-up
+
+Two new regression methods reproduced the raw name conflict across seven
+container states before the fix, then passed. The launcher now performs only
+a read-only inspection when the name exists. It suggests resuming only for
+`exited` or `created` states and never starts, stops or removes an existing container.
+A third test covers a name claimed between inspection and creation; Docker's
+failure remains visible and no startup success is printed. The daemon-failure
+test also confirms the underlying connection error remains visible.
+
+Independent lifecycle review found one documentation issue: saving Docker logs
+with stdout redirection alone could lose stderr before removal. The replacement
+command now saves both streams with `2>&1`. No other actionable lifecycle or
+duplication findings were reported. This follow-up made no GPU-host changes
+and doesn't establish startup, throughput or model-quality results.

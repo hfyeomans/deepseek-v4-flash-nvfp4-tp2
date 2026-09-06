@@ -32,7 +32,17 @@ if tool == "git" and "rev-parse" in sys.argv:
     print("0f59188db1504b042ce621842bdde6c0fe862df6")
 if tool == "docker":
     if os.environ.get("TEST_DOCKER_FAIL"):
+        print("Cannot connect to the Docker daemon", file=sys.stderr)
         sys.exit(17)
+    state = os.environ.get("TEST_CONTAINER_STATE")
+    if sys.argv[1:3] == ["container", "inspect"]:
+        if state:
+            print(state)
+            sys.exit(0)
+        sys.exit(1)
+    if sys.argv[1:2] == ["run"] and (state or os.environ.get("TEST_NAME_RACE")):
+        print("Conflict. The container name is already in use.", file=sys.stderr)
+        sys.exit(125)
     print("test-container-id")
 '''
         for name in ("docker", "git"):
@@ -63,9 +73,10 @@ if tool == "docker":
         result = self.run_script("serve.sh")
         self.assertEqual(result.returncode, 0, result.stderr)
         calls = self.calls()
-        self.assertEqual(len(calls), 1)
-        self.assertEqual(calls[0][:2], ["docker", "run"])
-        return result, calls[0]
+        self.assertEqual(len(calls), 2)
+        self.assertEqual(calls[0][:3], ["docker", "container", "inspect"])
+        self.assertEqual(calls[1][:2], ["docker", "run"])
+        return result, calls[1]
 
     @staticmethod
     def value(args, flag):
@@ -112,7 +123,7 @@ if tool == "docker":
         self.calls_file.unlink()
         result = self.run_script("serve.sh")
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("local-model:shared", self.calls()[0])
+        self.assertIn("local-model:shared", self.calls()[-1])
 
     def test_missing_field_cannot_fall_back_to_a_stale_shell_export(self):
         self.configure()
@@ -195,8 +206,53 @@ if tool == "docker":
         self.env["TEST_DOCKER_FAIL"] = "1"
         result = self.run_script("serve.sh")
         self.assertEqual(result.returncode, 17)
+        self.assertIn("Cannot connect to the Docker daemon", result.stderr)
+        self.assertNotIn("docker start ", result.stderr)
         self.assertNotIn("Created", result.stdout)
         self.assertNotIn("Client base URL", result.stdout)
+
+    def test_name_claimed_after_inspection_preserves_docker_error(self):
+        self.configure()
+        self.env["TEST_NAME_RACE"] = "1"
+        result = self.run_script("serve.sh")
+        self.assertEqual(result.returncode, 125)
+        self.assertIn("Conflict", result.stderr)
+        self.assertNotIn("Created", result.stdout)
+        self.assertNotIn("docker start ", result.stderr)
+        self.assertEqual(len(self.calls()), 2)
+        self.assertEqual(self.calls()[0][:3], ["docker", "container", "inspect"])
+        self.assertEqual(self.calls()[1][:2], ["docker", "run"])
+
+    def test_saved_container_explains_resume_without_mutating_it(self):
+        self.configure(CONTAINER_NAME="my-coder")
+        for state in ("exited", "created"):
+            with self.subTest(state=state):
+                self.env["TEST_CONTAINER_STATE"] = state
+                result = self.run_script("serve.sh")
+                self.assertEqual(result.returncode, 1)
+                self.assertIn(f"my-coder already exists ({state})", result.stderr)
+                self.assertIn("docker start my-coder", result.stderr)
+                self.assertIn("original settings", result.stderr)
+                self.assertIn(".env", result.stderr)
+                self.assertNotIn("Created", result.stdout)
+                self.assertEqual(self.calls(), [["docker", "container", "inspect",
+                                                 "--format", "{{.State.Status}}", "my-coder"]])
+                self.calls_file.unlink()
+
+    def test_active_or_unavailable_container_is_not_restarted_or_replaced(self):
+        self.configure()
+        for state in ("running", "paused", "restarting", "removing", "dead"):
+            with self.subTest(state=state):
+                self.env["TEST_CONTAINER_STATE"] = state
+                result = self.run_script("serve.sh")
+                self.assertEqual(result.returncode, 1)
+                self.assertIn(f"already exists ({state})", result.stderr)
+                self.assertIn("docker logs --timestamps -f dsv4-nvfp4", result.stderr)
+                self.assertNotIn("docker start ", result.stderr)
+                self.assertEqual(len(self.calls()), 1)
+                self.assertEqual(self.calls()[0][:3], ["docker", "container", "inspect"])
+                self.assertNotIn("Created", result.stdout)
+                self.calls_file.unlink()
 
     def test_command_line_overrides_cannot_break_client_or_health_settings(self):
         self.configure()

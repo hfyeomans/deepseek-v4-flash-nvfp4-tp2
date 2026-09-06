@@ -75,6 +75,11 @@ manual commands. [Alternate config files](running.md#configuration) work too.
 
 ## 3. Build and check the image
 
+Already built the image and only changed a serving setting in `.env`? Skip the
+build and [replace the container](running.md#stop-resume-and-apply-settings).
+Rebuilding won't update the saved container or resolve a name conflict. The
+[action table](running.md#configuration) explains when each command is needed.
+
 ```bash
 source scripts/config.sh
 mkdir -p results/raw
@@ -191,7 +196,8 @@ identifies the download; the Docker tag identifies the runtime image.
 
 ## 6. Stop, restart and change settings
 
-With the default container name:
+Stopping frees the model's GPU memory once its processes exit, but keeps the
+container and its name. With the default name, stop and later resume it with:
 
 ```bash
 docker stop dsv4-nvfp4
@@ -199,12 +205,12 @@ docker start dsv4-nvfp4
 docker logs --timestamps -f dsv4-nvfp4
 ```
 
-To check a warmed restart while it's running, use `docker restart dsv4-nvfp4`.
-Wait for healthy, then repeat the feature suite with a new output filename.
-**Restarting keeps the container's original settings.** To apply an edited
-`.env`, stop the old container, give `CONTAINER_NAME` a new name in `.env`, and
-run `bash serve.sh`. This keeps the previous container and logs for recovery.
-The [running guide](running.md) covers comparisons, profile changes and rollback.
+`bash serve.sh` creates a new container; an existing name blocks creation even
+when stopped. **Restarting keeps the container's original settings.** Serving
+changes in `.env` need a new container, not an image rebuild. Follow
+[apply settings](running.md#stop-resume-and-apply-settings) to preserve the old
+container or save its logs and replace it. Wait for healthy, then repeat the
+feature suite with a new output filename.
 
 The [release record](../tasks/release-readiness/verification.md) covers the
 rehearsal on the existing host. The owner's walkthrough is in progress;

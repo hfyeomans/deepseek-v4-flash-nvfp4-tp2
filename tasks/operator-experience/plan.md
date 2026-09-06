@@ -49,3 +49,17 @@ and pass that value through the existing launch path. Require a positive integer
 Update the default/override and invalid-config tests, then run local checks.
 Keep TP2 as the tested configuration; this change doesn't qualify other GPU
 counts or parallelism settings. Existing `.env` files need the new setting.
+
+## Explain an existing container before launch
+
+Keep the existing create/start distinction. After config validation, inspect
+the configured container name. If present, report its state and exit before
+`docker run`. Print `docker start` for a stopped or created container, plus
+logs/status commands and the saved-settings caveat. Point to the running guide
+for replacement. Never start, stop or remove a saved container automatically.
+If inspection fails, Docker's existing launch path still reports launch errors.
+
+Add regressions for stopped and active containers, preserving the no-container
+launch and Docker-failure checks. Clarify resume versus replacement in the
+existing lifecycle documentation. Run local checks and a bounded independent
+lifecycle review before committing. The owner's GPU session stays untouched.

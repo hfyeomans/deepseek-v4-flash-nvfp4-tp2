@@ -21,11 +21,17 @@ Docker owns health probes and log rotation; launch output includes client,
 status, log, stop and recovery commands. Restarting doesn't apply edited `.env`
 settings; create a new container for those changes.
 
-All 44 local tests passed, including 16 operator tests. Both adversarial
+All 47 local tests passed, including 19 operator tests. Both earlier adversarial
 findings were reproduced and fixed. See [verification](verification.md),
 [design](plan.md) and [source findings](research.md).
 
 ## Owner's next test
+
+The owner stopped the container, changed `BIND_ADDRESS` and reran
+`serve.sh`, hitting Docker's name conflict. The launcher now reports saved
+container state and resume/replacement guidance before creation. Configuration
+and build instructions explain which changes need a new container versus a
+rebuild. The new behavior passed local tests; it hasn't been run on the GPU host.
 
 During the owner's first launch, the new `dsv4-nvfp4-kernels` volume was created
 with the container. Inspection showed active CUDA compiler processes while

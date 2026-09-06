@@ -25,3 +25,16 @@ stream establish that boundary.
 The duplication review confirmed one launch owner and the split image setting.
 It recommends one config loader, no polling daemon or new HTTP middleware.
 Historical measurements and frozen-tag rollback commands must stay intact.
+
+## Stopped container name conflict
+
+The owner stopped `dsv4-nvfp4` and reran `bash serve.sh`. Docker rejected the
+name because stopping retains the container. The launcher unconditionally
+calls `docker run`; its printed `docker start` command is easy to miss.
+The running guide explains replacement, but the launch path gives no recovery
+hint when a saved container exists.
+
+The changed setting was `BIND_ADDRESS=0.0.0.0`. Docker's published address is
+chosen at container creation. Rebuilding the image cannot update that address
+in an existing container. The owner emphasized that this distinction must be
+visible to anyone following the recipe, before they rebuild unnecessarily.

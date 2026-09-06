@@ -26,6 +26,20 @@ require_switches OFFLINE DSPARK EAGER LOG_REQUESTS LOG_OUTPUTS
   exit 1
 }
 
+if container_state=$(docker container inspect --format '{{.State.Status}}' "$CONTAINER_NAME" 2>/dev/null); then
+  {
+    printf 'Container %s already exists (%s). serve.sh creates a new container.\n' "$CONTAINER_NAME" "$container_state"
+    case "$container_state" in
+      exited|created) printf 'Resume with its original settings: docker start %q\n' "$CONTAINER_NAME" ;;
+    esac
+    printf 'Logs: docker logs --timestamps -f %q\n' "$CONTAINER_NAME"
+    printf "Status: docker container inspect --format '{{.State.Status}}' %q\n" "$CONTAINER_NAME"
+    printf 'Serving changes in .env require a new container, not an image rebuild.\n'
+    printf 'Replacement steps: %s/docs/running.md (Stop, resume and apply settings).\n' "$RECIPE_DIR"
+  } >&2
+  exit 1
+fi
+
 extra_args=()
 if [[ "$EAGER" == 1 ]]; then
   extra_args+=(--enforce-eager)

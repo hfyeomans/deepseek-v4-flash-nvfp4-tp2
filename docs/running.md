@@ -39,6 +39,14 @@ the recipe checkout, even when you launch from another directory. Keep the file
 private; it's sourced as trusted Bash. `serve.sh` rejects command-line overrides
 so Docker ports, health probes and the printed model name use the same settings.
 
+| What you want to do | Action |
+|---|---|
+| Resume a stopped model with the same settings | `docker start "$CONTAINER_NAME"` |
+| Apply serving changes in `.env`, including `BIND_ADDRESS` | [Create a replacement container](#stop-resume-and-apply-settings); reuse the image |
+| Build the image initially or change its source, dependencies or patches | `bash build.sh`, then create a container from that image |
+
+Rebuilding an image doesn't change existing containers or release their names.
+
 ## Obtain the pinned checkpoint
 
 Install the Hugging Face `hf` CLI if needed, then use the configured cache:
@@ -53,6 +61,9 @@ layers and caches. `OFFLINE=1` uses the downloaded snapshot when serving. It
 includes draft layers; no GGUF conversion or separate draft download is needed.
 
 ## Build the runtime
+
+For serving-only `.env` changes, skip this section and
+[replace the container](#stop-resume-and-apply-settings).
 
 Check Docker GPU access and Git first. `build.sh` checks out the pinned source
 into `work/vllm-source`, recreates the SM120 build, fixes the FlashInfer cache
@@ -164,8 +175,6 @@ docker logs --timestamps -f "$CONTAINER_NAME"
 # Run status/history commands in another terminal, or exit the log viewer first.
 docker inspect --format '{{.State.Status}} / {{.State.Health.Status}}' "$CONTAINER_NAME"
 docker inspect --format '{{json .State.Health}}' "$CONTAINER_NAME"
-docker stop "$CONTAINER_NAME"
-docker start "$CONTAINER_NAME"
 ```
 
 An HTTP 200 on a streaming request means headers were sent, not that generation
@@ -181,14 +190,6 @@ Change only the `vllm.entrypoints.serve.utils.request_logger` level to `DEBUG`, 
 `MAX_LOG_LEN=256` bounds text and token-ID excerpts. This is an explicit
 troubleshooting mode; the engine stays at INFO. Return `LOGGING_CONFIG` to its
 example value for normal runs. Logs can contain supplied code and model output.
-
-Apply changed settings by creating a new container. `docker restart` reuses the
-old settings; changing `.env` or retagging an image doesn't update that container.
-Stop it after requests finish, set a new `CONTAINER_NAME` in `.env`, then run
-`bash serve.sh`. Keep the old container for recovery. If you choose to reuse a
-name, save its logs and remove the stopped container with
-`docker rm <container-name>` first; that removes the container and its logs,
-not the named kernel cache or image.
 
 ### First launch and kernel cache
 
@@ -219,6 +220,40 @@ Changing to a new volume name or deleting it loses that reuse. Model loading
 and other initialization still run; new images or request shapes can require
 more compilation. See the [first-launch and restart record](../tasks/release-readiness/verification.md)
 for measured timings and their limits.
+
+## Stop, resume and apply settings
+
+`docker stop` unloads the model from the GPUs when the server processes exit.
+It keeps the container and its name. To resume with the same settings:
+
+```bash
+source scripts/config.sh
+docker stop "$CONTAINER_NAME"
+docker start "$CONTAINER_NAME"
+```
+
+`bash serve.sh` creates a new container. If the name already exists, it reports
+the state and shows the next steps. `docker start` and `docker restart` reuse
+the original settings; editing `.env` or retagging an image doesn't update them.
+
+Serving changes such as context size, GPU memory utilization, batch size, TP,
+logging or bind address require a new container, **not an image rebuild**.
+With the same `CONTAINER_NAME`, finish active requests, then:
+
+```bash
+source scripts/config.sh
+mkdir -p work
+docker stop "$CONTAINER_NAME"
+docker logs --timestamps "$CONTAINER_NAME" > "work/${CONTAINER_NAME}-$(date +%Y%m%d-%H%M%S).log" 2>&1 &&
+  docker rm "$CONTAINER_NAME" &&
+  bash serve.sh
+```
+
+Removal deletes the container and its Docker logs. The saved log, image, model
+download and named kernel-cache volume remain. To keep the old container for
+recovery instead, stop it, choose a new `CONTAINER_NAME` in `.env`, and launch.
+Wait for healthy after either path. Image contents change only when you rebuild;
+see [the build steps](#build-the-runtime) for changes to source or build inputs.
 
 ## Recommended coding profile
 

@@ -4,6 +4,13 @@ These are the failures we reproduced and the fixes we checked. Use the symptoms
 to find the relevant case, then validate your own GPU/API behavior if the image
 or model revision differs.
 
+## Container name already in use
+
+Stopping keeps the container and reserves its name. Use `docker start` to resume
+with its original settings. An edited serving profile needs a new container,
+not an image rebuild. Follow [stop, resume and apply settings](running.md#stop-resume-and-apply-settings)
+for the commands and log-preservation steps.
+
 ## Python packaging deprecation warning
 
 `SetuptoolsDeprecationWarning: setup.py install is deprecated` is a maintenance
