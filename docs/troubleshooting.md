@@ -6,10 +6,12 @@ or model revision differs.
 
 ## Container name already in use
 
-Stopping keeps the container and reserves its name. Use `docker start` to resume
-with its original settings. An edited serving profile needs a new container,
-not an image rebuild. Follow [stop, resume and apply settings](running.md#stop-resume-and-apply-settings)
-for the commands and log-preservation steps.
+Use `bash recipe.sh` after editing `.env`. It handles an existing recipe container
+and preserves the previous one during replacement. The low-level `serve.sh`
+still creates a new container and can report this conflict. An unrecognized
+container using the configured name is left alone. Follow
+[stop, resume and apply settings](running.md#stop-resume-and-apply-settings)
+for migration and recovery commands.
 
 ## Python packaging deprecation warning
 

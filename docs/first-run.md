@@ -53,7 +53,7 @@ Set `HF_CACHE` to your weight-cache location. Keep `BIND_ADDRESS=127.0.0.1`
 for access from this host only. Before enabling access from other machines,
 read [the network exposure guidance](running.md#start-the-server).
 
-Build and serve load `.env` themselves and fail if it's missing. These are
+`recipe.sh` loads `.env` and fails if it's missing. These are
 trusted Bash assignments; file values win over old shell exports. The shared
 loader also makes the same settings available to the commands below:
 
@@ -75,19 +75,18 @@ manual commands. [Alternate config files](running.md#configuration) work too.
 
 ## 3. Build and check the image
 
-Already built the image and only changed a serving setting in `.env`? Skip the
-build and [replace the container](running.md#stop-resume-and-apply-settings).
-Rebuilding won't update the saved container or resolve a name conflict. The
-[action table](running.md#configuration) explains when each command is needed.
+Use the build-only phase here so you can check the image before loading the
+model. For later `.env` changes, `bash recipe.sh` chooses the needed phases;
+see the [action table](running.md#configuration).
 
 ```bash
 source scripts/config.sh
 mkdir -p results/raw
-bash build.sh > results/raw/build.log 2>&1 &&
+bash recipe.sh build > results/raw/build.log 2>&1 &&
   docker image inspect "${IMAGE:?Load scripts/config.sh first}" --format '{{.Id}}'
 ```
 
-Copying `.env` doesn't load it into your terminal. `build.sh` loads it in its
+Copying `.env` doesn't load it into your terminal. `recipe.sh` loads it in its
 own process, so source the loader above before using variables in manual
 commands. To inspect an image you've already built, skip the build and run:
 
@@ -101,10 +100,11 @@ results/raw/build.log` shows progress. The default image tag is
 `dsv4-nvfp4:recipe`; Docker may display `docker.io/library/` in front of it.
 That display doesn't mean the image was uploaded.
 
-Already built this pinned, patched image under an older name? These launcher
-changes don't require recompiling it. Give it the stable tag with
-`docker tag <existing-image-tag-or-id> dsv4-nvfp4:recipe`, then run the image
-checks below. Tagging keeps the same bytes and leaves the old tag available.
+An image built before this automation has no recorded build-input digest.
+The first automated run performs a build to add that record, using available
+Docker layers. It preserves the existing container and image for recovery.
+Once recorded, serving-only changes reuse the image. See
+[migration and recovery](running.md#stop-resume-and-apply-settings).
 
 Lower `BUILD_JOBS` and `NVCC_THREADS` in `.env` if compilation uses too much RAM.
 If Ubuntu HTTP downloads stall, set `APT_HTTPS_IPV4=1` and `BUILD_NETWORK=host`
@@ -134,16 +134,17 @@ checks the running model.
 
 ## 4. Start and watch the server
 
-Both GPUs must be available. Let the old model finish its requests, then stop
-its container. This stops that container, not the Docker service or its image:
+`recipe.sh` handles the configured recipe container. If another service or a
+differently named container occupies the GPUs, finish its requests and stop it
+first. The script won't stop unrelated services:
 
 ```bash
 docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}'
-docker stop <old-container-name>
+docker stop <other-container-name>
 ```
 
-Replace the placeholder with the name from the list. Keep that container for
-recovery. With the default name in `.env`, launch and follow logs:
+Use the placeholder command only if another container needs stopping. With the
+default name in `.env`, apply the configuration and follow logs:
 
 **Allow several minutes for the first launch with a new kernel cache.** Kernels
 compile after the weights load. The earlier rehearsal reached readiness in
@@ -152,11 +153,11 @@ that isn't a fixed startup time. Keep the `KERNEL_CACHE` volume
 (`dsv4-nvfp4-kernels` by default) so later starts can reuse compiled kernels.
 
 ```bash
-bash serve.sh
+bash recipe.sh
 docker logs --timestamps -f dsv4-nvfp4
 ```
 
-The launcher prints your configured client URL, model name, health and stop
+The script prints its phases, configured client URL, model name, health and stop
 commands. Ctrl-C exits the log viewer and leaves the server running. During
 compilation, GPU activity can be low and VRAM can sit below its final footprint.
 Repeated `No available shared memory broadcast block found in 60 seconds`
@@ -197,21 +198,22 @@ identifies the download; the Docker tag identifies the runtime image.
 ## 6. Stop, restart and change settings
 
 Stopping frees the model's GPU memory once its processes exit, but keeps the
-container and its name. With the default name, stop and later resume it with:
+container and its name. Use the selected `.env` to stop and later resume:
 
 ```bash
-docker stop dsv4-nvfp4
-docker start dsv4-nvfp4
+bash recipe.sh stop
+bash recipe.sh
 docker logs --timestamps -f dsv4-nvfp4
 ```
 
-`bash serve.sh` creates a new container; an existing name blocks creation even
-when stopped. **Restarting keeps the container's original settings.** Serving
-changes in `.env` need a new container, not an image rebuild. Follow
-[apply settings](running.md#stop-resume-and-apply-settings) to preserve the old
-container or save its logs and replace it. Wait for healthy, then repeat the
-feature suite with a new output filename.
+After editing `.env`, run `bash recipe.sh` again. It leaves an unchanged running
+container alone, resumes an unchanged stopped one, or replaces it when needed.
+Serving changes reuse the image. Previous containers, their logs and the kernel
+cache remain available. Use `bash recipe.sh plan` for a preview and
+[the running guide](running.md#stop-resume-and-apply-settings) for recovery.
+Wait for healthy, then repeat the feature suite with a new output filename.
 
 The [release record](../tasks/release-readiness/verification.md) covers the
-rehearsal on the existing host. The owner's walkthrough is in progress;
-an independent fresh-machine install remains unqualified.
+rehearsal on the existing host. The owner's walkthrough is in progress.
+The new [automated lifecycle](../tasks/lifecycle-automation/state.md) still needs
+its GPU walkthrough; an independent fresh-machine install remains unqualified.

@@ -15,10 +15,11 @@ See [source-image acceptance](source-image-validation.md) and the
 ## Configuration
 
 Run commands in Bash. Copy [example.env](../example.env) to `.env`, then edit
-it for your host. Build and serve require that file and use the same `IMAGE`.
+it for your host. `recipe.sh` requires that file and uses the same `IMAGE` for
+building and serving.
 The example contains the selected 1M/96% profile. File assignments win over
 ambient shell exports; change `.env` instead of adding inline launch overrides.
-Copying the file or running `build.sh` doesn't set variables in your terminal.
+Copying the file or running `recipe.sh` doesn't set variables in your terminal.
 Source the loader for manual download, Docker and benchmark commands:
 
 ```bash
@@ -30,22 +31,29 @@ For a separate profile or a config outside the repository:
 
 ```bash
 export RECIPE_ENV_FILE=/absolute/path/to/profile.env
-bash serve.sh
+bash recipe.sh
 ```
 
 Use `unset RECIPE_ENV_FILE` to return to the repo's `.env`. Each selected file
 must be a complete copy of the example. `$RECIPE_DIR` in that file resolves to
 the recipe checkout, even when you launch from another directory. Keep the file
-private; it's sourced as trusted Bash. `serve.sh` rejects command-line overrides
-so Docker ports, health probes and the printed model name use the same settings.
+private; it's sourced as trusted Bash. The script uses a snapshot of its effective
+settings for each operation. Edits made during a build apply on the next run.
+Use `.env` for parameters and the commands below for lifecycle actions.
 
 | What you want to do | Action |
 |---|---|
-| Resume a stopped model with the same settings | `docker start "$CONTAINER_NAME"` |
-| Apply serving changes in `.env`, including `BIND_ADDRESS` | [Create a replacement container](#stop-resume-and-apply-settings); reuse the image |
-| Build the image initially or change its source, dependencies or patches | `bash build.sh`, then create a container from that image |
+| Resume a stopped model with the same settings | `bash recipe.sh` |
+| Apply serving changes in `.env`, including `BIND_ADDRESS` | `bash recipe.sh`; it replaces the container and reuses the image |
+| Build initially or apply changed image inputs | `bash recipe.sh`; it builds before replacing the container |
+| Build the image without starting a model | `bash recipe.sh build` |
+| Rerun the build and apply its result, retaining Docker's build cache | `bash recipe.sh rebuild` |
+| Preview the required actions | `bash recipe.sh plan` |
+| Stop and unload the model | `bash recipe.sh stop` |
+| Show container and health state | `bash recipe.sh status` |
 
-Rebuilding an image doesn't change existing containers or release their names.
+An unchanged running container is left alone. A replacement can interrupt active
+requests, so apply changes when you're ready for that interruption.
 
 ## Obtain the pinned checkpoint
 
@@ -62,8 +70,8 @@ includes draft layers; no GGUF conversion or separate draft download is needed.
 
 ## Build the runtime
 
-For serving-only `.env` changes, skip this section and
-[replace the container](#stop-resume-and-apply-settings).
+For everyday changes, use `bash recipe.sh`; it decides whether a build is needed.
+Use the build-only phase below when you want to run the image tests before launch.
 
 Check Docker GPU access and Git first. `build.sh` checks out the pinned source
 into `work/vllm-source`, recreates the SM120 build, fixes the FlashInfer cache
@@ -72,11 +80,11 @@ See [kernel sources and local changes](provenance.md#kernel-sources-and-local-ch
 for what compiles for SM120 and what we changed.
 
 ```bash
-bash build.sh
+bash recipe.sh build
 ```
 
 If Ubuntu HTTP downloads stall, set `APT_HTTPS_IPV4=1` and `BUILD_NETWORK=host`
-in `.env`, then rerun `bash build.sh`. This passed the stalled stage on the test
+in `.env`, then rerun `bash recipe.sh build`. This passed the stalled stage on the test
 host with the same signed repositories and pinned CUDA base images.
 
 The image is named `dsv4-nvfp4:recipe`. Set `BUILD_JOBS` and `NVCC_THREADS` in
@@ -113,7 +121,7 @@ keep the volume for warmed restarts.
 ## Start the server
 
 ```bash
-bash serve.sh
+bash recipe.sh
 docker logs --timestamps -f dsv4-nvfp4
 ```
 
@@ -225,43 +233,69 @@ for measured timings and their limits.
 
 ## Stop, resume and apply settings
 
-`docker stop` unloads the model from the GPUs when the server processes exit.
-It keeps the container and its name. To resume with the same settings:
+Use the same script after editing `.env`. Keep `CONTAINER_NAME` stable to update
+that deployment. Changing the name selects a different container; the script
+doesn't stop other deployments or unrelated GPU services.
 
 ```bash
-source scripts/config.sh
-docker stop "$CONTAINER_NAME"
-docker start "$CONTAINER_NAME"
+bash recipe.sh plan    # Optional preview; no Docker mutations.
+bash recipe.sh         # Apply the selected configuration.
+bash recipe.sh status
 ```
 
-`bash serve.sh` creates a new container. If the name already exists, it reports
-the state and shows the next steps. `docker start` and `docker restart` reuse
-the original settings; editing `.env` or retagging an image doesn't update them.
+The script reports these phases:
 
-Serving changes such as context size, GPU memory utilization, batch size, TP,
-logging or bind address require a new container, **not an image rebuild**.
-With the same `CONTAINER_NAME`, finish active requests, then:
+1. Load and validate `.env`, then inspect the image and container.
+2. Reuse or build the image while the current container stays in place.
+3. Resume/keep an unchanged container, or prepare a stopped replacement.
+4. Stop the previous recipe container and retain it under a unique
+   `<name>-previous-...` name with its logs and image reference.
+5. Promote and start the replacement. Wait for healthy before using the endpoint.
+
+Serving changes, including bind address, context, memory and batch settings,
+don't rebuild the image. Build decisions use the effective build inputs,
+Dockerfiles and files copied into the image. Comments in `.env`, unrelated tests
+and documentation don't trigger a rebuild. Logging-file content is a serving
+change. An image from before this automation has no build record, so the first
+automated run performs a cached build and preserves the old container on migration.
+Layer reuse depends on Docker's available cache.
+
+A failed build or failed candidate creation leaves the current container in place.
+Docker creation catches mount/configuration errors; GPU memory fit and successful
+model initialization still require startup. Failed promotion/start prints recovery
+commands. An interrupted prepared candidate can be reused on the next apply.
+Only one operation can run at a time from this checkout. Use one checkout to
+manage a deployment, and avoid concurrent manual Docker changes.
+
+To stop and later resume:
 
 ```bash
-source scripts/config.sh
-mkdir -p work
-docker stop "$CONTAINER_NAME"
-docker logs --timestamps "$CONTAINER_NAME" > "work/${CONTAINER_NAME}-$(date +%Y%m%d-%H%M%S).log" 2>&1 &&
-  docker rm "$CONTAINER_NAME" &&
-  bash serve.sh
+bash recipe.sh stop
+bash recipe.sh
 ```
 
-Removal deletes the container and its Docker logs. The saved log, image, model
-download and named kernel-cache volume remain. To keep the old container for
-recovery instead, stop it, choose a new `CONTAINER_NAME` in `.env`, and launch.
-Wait for healthy after either path. Image contents change only when you rebuild;
-see [the build steps](#build-the-runtime) for changes to source or build inputs.
+Stop frees GPU memory once the server processes exit. Containers, images, logs,
+model downloads and named kernel caches remain. Previous containers accumulate
+until you choose to remove them. List them with `docker ps -a`; save any logs you
+need with `docker logs --timestamps <name> > saved.log 2>&1` before removal.
+
+For manual recovery, stop the failed/new container, rename it to a spare name,
+rename the selected previous container to `CONTAINER_NAME`, and start that saved
+container. Use the exact IDs printed by the script. Direct `docker start` uses
+saved settings; `recipe.sh` applies the current `.env`, so fix/revert that file
+before the next automated apply.
+
+Low-level `build.sh` and `serve.sh` remain available for diagnosis. The former
+builds only; the latter creates a container and will report a name conflict.
+Their `--print-spec` option exposes validated inputs without Docker effects.
+Use `recipe.sh` for normal operation. The coordinator doesn't run or replace the
+image, API, accuracy or performance checks below.
 
 ## Recommended coding profile
 
 I'd start with the values in `example.env`. They keep the long-input option
 without taking the larger batch's memory cost. After configuring `.env`, launch
-with `bash serve.sh`; no profile overrides are needed.
+with `bash recipe.sh`; no profile overrides are needed.
 
 The prefill cap limits how much of a long input gets processed per scheduling
 step; it doesn't shorten the 1M window. This profile passed near-1M retrieval,
@@ -270,9 +304,8 @@ took a median 8.906 seconds. One tool roundtrip during near-1M prefill took
 32.035 seconds, so leave time for very large inputs.
 
 If tools responding during background prefill matter more, change
-`LONG_PREFILL_TOKEN_THRESHOLD` to `512` and `CONTAINER_NAME` to
-`dsv4-nvfp4-concurrent-tools` in `.env`. Stop the primary container with
-`docker stop dsv4-nvfp4`, then run `bash serve.sh`. Leave the other settings fixed.
+`LONG_PREFILL_TOKEN_THRESHOLD` to `512` in `.env`, then run `bash recipe.sh`.
+Keep `CONTAINER_NAME` and all other settings fixed.
 
 Cap 512 reduced the tool median to 2.186 seconds during repeated 262K inputs
 and took 18.113 seconds in one near-1M trial. The coding fixture slowed to
@@ -300,18 +333,16 @@ streaming, concurrency, prefix reuse and cancellation recovery, with optional
 long retrieval. See [pass conditions](validation.md).
 
 For a matched DSpark comparison, copy `.env` to `.env.control`. In that copy,
-set `DSPARK=0` and `CONTAINER_NAME=dsv4-nvfp4-control`. Keep other settings,
-including logging, identical. Save results before stopping the primary container:
+set `DSPARK=0`. Keep all other settings, including container name and logging,
+identical. Save results before switching the primary container:
 
 ```bash
-docker stop dsv4-nvfp4
-RECIPE_ENV_FILE="$PWD/.env.control" bash serve.sh
+RECIPE_ENV_FILE="$PWD/.env.control" bash recipe.sh
 # Wait for application startup, then run the same benchmark.
 python3 benchmark.py --base-url "$BASE_URL" --model "$SERVED_MODEL_NAME" --label graphs-control-primary \
   --output results/raw/benchmark-control-primary.json
-# Restore the saved DSpark container after recording the control results.
-docker stop dsv4-nvfp4-control
-docker start dsv4-nvfp4
+# Reapply the primary configuration after recording the control results.
+RECIPE_ENV_FILE="$PWD/.env" bash recipe.sh
 ```
 
 Keep other workloads idle. The benchmark warms each exact prompt, generates
@@ -339,12 +370,11 @@ cache-hit counters too.
 ## Attempt large context
 
 The patched preview passed one 799,847-token retrieval at 801K. To repeat at
-that ceiling, copy `.env` to `.env.801k`, change `MAX_MODEL_LEN` to `801000` and
-`CONTAINER_NAME` to `dsv4-nvfp4-801k`, then launch after stopping the primary:
+that ceiling, copy `.env` to `.env.801k` and change `MAX_MODEL_LEN` to `801000`.
+Keep the container name, then apply:
 
 ```bash
-docker stop dsv4-nvfp4
-RECIPE_ENV_FILE="$PWD/.env.801k" bash serve.sh
+RECIPE_ENV_FILE="$PWD/.env.801k" bash recipe.sh
 ```
 
 After startup completes:
@@ -365,8 +395,8 @@ two full windows or broad retrieval accuracy.
 
 The initial source-built candidate used memory `0.965`, batch `2560` and
 prefill cap `2304`. To reproduce it, copy `.env` to `.env.candidate`, set those
-values and `CONTAINER_NAME=dsv4-nvfp4-1m-candidate`, then stop the active container
-and run `RECIPE_ENV_FILE="$PWD/.env.candidate" bash serve.sh`.
+values, keep the container name, and run
+`RECIPE_ENV_FILE="$PWD/.env.candidate" bash recipe.sh`.
 
 This earlier candidate passed retrieval and short API checks. A concurrent
 tool roundtrip took 37.9 seconds, and sampled serving free memory fell to

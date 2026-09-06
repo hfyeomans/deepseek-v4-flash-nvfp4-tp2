@@ -1,5 +1,9 @@
 # Deployment configuration and visibility
 
+Historical plan for the preceding operator update. The later
+[lifecycle plan](../lifecycle-automation/plan.md) adds automatic build and
+replacement while keeping this configuration and serving-argument ownership.
+
 Authorized scope: the user's concrete configuration, naming, logging, model
 identity and stop-command requests. Keep the live GPU host untouched while
 the owner tests. Preserve recovery commit `1ed5bfa` and work on a new branch.

@@ -4,6 +4,11 @@ Implemented and locally verified on `recipe/operator-config`. Recovery point:
 `1ed5bfa`. The owner's GPU walkthrough is in progress; host checks have been read-only.
 Independent fresh-machine qualification remains open.
 
+The later [lifecycle task](../lifecycle-automation/state.md) replaces the manual
+build/stop/remove/start workflow with `recipe.sh`. The notes below record the
+preceding operator fixes; use the [running guide](../../docs/running.md) for
+current commands.
+
 Build and serve require `.env` (or `RECIPE_ENV_FILE`) and share `IMAGE`. Missing
 files explain how to copy the example and set parameters. Missing settings
 can't inherit old shell exports. The example uses adjustable 1M/96% defaults,
@@ -26,7 +31,7 @@ now separates upstream implementations, SM120 compilation, the ABI repair and
 our Python patches. Further kernel experiments are recorded in
 [their own future task](../kernel-experiments/state.md); they haven't started.
 
-All 47 local tests passed, including 19 operator tests. Both earlier adversarial
+At this task's checkpoint, 47 local tests passed, including 19 operator tests. Both earlier adversarial
 findings were reproduced and fixed. See [verification](verification.md),
 [design](plan.md) and [source findings](research.md).
 

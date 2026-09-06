@@ -193,6 +193,9 @@ if tool == "docker":
     def test_invalid_or_incomplete_config_has_no_docker_effects(self):
         for setting, value in (("IMAGE", ""), ("REVISION", "main"),
                                ("DSPARK", "yes"), ("MAX_LOG_LEN", "-1"),
+                               ("PORT", "0"), ("SERVER_PORT", "65536"),
+                               ("MAX_MODEL_LEN", "0"), ("MAX_NUM_SEQS", "0"),
+                               ("MAX_BATCHED_TOKENS", "0"),
                                ("HEALTH_TIMEOUT_SECONDS", "5);print('injected')")):
             with self.subTest(setting=setting):
                 self.configure(**{setting: value})
@@ -200,6 +203,26 @@ if tool == "docker":
                 self.assertNotEqual(result.returncode, 0)
                 self.assertIn(setting, result.stderr)
                 self.assertEqual(self.calls(), [])
+
+    def test_serving_spec_matches_the_direct_launch_arguments_without_effects(self):
+        self.configure()
+        result = self.run_script("serve.sh", "--print-spec")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        spec = json.loads(result.stdout)
+        self.assertEqual(self.calls(), [])
+        result = self.run_script("serve.sh")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(self.calls()[-1], ["docker", "run", "-d", *spec["docker_options"],
+                                           spec["image"], *spec["model_args"]])
+
+    def test_build_spec_reports_pinned_inputs_without_building(self):
+        self.configure(BUILD_JOBS=4)
+        result = self.run_script("build.sh", "--print-spec")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        spec = json.loads(result.stdout)
+        self.assertIn("0f59188db1504b042ce621842bdde6c0fe862df6", spec)
+        self.assertIn("4", spec)
+        self.assertEqual(self.calls(), [])
 
     def test_failed_docker_creation_does_not_claim_startup(self):
         self.configure()

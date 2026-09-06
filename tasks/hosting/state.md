@@ -108,8 +108,9 @@ intermediate step.
 ## Selected profile and remaining phases
 
 Source acceptance, controls and profile selection are complete. Selected settings:
-1M/96%/batch 2,048/cap 1,792, K5/Markov, target graphs and FP8 KV. Generic defaults
-remain 64K/95%; use explicit overrides. Clean checkpoint `recipe-1m-k5` is
+1M/96%/batch 2,048/cap 1,792, K5/Markov, target graphs and FP8 KV. These are now
+the defaults in `example.env`; use `recipe.sh` to apply them. The original
+snapshot had 64K/95% generic defaults with overrides. Clean checkpoint `recipe-1m-k5` is
 private; see [publication status](../publication/state.md).
 
 The [interactive report](../../docs/interactive-latency.md) records three 262K

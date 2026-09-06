@@ -16,8 +16,10 @@ bash scripts/check-local.sh
 
 This is also the CPU CI entrypoint. It checks benchmark requests, stream endings
 and diagnostics, mixed-request overlap, profiling and patch direction. It also
-checks the real build/serve entrypoints against fake Docker/Git executables,
-config loading and health probes against a temporary localhost HTTP server.
+checks the real build/serve entrypoints and automated lifecycle against fake
+Docker/Git executables, config loading and health probes against a temporary
+localhost HTTP server. Lifecycle regressions cover replacement order, failures,
+migration, interrupted updates and configuration changes during a build.
 No GPU or model server is needed. Run [image/GPU checks](running.md) separately.
 
 ## Make a bounded change
@@ -41,6 +43,22 @@ The [release review](../tasks/release-readiness/review.md) records adversarial
 and duplication findings, fixes and validation limits. The
 [operator update](../tasks/operator-experience/state.md) tracks config/logging
 changes and the owner's pending GPU retest.
+The [lifecycle task](../tasks/lifecycle-automation/state.md) tracks the current
+automation and its separate GPU qualification.
+
+## Build and lifecycle ownership
+
+`recipe.sh` loads the trusted Bash config once; `scripts/lifecycle.py` coordinates
+Docker phases using those captured values. `build.sh --print-spec` owns build
+inputs and `serve.sh --print-spec` owns validation and launch arguments. Normal
+low-level builds/launches and automated candidate creation use these same owners.
+
+Docker image/container labels store input digests and ownership, not full `.env`
+values. `work/lifecycle/` holds the per-checkout lock and temporary config snapshots;
+there's no separate current-deployment database. New Dockerfile inputs must be
+tracked before apply: the current scanner supports literal single-file `COPY`
+instructions and rejects unsupported forms. Add support with a regression when
+changing that syntax. Docs and unrelated tests must not invalidate the image.
 
 ## Future kernel experiments
 

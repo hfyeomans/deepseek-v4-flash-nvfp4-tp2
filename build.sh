@@ -4,6 +4,10 @@ set -euo pipefail
 RECIPE_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 # shellcheck source=scripts/config.sh
 source "$RECIPE_DIR/scripts/config.sh"
+if (( $# > 1 )) || { (( $# == 1 )) && [[ "$1" != --print-spec ]]; }; then
+  echo 'Use build.sh without arguments, or --print-spec for validated build inputs.' >&2
+  exit 1
+fi
 require_settings SOURCE_DIR BASE_IMAGE ABI_IMAGE IMAGE BUILD_JOBS NVCC_THREADS BUILD_NETWORK APT_HTTPS_IPV4
 require_uints BUILD_JOBS NVCC_THREADS
 require_switches APT_HTTPS_IPV4
@@ -12,6 +16,19 @@ SOURCE_TAG=sm120-pr-41834-stable-preview-20260804
 SOURCE_REVISION=0f59188db1504b042ce621842bdde6c0fe862df6
 CUDA_BUILD_IMAGE=nvidia/cuda:13.0.3-devel-ubuntu22.04@sha256:3869b846a8cc495ce11c172d87cfc0da8874b910d14a9810bec6b6182e9ee9f8
 CUDA_FINAL_IMAGE=nvidia/cuda:13.0.3-base-ubuntu22.04@sha256:73ab6dfb3814a5097cd456736e70650ef9dc72343be4117d0400de78168760fe
+
+if [[ ${1:-} == --print-spec ]]; then
+  python3 -c 'import json, sys; print(json.dumps(sys.argv[1:]))' \
+    "$SOURCE_URL" "$SOURCE_TAG" "$SOURCE_REVISION" "$CUDA_BUILD_IMAGE" "$CUDA_FINAL_IMAGE" \
+    "$SOURCE_DIR" "$BASE_IMAGE" "$ABI_IMAGE" "$IMAGE" "$BUILD_JOBS" "$NVCC_THREADS" \
+    "$BUILD_NETWORK" "$APT_HTTPS_IPV4"
+  exit 0
+fi
+build_labels=()
+if [[ -n ${RECIPE_BUILD_INPUTS:-} ]]; then
+  [[ "$RECIPE_BUILD_INPUTS" =~ ^[0-9a-f]{64}$ ]] || { echo 'Invalid build-input digest.' >&2; exit 1; }
+  build_labels+=(--label "recipe.build-inputs=$RECIPE_BUILD_INPUTS")
+fi
 
 if [[ ! -e "$SOURCE_DIR" ]]; then
   git clone --depth 1 --branch "$SOURCE_TAG" "$SOURCE_URL" "$SOURCE_DIR"
@@ -45,5 +62,6 @@ docker build --network "$BUILD_NETWORK" --target vllm-openai -f "$SOURCE_DIR/doc
 docker build --network none --build-arg BASE_IMAGE="$BASE_IMAGE" \
   -f "$RECIPE_DIR/Dockerfile.experimental" -t "$ABI_IMAGE" "$RECIPE_DIR"
 docker build --network none --build-arg BASE_IMAGE="$ABI_IMAGE" \
+  "${build_labels[@]}" \
   -f "$RECIPE_DIR/Dockerfile.dspark" -t "$IMAGE" "$RECIPE_DIR"
 printf 'Built %s\n' "$IMAGE"

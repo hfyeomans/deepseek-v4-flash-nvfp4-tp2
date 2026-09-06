@@ -20,8 +20,21 @@ and check the image, then connect a client. Use the
 [running guide](docs/running.md) when you're ready to compare profiles or
 repeat the experiments.
 
-Copy [example.env](example.env) to `.env` and edit it for your host. Both build
-and serve require it. The example uses the selected 1M/96% profile; change the
+Copy [example.env](example.env) to `.env` and edit it for your host. Then run:
+
+```bash
+bash recipe.sh
+```
+
+The script builds when needed, resumes an unchanged stopped container, or
+replaces it when settings change. It leaves an unchanged running container
+alone and retains previous containers and caches. Use `bash recipe.sh plan`
+to preview or `bash recipe.sh stop` to unload the model. See
+[lifecycle actions and recovery](docs/running.md#stop-resume-and-apply-settings).
+The first automated run may rebuild an older image to record its build inputs.
+Existing model/API and performance checks remain separate.
+
+The example uses the selected 1M/96% profile; change the
 prefill cap to 512 for the secondary profile. That improved tool latency during
 long inputs at the cost of slower foreground coding. See
 [configuration and the tradeoff](docs/running.md#recommended-coding-profile).

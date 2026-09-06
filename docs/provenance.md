@@ -19,6 +19,10 @@ source remains `0f59188db1504b042ce621842bdde6c0fe862df6` plus the
 [source-image provenance](../results/source-build-provenance.json).
 Model weights aren't included. Apache-2.0 source attribution is preserved.
 
+Current operation uses [recipe.sh](../recipe.sh) to choose image build, resume
+or replacement. Its lifecycle changes have [separate verification](../tasks/lifecycle-automation/state.md);
+the historical build and GPU records below do not qualify that new automation.
+
 ## Kernel sources and local changes
 
 We adapted the kernel build and runtime integration for two RTX PRO 6000

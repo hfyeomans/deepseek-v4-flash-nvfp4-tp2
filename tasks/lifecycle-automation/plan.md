@@ -18,7 +18,7 @@ build and apply), `stop`, and `status`. Invalid action/config fails before effec
 Stop/status only need the selected container name and Docker access.
 
 Build identity covers effective build inputs, build scripts/Dockerfiles,
-`.dockerignore`, patches and tests. Documentation and serving settings don't
+`.dockerignore` and actual Dockerfile COPY inputs. Documentation and serving settings don't
 invalidate it. Successful coordinated builds label the image with that digest.
 Serving identity covers the rendered Docker/model arguments, exact image ID,
 and logging configuration contents. Containers carry that digest and a recipe
@@ -47,20 +47,20 @@ the source of truth; no separate current-deployment state file is maintained.
 
 ## Work and checks
 
-- [ ] Add failing process-boundary tests for missing config, spec rendering,
+- [x] Add failing process-boundary tests for missing config, spec rendering,
   new build, unchanged running/stopped, bind-only changes, rebuild, failed build,
   failed candidate creation/start, daemon errors, migration and interrupted work.
-- [ ] Add spec output to existing owners; implement the coordinator and labels.
+- [x] Add spec output to existing owners; implement the coordinator and labels.
   Keep existing launch arguments and image stages equivalent.
-- [ ] Run existing local checks plus lifecycle regressions; review duplicate
+- [x] Run existing local checks plus lifecycle regressions; review duplicate
   ownership, failure recovery and preservation of logs/caches.
-- [ ] Update README, example.env and current usage docs to lead with `recipe.sh`.
+- [x] Update README, example.env and current usage docs to lead with `recipe.sh`.
   Keep low-level commands documented for diagnosis and frozen-tag recovery.
   Scan every Markdown document for stale current instructions; retain historical
   commands/results with their measurement context.
-- [ ] Review prose with Humanizer, then Hank's technical voice. Validate links
+- [x] Review prose with Humanizer, then Hank's technical voice. Validate links
   and unchanged historical evidence; record GPU qualification as pending.
-- [ ] Commit and push the private recipe branch with a recovery checkpoint.
+- [x] Commit and push the private recipe branch with a recovery checkpoint.
 
 Rollback for this implementation: `a2a699b`. No serving defaults, model patches,
 benchmark protocol or model-validation assertions are being changed.
