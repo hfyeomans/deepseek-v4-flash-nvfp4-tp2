@@ -94,7 +94,7 @@ testing on this hardware. Target decode graphs, parallel drafting, Markov
 correction and target verification are active. The confidence head is loaded
 but unused; adaptive verification is not implemented in this pinned proposer.
 
-## Provenance and repository boundary
+## Checkpoint boundary
 
 Checkpoint: `f1caa71142bd0be02f728c79f75042ac1e461579`; source fork:
 `0f59188db1504b042ce621842bdde6c0fe862df6`, with
