@@ -24,7 +24,7 @@ No GPU or model server is needed. Run [image/GPU checks](running.md) separately.
 
 ## Make a bounded change
 
-1. Branch from `main` and record the problem in `tasks/<slug>/`.
+1. Branch from `main` and record the problem in your local `tasks/<slug>/`.
    Add a failing regression for behavior changes.
 2. Fix the cause. Keep request records in the API client and feature assertions
    in their checks. Clients with different timing definitions need separate logic.
@@ -39,12 +39,10 @@ Don't rewrite an old result to match a new client. Historical hashes refer to
 `recipe-1m-k5`. Give new measurements new filenames and record client/image
 hashes, settings and warmup/cache details. Keep host logs and credentials private.
 
-The [release review](../tasks/release-readiness/review.md) records adversarial
-and duplication findings, fixes and validation limits. The
-[operator update](../tasks/operator-experience/state.md) tracks config/logging
-changes and the owner's pending GPU retest.
-The [lifecycle task](../tasks/lifecycle-automation/state.md) tracks the current
-automation and its separate GPU qualification.
+Task notes and `.gitignore` stay local. Set up local ignore rules for settings,
+logs and working files before staging changes. The [deployment results](../results/release-qualification/summary.json)
+record the earlier GPU checks; the [automated lifecycle](running.md#stop-resume-and-apply-settings)
+still needs its GPU walkthrough.
 
 ## Build and lifecycle ownership
 
@@ -62,8 +60,8 @@ changing that syntax. Docs and unrelated tests must not invalidate the image.
 
 ## Future kernel experiments
 
-The [kernel experiment task](../tasks/kernel-experiments/state.md) is recorded
-but hasn't started. It covers profiling and testing further SM120 improvements
-against the current recipe. Start with the existing component traces; preserve
+Further kernel experiments are planned but haven't started. They cover profiling
+and testing further SM120 improvements against the current recipe.
+Start with the existing component traces; preserve
 the working image and require measured gains, correctness and memory checks
 before adopting a change. Adaptive-verification work stays in its own repo.

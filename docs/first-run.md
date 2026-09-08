@@ -178,7 +178,7 @@ Health returns HTTP 200 with an empty body. `/v1/models` lists your served alias
 All 19 short feature checks should pass. These cover tools, reasoning, streaming
 and other APIs; coding accuracy, 1M retrieval and speed need separate tests.
 
-The [startup record](../tasks/release-readiness/verification.md) separates the
+The [startup record](source-image-validation.md) separates the
 first launch from the warmed restart. New request shapes can still need compilation.
 
 ## 5. Connect your coding agent
@@ -213,7 +213,7 @@ cache remain available. Use `bash recipe.sh plan` for a preview and
 [the running guide](running.md#stop-resume-and-apply-settings) for recovery.
 Wait for healthy, then repeat the feature suite with a new output filename.
 
-The [release record](../tasks/release-readiness/verification.md) covers the
+The [release record](../results/release-qualification/summary.json) covers the
 rehearsal on the existing host. The owner's walkthrough is in progress.
-The new [automated lifecycle](../tasks/lifecycle-automation/state.md) still needs
+The new [automated lifecycle](running.md#stop-resume-and-apply-settings) still needs
 its GPU walkthrough; an independent fresh-machine install remains unqualified.

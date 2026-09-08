@@ -229,7 +229,7 @@ resource pressure; don't assume every wait message is harmless. Docker can remai
 Keep the named `KERNEL_CACHE` volume to reuse compatible FlashInfer kernels.
 Changing to a new volume name or deleting it loses that reuse. Model loading
 and other initialization still run; new images or request shapes can require
-more compilation. See the [first-launch and restart record](../tasks/release-readiness/verification.md)
+more compilation. See the [first-launch and restart record](source-image-validation.md)
 for measured timings and their limits.
 
 ## Stop, resume and apply settings

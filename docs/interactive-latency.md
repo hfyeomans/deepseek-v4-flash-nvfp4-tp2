@@ -146,7 +146,7 @@ and [throughput defaults](https://github.com/jasl/vllm/blob/0f59188db1504b042ce6
 - [Lower-memory startup and API acceptance](../results/interactive-b2048-t1792-acceptance.json), [startup excerpt](../results/interactive-b2048-t1792-startup-excerpt.txt)
 - [Cap 512 warmup](../results/interactive-b2048-t512-warmup.json), [trial 1](../results/interactive-b2048-t512-1.json), [trial 2](../results/interactive-b2048-t512-2.json), [trial 3](../results/interactive-b2048-t512-3.json)
 - [Cap 512 startup and API acceptance](../results/interactive-b2048-t512-acceptance.json), [startup excerpt](../results/interactive-b2048-t512-startup-excerpt.txt)
-- [Probe commands](running.md#check-responsiveness-during-a-long-input), [measurement regressions](validation.md#mixed-tool-responsiveness), [experiment plan](../tasks/interactive-latency/plan.md)
+- [Probe commands](running.md#check-responsiveness-during-a-long-input), [measurement regressions](validation.md#mixed-tool-responsiveness)
 
 Published results replace large prompts with character counts and SHA256 hashes.
 The generator, prefixes, settings and usage remain recorded; full raw inputs

@@ -117,7 +117,6 @@ measurements; adaptive speedup remains unmeasured.
 
 The clean recipe checkpoint is `recipe-1m-k5`. Original combined history and
 rollback references remain in the private research archive. See
-[provenance and rollback](docs/provenance.md),
-[repository boundaries](docs/repository-boundaries.md) and
-[release status](tasks/publication/state.md). Recipe code and vLLM modifications
+[provenance and rollback](docs/provenance.md) and
+[repository boundaries](docs/repository-boundaries.md). Recipe code and vLLM modifications
 use Apache-2.0; model weights retain their own license.

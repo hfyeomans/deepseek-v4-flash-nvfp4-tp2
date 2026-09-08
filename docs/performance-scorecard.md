@@ -172,7 +172,7 @@ The September 5 rebuild at 1M/96% recorded **201.36 tok/s** median short code,
 **22.744 seconds**. This checked functionality using warm-prefix prompts and
 C1 warmups. It had no separate C2 warmup or DSpark-off control, so it establishes
 no new optimization gain. See [trials](../results/release-qualification/benchmark.json)
-and [build, startup, API and recovery checks](../tasks/release-readiness/verification.md).
+and [build, startup, API and recovery checks](../results/release-qualification/summary.json).
 
 ## Adaptive verification boundary
 

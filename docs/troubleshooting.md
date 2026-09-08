@@ -30,8 +30,7 @@ as configuration remain supported.
 This needs follow-up before updating the build toolchain. Migrate the upstream
 wheel steps, preserve their CUDA/build flags and Python ABI tag, then run a full
 build, the 13 image CPU tests and GPU/API checks. We haven't made that packaging
-change or suppressed the warning. Track it in the
-[operator test record](../tasks/operator-experience/state.md).
+change or suppressed the warning.
 
 ## FlashInfer cache and TVM ABI
 

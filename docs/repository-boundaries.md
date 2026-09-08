@@ -14,8 +14,11 @@ remain in the private archive. See [provenance](provenance.md).
 
 After research was saved locally, GitHub's recipe repo was replaced under the
 same name. Probed old research commits were unavailable in the replacement.
-See [visibility status](../tasks/publication/state.md) and
-[live qualification](../tasks/release-readiness/verification.md).
+See the [deployment qualification results](../results/release-qualification/summary.json).
+
+Working notes in `tasks/` and the local `.gitignore` aren't published with the
+current recipe. Earlier commits and retained branches still contain their
+historical copies.
 
 Start with [launching](running.md#recommended-coding-profile) and
 [API checks](validation.md). The [everyday scorecard](performance-scorecard.md#primary-everyday-codingtools-profile)

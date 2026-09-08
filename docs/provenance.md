@@ -4,11 +4,11 @@ Use `recipe-1m-k5` when you need to get back to the clean tested snapshot.
 Runtime/build files, patches, clients, fixtures, tests and results kept their
 original bytes at that tag. Docs and repo administration were split from research.
 
-The later [release review](../tasks/release-readiness/review.md) fixed benchmark
+The later release review fixed benchmark
 termination, stream records, report paths and patch direction, and added
 onboarding/CPU CI. Historical results, fixtures and runtime patches stayed
 unchanged. Old manifests identify tagged clients; later
-[GPU checks](../tasks/release-readiness/verification.md) have separate records.
+[GPU checks](../results/release-qualification/summary.json) have separate records.
 
 ## Reproduce the runtime
 
@@ -20,8 +20,9 @@ source remains `0f59188db1504b042ce621842bdde6c0fe862df6` plus the
 Model weights aren't included. Apache-2.0 source attribution is preserved.
 
 Current operation uses [recipe.sh](../recipe.sh) to choose image build, resume
-or replacement. Its lifecycle changes have [separate verification](../tasks/lifecycle-automation/state.md);
-the historical build and GPU records below do not qualify that new automation.
+or replacement. Its [local checks](development.md#fast-local-checks) passed;
+the GPU walkthrough remains pending. The historical build and GPU records below
+do not qualify that new automation.
 
 ## Kernel sources and local changes
 
@@ -58,7 +59,7 @@ configurations: DSpark, CUDA graphs, memory allocation, batching and prefill
 scheduling. They don't measure gains from a new kernel implementation. Building
 for SM120 establishes the architecture target; it doesn't establish the fastest
 possible kernels for these Max-Q cards. The
-[future kernel experiments](../tasks/kernel-experiments/state.md) track that
+[future kernel experiments](development.md#future-kernel-experiments) track that
 question separately from the tested recipe.
 
 ## Checkpoints and historical records
